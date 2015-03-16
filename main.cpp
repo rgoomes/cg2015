@@ -1,5 +1,5 @@
-#include "object.h"
-#include "nvidia.h"
+#include "object.hpp"
+#include "nvidia.hpp"
 
 int main(){
 	Object obj("tests/cube.obj");

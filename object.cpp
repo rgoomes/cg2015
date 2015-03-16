@@ -1,4 +1,4 @@
-#include "object.h"
+#include "object.hpp"
 
 Object::Object(string path){ this->path = path; }
 Object::~Object(){}
