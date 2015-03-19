@@ -1,4 +1,10 @@
+#include <stdint.h>
+#include <string.h>
+#include <iostream>
+
 #include "object.hpp"
+
+using namespace std;
 
 Object::Object(string path){ this->path = path; }
 Object::~Object(){}
@@ -25,34 +31,25 @@ bool Object::load_obj(bool debug){
 			this->uvs.push_back(coord);
 		} else if(!strcmp(line, "f")){
 			fscanf(file, "%d//%d %d//%d %d//%d", &face.v_index[0], &face.n_index[0],
-			&face.v_index[1], &face.n_index[1], &face.v_index[2], &face.n_index[2]);
+			&face.v_index[1],  &face.n_index[1], &face.v_index[2], &face.n_index[2]);
 
 			this->faces.push_back(face);
 		}
 	}
 
-	out_vertices.clear();
-	for( unsigned int i=0; i<this->faces.size(); i++ ){
-		unsigned int ind;
-		ind = this->faces[i].v_index[0]-1;
-		out_vertices.push_back(this->vertices[ind]);
-		printf("%f %f %f\n", vertices[ind].x, vertices[ind].y, vertices[ind].z );
-		ind = this->faces[i].v_index[1]-1;
-		out_vertices.push_back(this->vertices[ind]);
-		printf("%f %f %f\n", vertices[ind].x, vertices[ind].y, vertices[ind].z );
-		ind = this->faces[i].v_index[2]-1;
-		out_vertices.push_back(this->vertices[ind]);
-		printf("%f %f %f\n", vertices[ind].x, vertices[ind].y, vertices[ind].z );
+	for(uint64_t i = 0; i < this->faces.size(); i++){
+		out_vertices.push_back(vertices[faces[i].v_index[0] - 1]);
+		out_vertices.push_back(vertices[faces[i].v_index[1] - 1]);
+		out_vertices.push_back(vertices[faces[i].v_index[2] - 1]);
 	}
 
 	if(debug){
-		std::cout << "Object:  " << this->path 		<< std::endl
-				  << "Vertices " << vertices.size() << std::endl
-				  << "Normals  " << normals.size()  << std::endl
-				  << "Faces    " << faces.size() 	<< std::endl
-				  << "Uvs      " << uvs.size() 		<< std::endl;
+		std::cout << "Loading object: " << path 	 << "\n"
+				  << "Vertices: " << vertices.size() << "\t"
+				  << "Normals: "  << normals.size()  << "\t"
+				  << "Faces: "    << faces.size() 	 << "\t"
+				  << "Uvs: "      << uvs.size() 	 << "\n\n";
 	}
 
 	return true;
 }
-

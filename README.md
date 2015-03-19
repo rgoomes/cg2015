@@ -1,2 +1,3 @@
 # cg2015
-retardé
+Project for the Computer Graphics course
+
