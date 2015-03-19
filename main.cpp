@@ -126,16 +126,16 @@ void display(){
 		glEnd();
 	glPopMatrix();
 
-	//glBufferData(GL_ARRAY_BUFFER, obj.out_vertices.size() * 3*sizeof(Point), &obj.vertices[0], GL_STATIC_DRAW);
-	printf("%d\n", obj.out_vertices.size());
+	/*
 	for(int i=0; i<obj.out_vertices.size(); i+=3){
 		glBegin(GL_POLYGON);
-			glVertex3f(obj.out_vertices[0].x, obj.out_vertices[0].y, obj.out_vertices[0].z);
-			glVertex3f(obj.out_vertices[1].x, obj.out_vertices[1].y, obj.out_vertices[1].z);
-			glVertex3f(obj.out_vertices[2].x, obj.out_vertices[2].y, obj.out_vertices[2].z);
-			printf("%f %f %f\n", obj.out_vertices[0].x, obj.out_vertices[0].y, obj.out_vertices[0].z);
+			glVertex3f(obj.out_vertices[i+0].x, obj.out_vertices[i+0].y, obj.out_vertices[i+0].z);
+			glVertex3f(obj.out_vertices[i+1].x, obj.out_vertices[i+1].y, obj.out_vertices[i+1].z);
+			glVertex3f(obj.out_vertices[i+2].x, obj.out_vertices[i+2].y, obj.out_vertices[i+2].z);
+			//printf("%f %f %f\n", obj.out_vertices[0].x, obj.out_vertices[0].y, obj.out_vertices[0].z);
 		glEnd();
-	}
+	}*/
+	glBufferData(GL_ARRAY_BUFFER, obj.out_vertices.size() * 3 * sizeof(Point), &obj.out_vertices[0], GL_STATIC_DRAW);
 
 	glLoadIdentity();
 
