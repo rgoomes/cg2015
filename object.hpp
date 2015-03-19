@@ -1,12 +1,11 @@
+
+#include <GL/gl.h>
+
 #include <iostream>
 #include <vector>
 #include <string>
 #include <string.h>
 
-#include <GL/gl.h>
-#include <GL/glu.h>
-#include <GL/glut.h>
-#include <GL/freeglut.h>
 
 using std::vector;
 using std::string;
@@ -29,6 +28,7 @@ class Object {
 
 		vector<Point> vertices, normals, uvs;
 		vector<Face> faces;
+		vector<Point> out_vertices;
 
 		Object(string path);
 		~Object();

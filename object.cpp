@@ -10,6 +10,7 @@ bool Object::load_obj(bool debug){
 		return false;
 
 	char line[128];
+	printf("RETARDE\n");
 	while(fscanf(file, "%s", line) != EOF){
 		Point coord;
 		Face face; 
@@ -25,10 +26,21 @@ bool Object::load_obj(bool debug){
 			this->uvs.push_back(coord);
 		} else if(!strcmp(line, "f")){
 			fscanf(file, "%d//%d %d//%d %d//%d", &face.v_index[0], &face.n_index[0],
-			 &face.v_index[1], &face.n_index[1], &face.v_index[2], &face.n_index[2]);
+			&face.v_index[1], &face.n_index[1], &face.v_index[2], &face.n_index[2]);
 
 			this->faces.push_back(face);
 		}
+	}
+
+	for( unsigned int i=0; i<this->faces.size(); i++ ){
+		unsigned int ind;
+		ind = this->faces[i].v_index[0];
+		out_vertices.push_back(this->vertices[ind-1]);
+		ind = this->faces[i].v_index[1];
+		out_vertices.push_back(this->vertices[ind-1]);
+		ind = this->faces[i].v_index[2];
+		out_vertices.push_back(this->vertices[ind-1]);
+		printf("RETARDE\n");
 	}
 
 	if(debug){
