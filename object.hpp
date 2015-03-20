@@ -1,3 +1,6 @@
+#ifndef OBJECT_H
+#define OBJECT_H
+
 #include <vector>
 #include <string>
 
@@ -19,3 +22,5 @@ class Object {
 
 		bool load_obj(bool debug);
 };
+
+#endif

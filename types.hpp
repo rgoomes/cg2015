@@ -1,3 +1,6 @@
+#ifndef TYPES_H
+#define TYPES_H
+
 #include <GL/gl.h>
 
 typedef struct {
@@ -10,3 +13,5 @@ typedef struct {
 	GLint t_index[3];
 	GLint n_index[3];
 } Face;
+
+#endif
