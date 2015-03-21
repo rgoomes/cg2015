@@ -5,9 +5,29 @@
 
 #include "display.hpp"
 #include "object.hpp"
+#include "misc.hpp"
 
 Object cube("tests/cube.obj");
 Object monkey("tests/suzanne.obj");
+
+int frame = 0, timebase = 0, tm = 0;
+double fps;
+
+void frame_rate(){
+	frame++;
+	tm = glutGet(GLUT_ELAPSED_TIME);
+
+	if(tm - timebase > 100){
+		fps = frame*1000.0/(tm-timebase);
+		timebase = tm;
+		frame = 0;
+#ifdef __unix
+	#if CONSOLE_FPS
+		printf("\033[A\033[2Kfps: %lf\n", fps);
+	#endif
+#endif
+	}
+}
 
 void load_objects(){
 	cube.load_obj(true);
@@ -31,7 +51,7 @@ void display(){
 
 	glRotatef(0.1, 0, 1, 0);
 	glutSolidTeapot(1.0);
-
+	
 	/*
 	for(int i = 0; i < cube.out_vertices.size(); i += 3){
 		glBegin(GL_TRIANGLES);
@@ -41,6 +61,10 @@ void display(){
 		glEnd();
 	}
 	*/
-	
+
+#if DISPLAY_FPS
+	frame_rate();
+#endif
+
 	glutSwapBuffers();
 }
