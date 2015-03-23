@@ -16,7 +16,7 @@ void idle(void){ glutPostRedisplay(); }
 
 void opengl_init(int argc, char **argv){
 	glutInit 			(&argc, argv);
-	glutInitDisplayMode	(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
+	glutInitDisplayMode	(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH | GLUT_MULTISAMPLE);
 	glutInitWindowSize	(SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
 	glutCreateWindow	("cg2015");
 
@@ -29,6 +29,7 @@ void opengl_init(int argc, char **argv){
 	glutIdleFunc		(idle);
 
 	load_objects();
+	glEnable			(GL_DEPTH_TEST);
 	add_lights();
 }
 

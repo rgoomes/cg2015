@@ -38,7 +38,6 @@ void load_objects(){
 }
 
 void add_lights(){
-	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 
 	glEnable(GL_LIGHTING);
