@@ -30,8 +30,8 @@ void frame_rate(){
 }
 
 void load_objects(){
-	cube.load_obj(true);
-	monkey.load_obj(true);
+	cube.load_obj(false);
+	monkey.load_obj(false);
 }
 
 void add_lights(){
