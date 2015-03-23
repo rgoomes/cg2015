@@ -1,1 +1,1 @@
-g++ main.cpp object.cpp display.cpp misc.cpp -lm -std=c++11 -pthread -lX11 -lXi -lXmu -lGL -lGLU -lglut -lGLEW -o main -Wall
+g++ main.cpp object.cpp display.cpp misc.cpp -lm -std=c++11 -pthread -lX11 -lXi -lXmu -lGL -lGLU -lglut -lGLEW -o main -Wall -O3

@@ -53,26 +53,30 @@ bool Object::load_obj_ntexture(bool debug){
 	if(!file)
 		return false;
 
+	int tmp;
 	char line[128];
 	while(fscanf(file, "%s", line) != EOF){
 		Point coord;
 		Face face; 
 
 		if(!strcmp(line, "v")){
-			fscanf(file, "%f %f %f", &coord.x, &coord.y, &coord.z);
+			tmp = fscanf(file, "%f %f %f", &coord.x, &coord.y, &coord.z);
 			coord.x *= s; coord.y *= s; coord.z *= s;
 			this->vertices.push_back(coord);
 		} else if(!strcmp(line, "vn")){
-			fscanf(file, "%f %f %f", &coord.x, &coord.y, &coord.z);
+			tmp = fscanf(file, "%f %f %f", &coord.x, &coord.y, &coord.z);
 			this->normals.push_back(coord);
 		} else if(!strcmp(line, "vt")){
-			fscanf(file, "%f %f", &coord.x, &coord.y);
+			tmp = fscanf(file, "%f %f", &coord.x, &coord.y);
 			this->uvs.push_back(coord);
 		} else if(!strcmp(line, "f")){
-			fscanf(file, "%d//%d %d//%d %d//%d", &face.v_index[0], &face.n_index[0],
+			tmp = fscanf(file, "%d//%d %d//%d %d//%d", &face.v_index[0], &face.n_index[0],
 			&face.v_index[1], &face.n_index[1], &face.v_index[2], &face.n_index[2]);
 			this->faces.push_back(face);
 		}
+
+		if(tmp <= 0)
+			return false;
 	}
 
 	for(uint64_t i = 0; i < this->faces.size(); i++){
@@ -92,36 +96,40 @@ bool Object::load_obj_ntexture(bool debug){
 				  << "Uvs: "      << uvs.size() 	 << "\n\n";
 	}
 
+	fclose(file);
 	return true;
 }
 
 bool Object::load_obj_texture(bool debug){
-
 	FILE *file = fopen(this->path.c_str(), "r");
 	if(!file)
 		return false;
 
+	int tmp;
 	char line[128];
 	while(fscanf(file, "%s", line) != EOF){
 		Point coord;
 		Face face; 
 
 		if(!strcmp(line, "v")){
-			fscanf(file, "%f %f %f", &coord.x, &coord.y, &coord.z);
+			tmp = fscanf(file, "%f %f %f", &coord.x, &coord.y, &coord.z);
 			coord.x *= s; coord.y *= s; coord.z *= s;
 			this->vertices.push_back(coord);
 		} else if(!strcmp(line, "vn")){
-			fscanf(file, "%f %f %f", &coord.x, &coord.y, &coord.z);
+			tmp = fscanf(file, "%f %f %f", &coord.x, &coord.y, &coord.z);
 			this->normals.push_back(coord);
 		} else if(!strcmp(line, "vt")){
-			fscanf(file, "%f %f", &coord.x, &coord.y);
+			tmp = fscanf(file, "%f %f", &coord.x, &coord.y);
 			this->uvs.push_back(coord);
 		} else if(!strcmp(line, "f")){
-			fscanf(file, "%d/%d/%d %d/%d/%d %d/%d/%d", &face.v_index[0], &face.t_index[0], &face.n_index[0],
+			tmp = fscanf(file, "%d/%d/%d %d/%d/%d %d/%d/%d", &face.v_index[0], &face.t_index[0], &face.n_index[0],
 			&face.v_index[1], &face.t_index[1], &face.n_index[1], &face.v_index[2], &face.t_index[2], &face.n_index[2]);
 
 			this->faces.push_back(face);
 		}
+
+		if(tmp <= 0)
+			return false;
 	}
 
 	for(uint64_t i = 0; i < this->faces.size(); i++){
@@ -141,5 +149,6 @@ bool Object::load_obj_texture(bool debug){
 				  << "Uvs: "      << uvs.size() 	 << "\n\n";
 	}
 
+	fclose(file);
 	return true;
 }
