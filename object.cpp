@@ -9,6 +9,20 @@ using namespace std;
 Object::Object(string path){ this->path = path; }
 Object::~Object(){}
 
+void Object::render(){
+	for(int i = 0; i < out_vertices.size(); i += 3){
+		glBegin(GL_TRIANGLES);
+			glNormal3f(out_normals[i+2].x, out_normals[i+2].y, out_normals[i+2].z);
+			glVertex3f(out_vertices[i+2].x, out_vertices[i+2].y, out_vertices[i+2].z);
+			glNormal3f(out_normals[i+1].x, out_normals[i+1].y, out_normals[i+1].z);
+			glVertex3f(out_vertices[i+1].x, out_vertices[i+1].y, out_vertices[i+1].z);
+			glNormal3f(out_normals[i+0].x, out_normals[i+0].y, out_normals[i+0].z);
+			glVertex3f(out_vertices[i+0].x, out_vertices[i+0].y, out_vertices[i+0].z);
+			
+		glEnd();
+	}
+}
+
 bool Object::load_obj(bool debug){
 
 	FILE *file = fopen(this->path.c_str(), "r");
@@ -39,8 +53,11 @@ bool Object::load_obj(bool debug){
 
 	for(uint64_t i = 0; i < this->faces.size(); i++){
 		out_vertices.push_back(vertices[faces[i].v_index[0] - 1]);
+		out_normals.push_back(normals  [faces[i].n_index[0] - 1]);
 		out_vertices.push_back(vertices[faces[i].v_index[1] - 1]);
+		out_normals.push_back(normals  [faces[i].n_index[1] - 1]);
 		out_vertices.push_back(vertices[faces[i].v_index[2] - 1]);
+		out_normals.push_back(normals  [faces[i].n_index[2] - 1]);
 	}
 
 	if(debug){

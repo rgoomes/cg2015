@@ -50,17 +50,7 @@ void display(){
 	glClearColor(0.3,0.4,0.5, 1);
 
 	glRotatef(0.1, 0, 1, 0);
-	glutSolidTeapot(1.0);
-	
-	
-	for(int i = 0; i < cube.out_vertices.size(); i += 3){
-		glBegin(GL_TRIANGLES);
-			glVertex3f(cube.out_vertices[i+0].x, cube.out_vertices[i+0].y, cube.out_vertices[i+0].z);
-			glVertex3f(cube.out_vertices[i+1].x, cube.out_vertices[i+1].y, cube.out_vertices[i+1].z);
-			glVertex3f(cube.out_vertices[i+2].x, cube.out_vertices[i+2].y, cube.out_vertices[i+2].z);
-		glEnd();
-	}
-	
+	monkey.render();
 
 #if DISPLAY_FPS
 	frame_rate();

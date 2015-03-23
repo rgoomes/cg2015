@@ -17,7 +17,7 @@ void idle(void){ glutPostRedisplay(); }
 void opengl_init(int argc, char **argv){
 	glutInit 			(&argc, argv);
 	glutInitDisplayMode	(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
-	glutInitWindowSize	(SCREEN_WIDTH, SCREEN_HEIGHT);
+	glutInitWindowSize	(SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
 	glutCreateWindow	("cg2015");
 
 	glMatrixMode		(GL_PROJECTION);
