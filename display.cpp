@@ -9,6 +9,7 @@
 
 Object cube("tests/cube.obj");
 Object monkey("tests/suzanne.obj");
+Object chair("tests/chair.obj");
 
 int frame = 0, timebase = 0, tm = 0;
 double fps;
@@ -32,6 +33,7 @@ void frame_rate(){
 void load_objects(){
 	cube.load_obj(false);
 	monkey.load_obj(false);
+	chair.load_obj(true);
 }
 
 void add_lights(){
@@ -50,6 +52,11 @@ void display(){
 	glClearColor(0.3,0.4,0.5, 1);
 
 	glRotatef(0.1, 0, 1, 0);
+	glPushMatrix();
+		glScalef(0.1, 0.1, 0.1);
+		chair.render();
+	glPopMatrix();
+
 	monkey.render();
 
 #if DISPLAY_FPS
