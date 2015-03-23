@@ -52,7 +52,7 @@ void display(){
 	glRotatef(0.1, 0, 1, 0);
 	glutSolidTeapot(1.0);
 	
-	/*
+	
 	for(int i = 0; i < cube.out_vertices.size(); i += 3){
 		glBegin(GL_TRIANGLES);
 			glVertex3f(cube.out_vertices[i+0].x, cube.out_vertices[i+0].y, cube.out_vertices[i+0].z);
@@ -60,7 +60,7 @@ void display(){
 			glVertex3f(cube.out_vertices[i+2].x, cube.out_vertices[i+2].y, cube.out_vertices[i+2].z);
 		glEnd();
 	}
-	*/
+	
 
 #if DISPLAY_FPS
 	frame_rate();

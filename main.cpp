@@ -21,7 +21,7 @@ void opengl_init(int argc, char **argv){
 	glutCreateWindow	("cg2015");
 
 	glMatrixMode		(GL_PROJECTION);
-	gluPerspective		(90, 1.333, 1.0, 100.0);
+	gluPerspective		(90, SCREEN_WIDTH/(float)SCREEN_HEIGHT, 1.0, 100.0);
 	glMatrixMode		(GL_MODELVIEW);	
 	gluLookAt			(2,2,4, 0,0,0, 0,1,0);
 
