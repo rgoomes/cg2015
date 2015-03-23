@@ -22,11 +22,14 @@ class Object {
 
 		bool load_obj(bool texture, bool debug);
 		bool load_obj(bool texture);
+		void set_scale(float s);
+		float scale();
 		void render();
 
 	private:
 		bool load_obj_texture(bool debug);
 		bool load_obj_ntexture(bool debug);
+		float s;
 };
 
 #endif

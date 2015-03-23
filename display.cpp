@@ -33,6 +33,7 @@ void frame_rate(){
 void load_objects(){
 	cube.load_obj(false);
 	monkey.load_obj(false);
+	chair.set_scale(0.1);
 	chair.load_obj(true);
 }
 
@@ -51,13 +52,8 @@ void display(){
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.3,0.4,0.5, 1);
 
-	glRotatef(0.1, 0, 1, 0);
-	glPushMatrix();
-		glScalef(0.1, 0.1, 0.1);
-		chair.render();
-	glPopMatrix();
-
-	monkey.render();
+	glRotatef(0.4, 0, 1, 0);
+	chair.render();
 
 #if DISPLAY_FPS
 	frame_rate();

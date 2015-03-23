@@ -6,7 +6,10 @@
 
 using namespace std;
 
-Object::Object(string path){ this->path = path; }
+Object::Object(string path){
+	this->path = path;
+	this->s = 1.0;
+}
 Object::~Object(){}
 
 void Object::render(){
@@ -21,6 +24,14 @@ void Object::render(){
 			
 		glEnd();
 	}
+}
+
+void Object::set_scale(float s){
+	this->s = s;
+}
+
+float Object::scale(){
+	return s;
 }
 
 bool Object::load_obj(bool has_texture, bool debug){
@@ -49,6 +60,7 @@ bool Object::load_obj_ntexture(bool debug){
 
 		if(!strcmp(line, "v")){
 			fscanf(file, "%f %f %f", &coord.x, &coord.y, &coord.z);
+			coord.x *= s; coord.y *= s; coord.z *= s;
 			this->vertices.push_back(coord);
 		} else if(!strcmp(line, "vn")){
 			fscanf(file, "%f %f %f", &coord.x, &coord.y, &coord.z);
@@ -96,6 +108,7 @@ bool Object::load_obj_texture(bool debug){
 
 		if(!strcmp(line, "v")){
 			fscanf(file, "%f %f %f", &coord.x, &coord.y, &coord.z);
+			coord.x *= s; coord.y *= s; coord.z *= s;
 			this->vertices.push_back(coord);
 		} else if(!strcmp(line, "vn")){
 			fscanf(file, "%f %f %f", &coord.x, &coord.y, &coord.z);
