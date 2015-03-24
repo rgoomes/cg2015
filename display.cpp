@@ -7,8 +7,6 @@
 #include "object.hpp"
 #include "misc.hpp"
 
-Object cube("tests/cube.obj");
-Object monkey("tests/suzanne.obj");
 Object chair("tests/chair.obj");
 
 int frame = 0, timebase = 0, tm = 0;
@@ -31,8 +29,6 @@ void frame_rate(){
 }
 
 void load_objects(){
-	cube.load_obj(false);
-	monkey.load_obj(false);
 	chair.set_scale(0.1);
 	chair.load_obj(true);
 }
