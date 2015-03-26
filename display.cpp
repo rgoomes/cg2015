@@ -54,8 +54,9 @@ void display(GLFWwindow* window){
 	chair.render();
 	frame_rate();
 
-//#if DISPLAY_FPS
-//#endif
+#if DISPLAY_FPS
+	frame_rate();
+#endif
 
 	glfwSwapBuffers(window);
 	glfwPollEvents();

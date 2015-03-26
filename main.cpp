@@ -14,47 +14,31 @@ using namespace std;
 
 GLFWwindow* window;
 
-void GetMaxMonitorResolution(int* w, int* h)
-{
-    int count;
-    const GLFWvidmode* modes = glfwGetVideoModes(glfwGetPrimaryMonitor(), &count);
+void monitor_resolution(int* w, int* h){
+	int count;
+	const GLFWvidmode* modes = glfwGetVideoModes(glfwGetPrimaryMonitor(), &count);
 
-    int maxWidth = 0;
-    int maxHeight = 0;
-    for (int i = 0; i < count; i++)
-    {
-        if (modes[i].width > maxWidth)
-            maxWidth = modes[i].width;
-        if (modes[i].height > maxHeight)
-            maxHeight = modes[i].height;
-    }
+	int maxWidth = 0; int maxHeight = 0;
+	for (int i = 0; i < count; i++){
+		if (modes[i].width > maxWidth)
+			maxWidth = modes[i].width;
+		if (modes[i].height > maxHeight)
+			maxHeight = modes[i].height;
+	}
 
-    *w = maxWidth;
-    *h = maxHeight;
+	*w = maxWidth;
+	*h = maxHeight;
 }
 
 void opengl_init(int argc, char **argv){
-	/*
-	glutInit 			(&argc, argv);
-	glutSetOption		(GLUT_MULTISAMPLE, 16);
-	glutInitDisplayMode	(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH | GLUT_MULTISAMPLE);
-	glutInitWindowSize	(SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
-	glutCreateWindow	("cg2015");
-	*/
-
-	/*GLFWmonitor screen;
-	glfwGetVideoMode(&screen);
-	SCREEN_HEIGHT = screen.Height;
-	SCREEN_WIDTH = screen.Width;*/
 
 	glfwInit();
-	GetMaxMonitorResolution(&SCREEN_WIDTH, &SCREEN_HEIGHT);
-
-	window = glfwCreateWindow( SCREEN_WIDTH/2, SCREEN_HEIGHT/2, "Tutorial 02 - Red triangle", NULL, NULL);
+	monitor_resolution(&SCREEN_WIDTH, &SCREEN_HEIGHT);
 	glfwWindowHint(GLFW_SAMPLES, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 	glfwSwapInterval(0);
+	window = glfwCreateWindow( SCREEN_WIDTH/2, SCREEN_HEIGHT/2, "Tutorial 02 - Red triangle", NULL, NULL);
 
 	glfwMakeContextCurrent(window);
 	glewInit();
@@ -67,9 +51,6 @@ void opengl_init(int argc, char **argv){
 	gluPerspective		(90, SCREEN_WIDTH/(float)SCREEN_HEIGHT, 1.0, 100.0);
 	glMatrixMode		(GL_MODELVIEW);	
 	gluLookAt			(2,2,4, 0,0,0, 0,1,0);
-
-	//glutDisplayFunc		(display);
-	//glutIdleFunc		(idle);
 
 	load_objects();
 	glEnable			(GL_DEPTH_TEST);
