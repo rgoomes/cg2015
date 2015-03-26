@@ -1,7 +1,6 @@
 #include <GL/glew.h>
 #include <GL/glu.h>
-#include <GL/glut.h>
-#include <GL/freeglut.h>
+#include <GLFW/glfw3.h>
 
 #include "display.hpp"
 #include "object.hpp"
@@ -9,23 +8,27 @@
 
 Object chair("tests/chair.obj");
 
-int frame = 0, timebase = 0, tm = 0;
+int frame = 0;
+double timebase = 0, tm = 0;
 double fps;
 
 void frame_rate(){
 	frame++;
-	tm = glutGet(GLUT_ELAPSED_TIME);
+	tm = glfwGetTime();
 
-	if(tm - timebase > 100){
-		fps = frame*1000.0/(tm-timebase);
+	if(tm - timebase > 1){
+		fps = frame/(tm-timebase);
 		timebase = tm;
-		frame = 0;
+		frame = 0;	
+
+	}
+
 #ifdef __unix
 	#if CONSOLE_FPS
 		printf("\033[A\033[2Kfps: %lf\n", fps);
 	#endif
 #endif
-	}
+
 }
 
 void load_objects(){
@@ -43,16 +46,17 @@ void add_lights(){
 	glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
 }
 
-void display(){
+void display(GLFWwindow* window){
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.3,0.4,0.5, 1);
 
 	glRotatef(0.1, 0, 1, 0);
 	chair.render();
-
-#if DISPLAY_FPS
 	frame_rate();
-#endif
 
-	glutSwapBuffers();
+//#if DISPLAY_FPS
+//#endif
+
+	glfwSwapBuffers(window);
+	glfwPollEvents();
 }

@@ -6,6 +6,6 @@
 
 void load_objects();
 void add_lights();
-void display();
+void display(GLFWwindow* window);
 
 #endif
