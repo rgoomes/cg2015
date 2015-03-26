@@ -52,12 +52,10 @@ void display(GLFWwindow* window){
 
 	glRotatef(0.1, 0, 1, 0);
 	chair.render();
-	frame_rate();
-
+	
 #if DISPLAY_FPS
-	frame_rate();
+	//frame_rate();
 #endif
 
-	glfwSwapBuffers(window);
-	glfwPollEvents();
+
 }

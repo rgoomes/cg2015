@@ -55,13 +55,18 @@ void opengl_init(int argc, char **argv){
 	load_objects();
 	glEnable			(GL_DEPTH_TEST);
 	add_lights();
-	while(true)
-		display(window);
 }
 
 int main(int argc, char **argv){
 	opengl_init(argc, argv);
-	//glutMainLoop();
+
+	do{
+		display(window);
+
+		glfwSwapBuffers(window);
+		glfwPollEvents();
+	}while(glfwGetKey(window, GLFW_KEY_ESCAPE ) != GLFW_PRESS 
+		&& glfwWindowShouldClose(window) == 0);
 
 	return 0;
 }
