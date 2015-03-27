@@ -12,17 +12,17 @@
 
 using namespace std;
 
-GLFWwindow* window;
+GLFWwindow *window;
 
-void monitor_resolution(int* w, int* h){
+void monitor_resolution(int *w, int *h){
 	int count;
 	const GLFWvidmode* modes = glfwGetVideoModes(glfwGetPrimaryMonitor(), &count);
 
 	int maxWidth = 0; int maxHeight = 0;
-	for (int i = 0; i < count; i++){
-		if (modes[i].width > maxWidth)
+	for(int i = 0; i < count; i++){
+		if(modes[i].width > maxWidth)
 			maxWidth = modes[i].width;
-		if (modes[i].height > maxHeight)
+		if(modes[i].height > maxHeight)
 			maxHeight = modes[i].height;
 	}
 
@@ -38,7 +38,7 @@ void opengl_init(int argc, char **argv){
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 	glfwSwapInterval(0);
-	window = glfwCreateWindow( SCREEN_WIDTH/2, SCREEN_HEIGHT/2, "Tutorial 02 - Red triangle", NULL, NULL);
+	window = glfwCreateWindow(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, "cg2015", NULL, NULL);
 
 	glfwMakeContextCurrent(window);
 	glewInit();

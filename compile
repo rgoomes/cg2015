@@ -1,1 +1,1 @@
-g++ main.cpp shaders.cpp object.cpp display.cpp misc.cpp -lm -std=c++11 -pthread -lX11 -lXi -lXmu -lGL -lGLU -lglut -lGLEW -o main -Wall -O3 -DGL_GLEXT_PROTOTYPES -lglfw
+g++ main.cpp shaders.cpp object.cpp display.cpp misc.cpp -lm -std=c++11 -pthread -lX11 -lXi -lXmu -lGL -lGLU -lglut -lGLEW -o main -Wall -O3 -DGL_GLEXT_PROTOTYPES -lglfw -Wno-unused-variable

@@ -16,11 +16,10 @@ void frame_rate(){
 	frame++;
 	tm = glfwGetTime();
 
-	if(tm - timebase > 1){
+	if(tm - timebase > 0.1){
 		fps = frame/(tm-timebase);
 		timebase = tm;
-		frame = 0;	
-
+		frame = 0;
 	}
 
 #ifdef __unix
@@ -54,8 +53,7 @@ void display(GLFWwindow* window){
 	chair.render();
 	
 #if DISPLAY_FPS
-	//frame_rate();
+	frame_rate();
 #endif
-
 
 }

@@ -1,4 +1,3 @@
-
 int SCREEN_WIDTH;
 int SCREEN_HEIGHT;
 
