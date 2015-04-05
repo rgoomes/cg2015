@@ -18,7 +18,19 @@ Object::Object(string path){
 Object::~Object(){}
 
 void Object::render(){
-
+	glUseProgram(0);
+	//printf("dei\n");
+	for(int i = 0; i < (int)out_vertices.size(); i += 3){
+		glBegin(GL_TRIANGLES);
+			glNormal3f(out_normals[i+2].x, out_normals[i+2].y, out_normals[i+2].z);
+			glVertex3f(out_vertices[i+2].x, out_vertices[i+2].y, out_vertices[i+2].z);
+			glNormal3f(out_normals[i+1].x, out_normals[i+1].y, out_normals[i+1].z);
+			glVertex3f(out_vertices[i+1].x, out_vertices[i+1].y, out_vertices[i+1].z);
+			glNormal3f(out_normals[i+0].x, out_normals[i+0].y, out_normals[i+0].z);
+			glVertex3f(out_vertices[i+0].x, out_vertices[i+0].y, out_vertices[i+0].z);
+			
+		glEnd();
+	}	
 }
 
 void Object::render(float m[4][4]){
@@ -88,8 +100,9 @@ bool Object::load_obj_ntexture(){
 	if(!file)
 		return false;
 
-	int tmp;
-	char line[128];
+	int tmp=1;
+	char line[256];
+	char buffer[1000];
 	while(fscanf(file, "%s", line) != EOF){
 		Point coord;
 		Point2 coord2;
@@ -109,13 +122,18 @@ bool Object::load_obj_ntexture(){
 			tmp = fscanf(file, "%d//%d %d//%d %d//%d", &face.v_index[0], &face.n_index[0],
 			&face.v_index[1], &face.n_index[1], &face.v_index[2], &face.n_index[2]);
 			this->faces.push_back(face);
+		} else if(!strcmp(line, "#")){
+			fgets(buffer, 1000, file);
+			//printf("Comment: %s\n", buffer);
 		}
+		printf("%s\n", line);
 
 		if(tmp <= 0)
 			return false;
 	}
 
 	for(uint64_t i = 0; i < this->faces.size(); i++){
+		printf("%ld\n", i);
 		out_vertices.push_back(vertices[faces[i].v_index[0] - 1]);
 		out_normals.push_back(normals  [faces[i].n_index[0] - 1]);
 		out_vertices.push_back(vertices[faces[i].v_index[1] - 1]);
@@ -219,7 +237,7 @@ bool Object::load_obj_texture(){
 
 	Group g = load_group("");
 	groups.push_back(g);
-
+	printf("Loaded %s\n", obj_path.c_str());
 	
 	/*if(debug)
 		load_debug(path, vertices, normals, faces, uvs);*/

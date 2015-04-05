@@ -42,8 +42,8 @@ void load_objects(){
 	chair.set_scale(0.03);
 	chair.load_obj(true);
 
-	dei.set_scale(0.01);
-	//dei.load_obj(false);
+	dei.set_scale(0.1);
+	dei.load_obj(true);
 }
 
 void add_lights(){
@@ -75,13 +75,14 @@ void display(GLFWwindow* window){
 	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	gluLookAt(3*sin(a),3*sin(a),3*cos(a), 0,-1,0, 0, 1, 0);
+	gluLookAt(30*sin(a),30*sin(a),30*cos(a), 0,-1,0, 0, 1, 0);
 	a+=0.01;
 	
 	get_mvp(mvp);
 
-	colorCube.render(mvp);
+	//colorCube.render(mvp);
 	chair.render(mvp);
+	dei.render(mvp);
 	
 #if DISPLAY_FPS
 	frame_rate();
