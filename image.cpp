@@ -9,7 +9,6 @@ GLuint loadDDS(const char * imagepath){
 	/* try to open the file */ 
 	fp = fopen(imagepath, "rb"); 
 	if (fp == NULL){
-		printf("%s could not be opened. Are you in the right directory ? Don't forget to read the FAQ !\n", imagepath); getchar(); 
 		return 0;
 	}
    
@@ -17,8 +16,8 @@ GLuint loadDDS(const char * imagepath){
 	char filecode[4]; 
 	fread(filecode, 1, 4, fp); 
 	if (strncmp(filecode, "DDS ", 4) != 0) { 
-		fclose(fp); 
-		return 0; 
+		fclose(fp);
+		return 0;
 	}
 	
 	/* get the surface desc */ 
@@ -87,9 +86,7 @@ GLuint loadDDS(const char * imagepath){
 	} 
 
 	free(buffer);
-
-	printf("Loaded image %s\n", imagepath);
-
+	
 	return textureID;
 
 }
