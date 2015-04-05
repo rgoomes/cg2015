@@ -126,7 +126,6 @@ bool Object::load_obj_ntexture(){
 			fgets(buffer, 1000, file);
 			//printf("Comment: %s\n", buffer);
 		}
-		printf("%s\n", line);
 
 		if(tmp <= 0)
 			return false;
