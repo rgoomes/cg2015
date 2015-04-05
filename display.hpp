@@ -3,7 +3,7 @@
 
 #include <math.h>
 
-#define DISPLAY_FPS 0
+#define DISPLAY_FPS 1
 #define CONSOLE_FPS 1
 
 void load_objects();
