@@ -8,6 +8,7 @@
 
 Object chair("objects/chair");
 Object colorCube("objects/cube");
+Object dei("objects/dei");
 
 int frame = 0;
 double timebase = 0, tm = 0;
@@ -40,6 +41,9 @@ void load_objects(){
 	
 	chair.set_scale(0.03);
 	chair.load_obj(true);
+
+	dei.set_scale(0.01);
+	//dei.load_obj(false);
 }
 
 void add_lights(){
