@@ -49,7 +49,7 @@ void Object::render(float m[4][4]){
 		glEnableVertexAttribArray(g.vertexUV_id);
 		glBindBuffer(GL_ARRAY_BUFFER, g.uvbuffer);
 		glVertexAttribPointer(
-			g.vertexUV_id,                   // The attribute we want to configure
+			g.vertexUV_id,                // The attribute we want to configure
 			2,                            // size : U+V => 2
 			GL_FLOAT,                     // type
 			GL_FALSE,                     // normalized?
