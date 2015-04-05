@@ -3,6 +3,7 @@
 GLuint loadDDS(const char * imagepath){
 
 	unsigned char header[124];
+	size_t tmp;
 
 	FILE *fp; 
  
@@ -15,14 +16,14 @@ GLuint loadDDS(const char * imagepath){
    
 	/* verify the type of file */ 
 	char filecode[4]; 
-	fread(filecode, 1, 4, fp); 
+	tmp = fread(filecode, 1, 4, fp); 
 	if (strncmp(filecode, "DDS ", 4) != 0) { 
 		fclose(fp); 
 		return 0; 
 	}
 	
 	/* get the surface desc */ 
-	fread(&header, 124, 1, fp); 
+	tmp = fread(&header, 124, 1, fp); 
 
 	unsigned int height      = *(unsigned int*)(header + 8);
 	unsigned int width	     = *(unsigned int*)(header + 12);
@@ -36,9 +37,12 @@ GLuint loadDDS(const char * imagepath){
 	/* how big is it going to be including all mipmaps? */ 
 	bufsize = mipMapCount > 1 ? linearSize * 2 : linearSize; 
 	buffer = (unsigned char*)malloc(bufsize * sizeof(unsigned char)); 
-	fread(buffer, 1, bufsize, fp); 
+	tmp = fread(buffer, 1, bufsize, fp); 
 	/* close the file pointer */ 
 	fclose(fp);
+
+	if(tmp <= 0)
+		return 0;
 
 	unsigned int components  = (fourCC == FOURCC_DXT1) ? 3 : 4; 
 	unsigned int format;
