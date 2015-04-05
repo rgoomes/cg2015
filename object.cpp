@@ -23,42 +23,48 @@ void Object::render(){
 
 void Object::render(float m[4][4]){
 
-	glUseProgram(programID);
-	glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &m[0][0]);
+	for(int i=0; i<(int)groups.size(); i++){
+		Group g = groups[i];
 
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, Texture);
-	glUniform1i(TextureID, 0);
+		glUseProgram(g.program_id);
+		glUniformMatrix4fv(g.matrix_id, 1, GL_FALSE, &m[0][0]);
 
-	// 1rst attribute buffer : vertices
-	glEnableVertexAttribArray(vertexPosition_modelspaceID);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-	glVertexAttribPointer(
-		vertexPosition_modelspaceID,  // The attribute we want to configure
-		3,                            // size
-		GL_FLOAT,                     // type
-		GL_FALSE,                     // normalized?
-		0,                            // stride
-		(void*)0                      // array buffer offset
-	);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, g.texture);
+		glUniform1i(g.texture_id, 0);
 
-	// 2nd attribute buffer : UVs
-	glEnableVertexAttribArray(vertexUVID);
-	glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
-	glVertexAttribPointer(
-		vertexUVID,                   // The attribute we want to configure
-		2,                            // size : U+V => 2
-		GL_FLOAT,                     // type
-		GL_FALSE,                     // normalized?
-		0,                            // stride
-		(void*)0                      // array buffer offset
-	);
+		// 1rst attribute buffer : vertices
+		glEnableVertexAttribArray(g.vertexposition_modelspace_id);
+		glBindBuffer(GL_ARRAY_BUFFER, g.vertexbuffer);
+		glVertexAttribPointer(
+			g.vertexposition_modelspace_id,  // The attribute we want to configure
+			3,                            // size
+			GL_FLOAT,                     // type
+			GL_FALSE,                     // normalized?
+			0,                            // stride
+			(void*)0                      // array buffer offset
+		);
+		
+		// 2nd attribute buffer : UVs
+		glEnableVertexAttribArray(g.vertexUV_id);
+		glBindBuffer(GL_ARRAY_BUFFER, g.uvbuffer);
+		glVertexAttribPointer(
+			g.vertexUV_id,                   // The attribute we want to configure
+			2,                            // size : U+V => 2
+			GL_FLOAT,                     // type
+			GL_FALSE,                     // normalized?
+			0,                            // stride
+			(void*)0                      // array buffer offset
+		);
 
-	// Draw the triangles !
-	glDrawArrays(GL_TRIANGLES, 0, out_vertices.size()*3); // 12*3 indices starting at 0 -> 12 triangles
+		// Draw the triangles !
+		glDrawArrays(GL_TRIANGLES, 0, g.size*3); // 12*3 indices starting at 0 -> 12 triangles
 
-	glDisableVertexAttribArray(vertexPosition_modelspaceID);
-	glDisableVertexAttribArray(vertexUVID);
+		glDisableVertexAttribArray(g.vertexposition_modelspace_id);
+		glDisableVertexAttribArray(g.vertexUV_id);
+		
+	}
+
 
 }
 
@@ -125,14 +131,56 @@ bool Object::load_obj_ntexture(){
 	return true;
 }
 
+Group Object::load_group(string group_name){
+	out_vertices.clear();
+	out_normals.clear();
+	out_uvs.clear();
+	for(uint64_t i = 0; i < this->faces.size(); i++){
+		out_vertices.push_back(vertices	[faces[i].v_index[0] - 1]);
+		out_normals.push_back(normals 	[faces[i].n_index[0] - 1]);
+		out_uvs.push_back(uvs 			[faces[i].t_index[0] - 1]);
+		out_vertices.push_back(vertices	[faces[i].v_index[1] - 1]);
+		out_normals.push_back(normals 	[faces[i].n_index[1] - 1]);
+		out_uvs.push_back(uvs 			[faces[i].t_index[1] - 1]);
+		out_vertices.push_back(vertices	[faces[i].v_index[2] - 1]);
+		out_normals.push_back(normals 	[faces[i].n_index[2] - 1]);
+		out_uvs.push_back(uvs 			[faces[i].t_index[2] - 1]);
+	}
+
+	Group g;
+
+	g.program_id = load_shaders( "objects/textureVertexShader.glsl", "objects/textureFragmentShader.glsl" );
+	g.matrix_id = glGetUniformLocation(g.program_id, "MVP");
+
+	g.vertexposition_modelspace_id = glGetAttribLocation(g.program_id, "vertexPosition_modelspace");
+	g.vertexUV_id = glGetAttribLocation(g.program_id, "vertexUV");
+
+	g.size = out_vertices.size();
+	g.texture = loadDDS(texture_path.c_str());
+	g.texture_id  = glGetUniformLocation(g.program_id, "mytextureSampler");
+	texture_path = path + "/" + group_name + ".dds";
+	
+	glGenBuffers(1, &g.vertexbuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, g.vertexbuffer);
+	glBufferData(GL_ARRAY_BUFFER, out_vertices.size()*sizeof(Point), out_vertices.data(), GL_DYNAMIC_DRAW);
+	
+	glGenBuffers(1, &g.uvbuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, g.uvbuffer);
+	glBufferData(GL_ARRAY_BUFFER, out_uvs.size()*sizeof(Point2), out_uvs.data(), GL_DYNAMIC_DRAW);
+
+	faces.clear();
+	return g;
+}
 
 bool Object::load_obj_texture(){
 	FILE *file = fopen(obj_path.c_str(), "r");
 	if(!file)
 		return false;
 
-	int tmp;
+	int tmp=1;
+	char buffer[1000];
 	char line[128];
+	string texture_path;
 	while(fscanf(file, "%s", line) != EOF){
 		Point coord;
 		Point2 coord2;
@@ -153,41 +201,25 @@ bool Object::load_obj_texture(){
 			&face.v_index[1], &face.t_index[1], &face.n_index[1], &face.v_index[2], &face.t_index[2], &face.n_index[2]);
 
 			this->faces.push_back(face);
+		}else if(!strcmp(line, "#")){
+			fgets(buffer, 1000, file);
+			//printf("Comment: %s\n", buffer);
+		}else if(!strcmp(line, "g")){
+			char group_name[30];
+			fscanf(file, "%s", group_name);
+			
+			Group g = load_group(group_name);
+
+			groups.push_back(g);
 		}
 
 		if(tmp <= 0)
 			return false;
 	}
 
-	for(uint64_t i = 0; i < this->faces.size(); i++){
-		out_vertices.push_back(vertices	[faces[i].v_index[0] - 1]);
-		out_normals.push_back(normals 	[faces[i].n_index[0] - 1]);
-		out_uvs.push_back(uvs 			[faces[i].t_index[0] - 1]);
-		out_vertices.push_back(vertices	[faces[i].v_index[1] - 1]);
-		out_normals.push_back(normals 	[faces[i].n_index[1] - 1]);
-		out_uvs.push_back(uvs 			[faces[i].t_index[1] - 1]);
-		out_vertices.push_back(vertices	[faces[i].v_index[2] - 1]);
-		out_normals.push_back(normals 	[faces[i].n_index[2] - 1]);
-		out_uvs.push_back(uvs 			[faces[i].t_index[2] - 1]);
-	}
+	Group g = load_group("");
+	groups.push_back(g);
 
-
-	programID = load_shaders( "objects/textureVertexShader.glsl", "objects/textureFragmentShader.glsl" );
-	MatrixID = glGetUniformLocation(programID, "MVP");
-
-	vertexPosition_modelspaceID = glGetAttribLocation(programID, "vertexPosition_modelspace");
-	vertexUVID = glGetAttribLocation(programID, "vertexUV");
-
-	Texture = loadDDS(texture_path.c_str());
-	TextureID  = glGetUniformLocation(programID, "myTextureSampler");
-
-	glGenBuffers(1, &vertexbuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-	glBufferData(GL_ARRAY_BUFFER, out_vertices.size()*sizeof(Point), out_vertices.data(), GL_DYNAMIC_DRAW);
-	
-	glGenBuffers(1, &uvbuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
-	glBufferData(GL_ARRAY_BUFFER, out_uvs.size()*sizeof(Point2), out_uvs.data(), GL_DYNAMIC_DRAW);
 	
 	/*if(debug)
 		load_debug(path, vertices, normals, faces, uvs);*/

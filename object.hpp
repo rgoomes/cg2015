@@ -11,6 +11,11 @@
 
 using namespace std;
 
+struct Group{
+	string texture_path;
+	GLuint program_id, matrix_id, vertexposition_modelspace_id, vertexUV_id, texture, texture_id, vertexbuffer, uvbuffer, size;
+};
+
 class Object {
 
 	public:
@@ -37,8 +42,9 @@ class Object {
 		float s;
 		bool debug=false;
 		void load_debug(string path, vector<Point> &vertices, vector<Point> &normals, vector<Face> &faces, vector<Point> &uvs);
+		Group load_group(string group_name);
 		
-		GLuint programID, MatrixID, vertexPosition_modelspaceID, vertexUVID, Texture, TextureID, vertexbuffer, uvbuffer;
+		vector<Group> groups;
 };
 
 #endif
