@@ -6,7 +6,8 @@
 #include "object.hpp"
 #include "misc.hpp"
 
-Object chair("tests/chair.obj");
+Object chair("objects/chair");
+Object colorCube("objects/cube");
 
 int frame = 0;
 double timebase = 0, tm = 0;
@@ -31,7 +32,10 @@ void frame_rate(){
 }
 
 void load_objects(){
-	chair.set_scale(0.1);
+	colorCube.set_scale(0.03);
+	colorCube.load_obj(true);
+	
+	chair.set_scale(0.03);
 	chair.load_obj(true);
 }
 
@@ -45,12 +49,35 @@ void add_lights(){
 	glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
 }
 
+void get_mvp(float mvp[4][4]){
+	float m1[4][4], m2[4][4];
+	glGetFloatv(GL_PROJECTION_MATRIX, m2[0]);
+	glGetFloatv(GL_MODELVIEW_MATRIX, m1[0]);
+	mult_matrix(mvp, m1, m2);
+}
+
+float mvp[4][4];
+float a=0;
+
 void display(GLFWwindow* window){
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.3,0.4,0.5, 1);
 
-	glRotatef(0.1, 0, 1, 0);
-	chair.render();
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	int w, h;
+	glfwGetWindowSize(window, &w, &h);
+
+	gluPerspective(45.0f, w / (float)h, 0.1f, 100.0f);
+	
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	gluLookAt(3*sin(a),3*sin(a),3*cos(a), 0,-1,0, 0, 1, 0);
+	a+=0.01;
+	
+	get_mvp(mvp);
+
+	colorCube.render(mvp);
+	chair.render(mvp);
 	
 #if DISPLAY_FPS
 	frame_rate();

@@ -5,8 +5,11 @@
 
 typedef struct {
 	GLfloat x, y, z;
-	GLfloat w = 1.0;
 } Point;
+
+typedef struct {
+	GLfloat x, y;
+} Point2;
 
 typedef struct {
 	GLint v_index[3];

@@ -1,14 +1,5 @@
-#include <stdio.h>
-#include <iostream>
 
-#include <GL/glew.h>
-#include <GL/glu.h>
-#include <GLFW/glfw3.h>
-
-#include "display.hpp"
-#include "nvidia.hpp"
 #include "main.hpp"
-#include "shaders.hpp"
 
 using namespace std;
 
@@ -41,32 +32,34 @@ void opengl_init(int argc, char **argv){
 	window = glfwCreateWindow(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, "cg2015", NULL, NULL);
 
 	glfwMakeContextCurrent(window);
-	glewInit();
 	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 
-	GLuint p = load_shaders("SimpleVertexShader.glsl", "SimpleFragmentShader.glsl");
-	//glUseProgram(p);
-
-	glMatrixMode		(GL_PROJECTION);
-	gluPerspective		(90, SCREEN_WIDTH/(float)SCREEN_HEIGHT, 1.0, 100.0);
-	glMatrixMode		(GL_MODELVIEW);	
-	gluLookAt			(2,2,4, 0,0,0, 0,1,0);
-
-	load_objects();
 	glEnable			(GL_DEPTH_TEST);
-	add_lights();
+	glDepthFunc			(GL_LESS);
+
+	if (glewInit() != GLEW_OK) {
+		fprintf(stdin, "Failed to initialize GLEW\n");
+		exit(1);
+	}
 }
 
 int main(int argc, char **argv){
 	opengl_init(argc, argv);
 
+	load_objects();
+	
 	do{
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 		display(window);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
-	}while(glfwGetKey(window, GLFW_KEY_ESCAPE ) != GLFW_PRESS 
-		&& glfwWindowShouldClose(window) == 0);
+
+	} while( glfwGetKey(window, GLFW_KEY_ESCAPE ) != GLFW_PRESS &&
+		   glfwWindowShouldClose(window) == 0 );
+
+	glfwTerminate();
 
 	return 0;
 }
