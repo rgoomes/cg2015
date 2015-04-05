@@ -13,6 +13,9 @@ int frame = 0;
 double timebase = 0, tm = 0;
 double fps;
 
+float mvp[4][4];
+float a=0;
+
 void frame_rate(){
 	frame++;
 	tm = glfwGetTime();
@@ -55,9 +58,6 @@ void get_mvp(float mvp[4][4]){
 	glGetFloatv(GL_MODELVIEW_MATRIX, m1[0]);
 	mult_matrix(mvp, m1, m2);
 }
-
-float mvp[4][4];
-float a=0;
 
 void display(GLFWwindow* window){
 	glClearColor(0.3,0.4,0.5, 1);
