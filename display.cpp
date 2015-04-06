@@ -1,10 +1,9 @@
-#include <GL/glew.h>
-#include <GL/glu.h>
-#include <GLFW/glfw3.h>
 
 #include "display.hpp"
 #include "object.hpp"
 #include "misc.hpp"
+
+extern btRigidBody* sphereRigidBody;
 
 Object chair("objects/chair");
 Object colorCube("objects/cube");
@@ -39,9 +38,9 @@ void load_objects(){
 	colorCube.set_scale(0.03);
 	colorCube.load_obj(true);
 	
-	chair.set_scale(0.3);
+	chair.set_scale(0.1);
+	chair.move(20, 6, 0);
 	chair.load_obj(true);
-	chair.move(30, 0, 0);
 
 	dei.set_scale(0.1);
 	dei.load_obj(true);
@@ -78,14 +77,19 @@ void display(GLFWwindow* window){
 	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	gluLookAt(60*sin(a),40,60*cos(a), 0,-1,0, 0, 1, 0);
+	gluLookAt(40*sin(a)+30,40,40*cos(a), 30,-1,0, 0, 1, 0);
 	a+=0.01;
 	
+	glTranslatef(20, 0, 0);
 	get_mvp(mvp);
 
 	//colorCube.render();
+	btTransform trans;
+	sphereRigidBody->getMotionState()->getWorldTransform(trans);
+	chair.move(trans.getOrigin().getX(), trans.getOrigin().getY(), trans.getOrigin().getZ());
 	chair.render(mvp);
-	//dei.render();
+	
+	dei.render();
 	
 #if DISPLAY_FPS
 	frame_rate();

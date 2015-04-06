@@ -56,8 +56,7 @@ void Object::render(float m[4][4]){
 
 		glUseProgram(g.program_id);
 		glUniformMatrix4fv(g.matrix_id, 1, GL_FALSE, &m[0][0]);
-		float translate_array[] = {x, y, z};
-		glUniform3fv(g.translate_id, 1, translate_array);
+		glUniform3f(g.translate_id, x, y, z);
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, g.texture);
