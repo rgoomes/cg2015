@@ -29,6 +29,12 @@ find_package(PkgConfig REQUIRED)
 pkg_search_module(GLFW REQUIRED glfw3)
 include_directories(${GLFW_INCLUDE_DIRS})
 
+find_package(Bullet REQUIRED)
+if(${BULLET_FOUND})
+	include_directories(${BULLET_INCLUDE_DIRS})
+	link_libraries(${BULLET_LIBRARIES})
+endif()
+
 #########################################################
 # Include Files
 #########################################################
@@ -48,4 +54,4 @@ add_executable(main ${src})
 
 file (GLOB_RECURSE PROJECT_SOURCES "*.cpp")
 
-target_link_libraries(main ${GLFW_LIBRARIES} ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} ${CMAKE_THREAD_LIBS_INIT} ${EXTRA_FLAGS} )
+target_link_libraries(main ${GLFW_LIBRARIES} ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} ${CMAKE_THREAD_LIBS_INIT} ${EXTRA_FLAGS} ${BULLET_LIBRARIES} )
