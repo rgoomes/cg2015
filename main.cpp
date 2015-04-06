@@ -24,18 +24,18 @@ void monitor_resolution(int *w, int *h){
 void opengl_init(int argc, char **argv){
 
 	glfwInit();
-	monitor_resolution(&SCREEN_WIDTH, &SCREEN_HEIGHT);
-	glfwWindowHint(GLFW_SAMPLES, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
-	glfwSwapInterval(0);
-	window = glfwCreateWindow(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, "cg2015", NULL, NULL);
+	monitor_resolution			(&SCREEN_WIDTH, &SCREEN_HEIGHT);
+	glfwWindowHint				(GLFW_SAMPLES, 4);
+	glfwWindowHint				(GLFW_CONTEXT_VERSION_MAJOR, 2);
+	glfwWindowHint				(GLFW_CONTEXT_VERSION_MINOR, 1);
+	glfwSwapInterval			(0);
+	window = glfwCreateWindow	(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, "cg2015", NULL, NULL);
 
-	glfwMakeContextCurrent(window);
-	glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
+	glfwMakeContextCurrent		(window);
+	glfwSetInputMode			(window, GLFW_STICKY_KEYS, GL_TRUE);
 
-	glEnable			(GL_DEPTH_TEST);
-	glDepthFunc			(GL_LESS);
+	glEnable					(GL_DEPTH_TEST);
+	glDepthFunc					(GL_LESS);
 
 	if (glewInit() != GLEW_OK) {
 		fprintf(stdin, "Failed to initialize GLEW\n");

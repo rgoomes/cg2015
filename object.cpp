@@ -118,7 +118,7 @@ bool Object::load_obj_ntexture(){
 		return false;
 
 	int tmp=1;
-	char line[256];
+	char line[256], *tmp_c;
 	char buffer[1000];
 	while(fscanf(file, "%s", line) != EOF){
 		Point coord;
@@ -140,7 +140,8 @@ bool Object::load_obj_ntexture(){
 			&face.v_index[1], &face.n_index[1], &face.v_index[2], &face.n_index[2]);
 			this->faces.push_back(face);
 		} else if(!strcmp(line, "#")){
-			fgets(buffer, 1000, file);
+			tmp_c = fgets(buffer, 1000, file);
+			if(tmp_c == NULL) return false;
 			//printf("Comment: %s\n", buffer);
 		}
 
@@ -216,7 +217,7 @@ bool Object::load_obj_texture(){
 
 	int tmp=1;
 	char buffer[1000];
-	char line[128];
+	char line[256], *tmp_c;
 	string texture_path;
 	while(fscanf(file, "%s", line) != EOF){
 		Point coord;
@@ -239,11 +240,12 @@ bool Object::load_obj_texture(){
 
 			this->faces.push_back(face);
 		}else if(!strcmp(line, "#")){
-			fgets(buffer, 1000, file);
+			tmp_c = fgets(buffer, 1000, file);
+			if(tmp_c == NULL) return false;
 			//printf("Comment: %s\n", buffer);
 		}else if(!strcmp(line, "g")){
 			char group_name[30];
-			fscanf(file, "%s", group_name);
+			tmp = fscanf(file, "%s", group_name);
 			
 			Group g = load_group(group_name);
 
