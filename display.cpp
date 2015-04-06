@@ -39,8 +39,9 @@ void load_objects(){
 	colorCube.set_scale(0.03);
 	colorCube.load_obj(true);
 	
-	chair.set_scale(0.03);
+	chair.set_scale(0.3);
 	chair.load_obj(true);
+	chair.move(30, 0, 0);
 
 	dei.set_scale(0.1);
 	dei.load_obj(true);
@@ -83,8 +84,8 @@ void display(GLFWwindow* window){
 	get_mvp(mvp);
 
 	//colorCube.render();
-	//chair.render(mvp);
-	dei.render();
+	chair.render(mvp);
+	//dei.render();
 	
 #if DISPLAY_FPS
 	frame_rate();

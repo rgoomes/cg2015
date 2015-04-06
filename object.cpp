@@ -14,6 +14,7 @@ Object::Object(string path){
 	this->obj_path = this->path + "/" + this->name + ".obj";
 	std::cout << this->obj_path << "\n";
 	this->s = 1.0;
+	x=0; y=0; z=0;
 }
 Object::~Object(){}
 
@@ -42,6 +43,12 @@ void Object::render(){
 	}	
 }
 
+void Object::move(float _x, float _y, float _z){
+	x = _x;
+	y = _y;
+	z = _z;
+}
+
 void Object::render(float m[4][4]){
 
 	for(int i=0; i<(int)groups.size(); i++){
@@ -49,6 +56,8 @@ void Object::render(float m[4][4]){
 
 		glUseProgram(g.program_id);
 		glUniformMatrix4fv(g.matrix_id, 1, GL_FALSE, &m[0][0]);
+		float translate_array[] = {x, y, z};
+		glUniform3fv(g.translate_id, 1, translate_array);
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, g.texture);
@@ -177,6 +186,7 @@ Group Object::load_group(string group_name){
 
 	g.program_id = load_shaders( "objects/textureVertexShader.glsl", "objects/textureFragmentShader.glsl" );
 	g.matrix_id = glGetUniformLocation(g.program_id, "MVP");
+	g.translate_id = glGetUniformLocation(g.program_id, "translate");
 
 	g.vertexposition_modelspace_id = glGetAttribLocation(g.program_id, "vertexPosition_modelspace");
 	g.vertexUV_id = glGetAttribLocation(g.program_id, "vertexUV");
