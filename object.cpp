@@ -19,15 +19,24 @@ Object::~Object(){}
 
 void Object::render(){
 	glUseProgram(0);
-	//printf("dei\n");
-	for(int i = 0; i < (int)out_vertices.size(); i += 3){
+
+	for(int i = 0; i < (int)all_faces.size(); i++){
+		int v, n;
 		glBegin(GL_TRIANGLES);
-			glNormal3f(out_normals[i+2].x, out_normals[i+2].y, out_normals[i+2].z);
-			glVertex3f(out_vertices[i+2].x, out_vertices[i+2].y, out_vertices[i+2].z);
-			glNormal3f(out_normals[i+1].x, out_normals[i+1].y, out_normals[i+1].z);
-			glVertex3f(out_vertices[i+1].x, out_vertices[i+1].y, out_vertices[i+1].z);
-			glNormal3f(out_normals[i+0].x, out_normals[i+0].y, out_normals[i+0].z);
-			glVertex3f(out_vertices[i+0].x, out_vertices[i+0].y, out_vertices[i+0].z);
+			v = all_faces[i].v_index[2]-1;
+			n = all_faces[i].n_index[2]-1;
+			glNormal3f(normals[n].x, normals[n].y, normals[n].z);
+			glVertex3f(vertices[v].x, vertices[v].y, vertices[v].z);
+
+			v = all_faces[i].v_index[1]-1;
+			n = all_faces[i].n_index[1]-1;
+			glNormal3f(normals[n].x, normals[n].y, normals[n].z);
+			glVertex3f(vertices[v].x, vertices[v].y, vertices[v].z);
+
+			v = all_faces[i].v_index[0]-1;
+			n = all_faces[i].n_index[0]-1;
+			glNormal3f(normals[n].x, normals[n].y, normals[n].z);
+			glVertex3f(vertices[v].x, vertices[v].y, vertices[v].z);
 			
 		glEnd();
 	}	
@@ -184,6 +193,8 @@ Group Object::load_group(string group_name){
 	glGenBuffers(1, &g.uvbuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, g.uvbuffer);
 	glBufferData(GL_ARRAY_BUFFER, out_uvs.size()*sizeof(Point2), out_uvs.data(), GL_DYNAMIC_DRAW);
+
+	all_faces.insert(all_faces.end(),faces.begin(),faces.end());
 
 	faces.clear();
 	return g;

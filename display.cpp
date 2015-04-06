@@ -44,6 +44,8 @@ void load_objects(){
 
 	dei.set_scale(0.1);
 	dei.load_obj(true);
+
+	add_lights();
 }
 
 void add_lights(){
@@ -71,18 +73,18 @@ void display(GLFWwindow* window){
 	int w, h;
 	glfwGetWindowSize(window, &w, &h);
 
-	gluPerspective(45.0f, w / (float)h, 0.1f, 100.0f);
+	gluPerspective(45.0f, w / (float)h, 0.1f, 5000.0f);
 	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	gluLookAt(30*sin(a),30*sin(a),30*cos(a), 0,-1,0, 0, 1, 0);
+	gluLookAt(60*sin(a),40,60*cos(a), 0,-1,0, 0, 1, 0);
 	a+=0.01;
 	
 	get_mvp(mvp);
 
-	//colorCube.render(mvp);
-	chair.render(mvp);
-	dei.render(mvp);
+	//colorCube.render();
+	//chair.render(mvp);
+	dei.render();
 	
 #if DISPLAY_FPS
 	frame_rate();

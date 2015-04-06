@@ -25,7 +25,7 @@ class Object {
 		vector<Point2> uvs;
 		vector<Point> out_vertices, out_normals;
 		vector<Point2> out_uvs;
-		vector<Face> faces;
+		vector<Face> faces, all_faces;
 
 		Object(string path);
 		~Object();
