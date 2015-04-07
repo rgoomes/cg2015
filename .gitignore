@@ -26,6 +26,10 @@ main
 *.exe
 *.out
 *.app
+build/CMakeCache.txt
+build/CMakeFiles/
+build/Makefile
+build/cmake_install.cmake
 
 # Unix backup files
 *~
