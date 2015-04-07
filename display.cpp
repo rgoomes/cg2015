@@ -55,8 +55,8 @@ void display(GLFWwindow* window, float elapsed){
 	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+	a+=0.5*elapsed;
 	gluLookAt(40*sin(a)+30,40,40*cos(a), 30,-1,0, 0, 1, 0);
-	a+=0.01;
 	
 	glTranslatef(20, 0, 0);
 	get_mvp(mvp);
