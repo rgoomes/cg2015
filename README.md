@@ -2,8 +2,9 @@
 Project for the Computer Graphics course
 
 Build instructions:
-
-./setup.sh
-cd build
-cmake ..
-make
+```
+1. ./setup.sh
+2. cd build
+3. cmake ..
+4. make
+```
