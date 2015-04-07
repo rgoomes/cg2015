@@ -5,7 +5,7 @@ using namespace std;
 
 GLFWwindow *window;
 int frame = 0;
-double timebase = 0, tm = 0;
+double timebase = 0, tm = 0, last_tick=0;
 double fps;
 
 void monitor_resolution(int *w, int *h){
@@ -92,7 +92,8 @@ void bullet_tick(float elapsed){
 float frame_rate(){
 	frame++;
 	tm = glfwGetTime();
-	float elapsed = tm - timebase;
+	float elapsed = tm - last_tick;
+	last_tick = tm;
 
 	if(tm - timebase > 0.1){
 		fps = frame/(tm-timebase);
@@ -112,6 +113,7 @@ float frame_rate(){
 int main(int argc, char **argv){
 	opengl_init(argc, argv);
 
+	last_tick = glfwGetTime();
 	load_objects();
 	test_bullet();
 

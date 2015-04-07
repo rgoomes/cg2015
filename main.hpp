@@ -14,7 +14,7 @@
 #include "misc.hpp"
 
 #define DISPLAY_FPS 1
-#define CONSOLE_FPS 0
+#define CONSOLE_FPS 1
 
 int SCREEN_WIDTH;
 int SCREEN_HEIGHT;
