@@ -1,2 +1,0 @@
-export vblank_mode=0;
-./main
