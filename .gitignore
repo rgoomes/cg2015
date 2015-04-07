@@ -26,7 +26,6 @@ main
 *.exe
 *.out
 *.app
-build/
 
 # Unix backup files
 *~
