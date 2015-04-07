@@ -9,30 +9,8 @@ Object chair("objects/chair");
 Object colorCube("objects/cube");
 Object dei("objects/dei");
 
-int frame = 0;
-double timebase = 0, tm = 0;
-double fps;
-
 float mvp[4][4];
 float a=0;
-
-void frame_rate(){
-	frame++;
-	tm = glfwGetTime();
-
-	if(tm - timebase > 0.1){
-		fps = frame/(tm-timebase);
-		timebase = tm;
-		frame = 0;
-	}
-
-#ifdef __unix
-	#if CONSOLE_FPS
-		printf("\033[A\033[2Kfps: %lf\n", fps);
-	#endif
-#endif
-
-}
 
 void load_objects(){
 	colorCube.set_scale(0.03);
@@ -65,7 +43,7 @@ void get_mvp(float mvp[4][4]){
 	mult_matrix(mvp, m1, m2);
 }
 
-void display(GLFWwindow* window){
+void display(GLFWwindow* window, float elapsed){
 	glClearColor(0.3,0.4,0.5, 1);
 
 	glMatrixMode(GL_PROJECTION);
@@ -91,8 +69,4 @@ void display(GLFWwindow* window){
 	
 	dei.render();
 	
-#if DISPLAY_FPS
-	frame_rate();
-#endif
-
 }

@@ -1,9 +1,12 @@
-#include <btBulletDynamicsCommon.h>
+
 #include "main.hpp"
 
 using namespace std;
 
 GLFWwindow *window;
+int frame = 0;
+double timebase = 0, tm = 0;
+double fps;
 
 void monitor_resolution(int *w, int *h){
 	int count;
@@ -67,8 +70,8 @@ void test_bullet(){
 	dynamicsWorld->addRigidBody(groundRigidBody);
 
 
-	btCollisionShape* sphereShape = new btSphereShape(1);
-	btDefaultMotionState* sphereMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 100, 0)));
+	btCollisionShape* sphereShape = new btSphereShape(6);
+	btDefaultMotionState* sphereMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 40, 0)));
 	btScalar mass = 1;
 	btVector3 sphereInertia(0, 0, 0);
 	sphereShape->calculateLocalInertia(mass, sphereInertia);
@@ -78,14 +81,32 @@ void test_bullet(){
 
 }
 
-void bullet_tick(){
-	dynamicsWorld->stepSimulation(1 / 60.0, 1);
+void bullet_tick(float elapsed){
+	dynamicsWorld->stepSimulation(elapsed, 60);
 
 	btTransform trans;
 	sphereRigidBody->getMotionState()->getWorldTransform(trans);
 
-	
-	std::cout << "sphere height: " << trans.getOrigin().getY() << " " << sphereRigidBody->getLinearVelocity().getY() << std::endl ;
+}
+
+float frame_rate(){
+	frame++;
+	tm = glfwGetTime();
+	float elapsed = tm - timebase;
+
+	if(tm - timebase > 0.1){
+		fps = frame/(tm-timebase);
+		timebase = tm;
+		frame = 0;
+	}
+
+#ifdef __unix
+	#if CONSOLE_FPS
+		printf("\033[A\033[2Kfps: %lf\n", fps);
+	#endif
+#endif
+
+	return elapsed;
 }
 
 int main(int argc, char **argv){
@@ -94,19 +115,19 @@ int main(int argc, char **argv){
 	load_objects();
 	test_bullet();
 
-	float time=0.0;
 	do{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		bullet_tick();
 		btTransform trans;
 		sphereRigidBody->getMotionState()->getWorldTransform(trans);
 
-		if(trans.getOrigin().getY() > 1.001)
-			time += 1 / 60.0;
-		else
-			printf("Elapsed time: %lf\n", time);
-		display(window);
+		float elapsed_time = frame_rate();
+		bullet_tick(elapsed_time);
+		
+		//printf("%f\n", );
+
+		display(window, elapsed_time);
+		//printf("%f\n", elapsed_time);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();

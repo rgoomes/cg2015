@@ -5,12 +5,16 @@
 #include <GL/glew.h>
 #include <GL/glu.h>
 #include <GLFW/glfw3.h>
+#include <btBulletDynamicsCommon.h>
 
 #include "display.hpp"
 #include "nvidia.hpp"
 #include "shaders.hpp"
 #include "object.hpp"
 #include "misc.hpp"
+
+#define DISPLAY_FPS 1
+#define CONSOLE_FPS 0
 
 int SCREEN_WIDTH;
 int SCREEN_HEIGHT;
