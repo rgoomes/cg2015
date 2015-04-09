@@ -3,9 +3,8 @@
 
 using namespace std;
 
-GLFWwindow *window;
 int frame = 0;
-double timebase = 0, tm = 0, last_tick=0;
+double timebase = 0, tm = 0, last_tick;
 double fps;
 
 void monitor_resolution(int *w, int *h){
@@ -24,7 +23,7 @@ void monitor_resolution(int *w, int *h){
 	*h = maxHeight;
 }
 
-void opengl_init(int argc, char **argv){
+void opengl_init(){
 
 	glfwInit();
 	monitor_resolution			(&SCREEN_WIDTH, &SCREEN_HEIGHT);
@@ -32,10 +31,10 @@ void opengl_init(int argc, char **argv){
 	glfwWindowHint				(GLFW_CONTEXT_VERSION_MAJOR, 2);
 	glfwWindowHint				(GLFW_CONTEXT_VERSION_MINOR, 1);
 	glfwSwapInterval			(0);
-	window = glfwCreateWindow	(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, "cg2015", NULL, NULL);
+	main_window = glfwCreateWindow	(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, "cg2015", NULL, NULL);
 
-	glfwMakeContextCurrent		(window);
-	glfwSetInputMode			(window, GLFW_STICKY_KEYS, GL_TRUE);
+	glfwMakeContextCurrent		(main_window);
+	glfwSetInputMode			(main_window, GLFW_STICKY_KEYS, GL_TRUE);
 
 	glEnable					(GL_DEPTH_TEST);
 	glDepthFunc					(GL_LESS);
@@ -46,7 +45,7 @@ void opengl_init(int argc, char **argv){
 	}
 }
 
-btDiscreteDynamicsWorld* getDynamicWorld(){
+btDynamicsWorld* getDynamicWorld(){
 	btBroadphaseInterface* broadphase = new btDbvtBroadphase();
 	btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();
 	btCollisionDispatcher* dispatcher = new btCollisionDispatcher(collisionConfiguration);
@@ -55,37 +54,21 @@ btDiscreteDynamicsWorld* getDynamicWorld(){
 	return new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
 }
 
-btRigidBody* sphereRigidBody;
-btDiscreteDynamicsWorld* dynamicsWorld;
+void bullet_init(){
+	main_world = getDynamicWorld();
 
-void test_bullet(){
-	dynamicsWorld = getDynamicWorld();
-
-	dynamicsWorld->setGravity(btVector3(0, -10, 0));
+	main_world->setGravity(btVector3(0, -10, 0));
 
 	btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 1);
 	btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, -1, 0)));
 	btRigidBody::btRigidBodyConstructionInfo groundRigidBodyCI(0, groundMotionState, groundShape, btVector3(0, 0, 0));
 	btRigidBody* groundRigidBody = new btRigidBody(groundRigidBodyCI);
-	dynamicsWorld->addRigidBody(groundRigidBody);
-
-
-	btCollisionShape* sphereShape = new btSphereShape(6);
-	btDefaultMotionState* sphereMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 40, 0)));
-	btScalar mass = 1;
-	btVector3 sphereInertia(0, 0, 0);
-	sphereShape->calculateLocalInertia(mass, sphereInertia);
-	btRigidBody::btRigidBodyConstructionInfo sphereRigidBodyCI(mass, sphereMotionState, sphereShape, sphereInertia); // mass, motionState, shape, inertia
-	sphereRigidBody = new btRigidBody(sphereRigidBodyCI);
-	dynamicsWorld->addRigidBody(sphereRigidBody);
-
+	main_world->addRigidBody(groundRigidBody);
+	
 }
 
-void bullet_tick(float elapsed){
-	dynamicsWorld->stepSimulation(elapsed, 60);
-
-	btTransform trans;
-	sphereRigidBody->getMotionState()->getWorldTransform(trans);
+void bullet_tick(float elapsed){	
+	main_world->stepSimulation(elapsed, 60);
 
 }
 
@@ -111,31 +94,29 @@ float frame_rate(){
 }
 
 int main(int argc, char **argv){
-	opengl_init(argc, argv);
+	opengl_init();
+	bullet_init();
+	set_environment(main_window, main_world);
+	
+	main_world->stepSimulation(0.00001, 60);
+
+	load_objects();
 
 	last_tick = glfwGetTime();
-	load_objects();
-	test_bullet();
 
 	do{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		btTransform trans;
-		sphereRigidBody->getMotionState()->getWorldTransform(trans);
-
 		float elapsed_time = frame_rate();
 		bullet_tick(elapsed_time);
-		
-		//printf("%f\n", );
 
-		display(window, elapsed_time);
-		//printf("%f\n", elapsed_time);
+		display(elapsed_time);
 
-		glfwSwapBuffers(window);
+		glfwSwapBuffers(main_window);
 		glfwPollEvents();
 
-	} while( glfwGetKey(window, GLFW_KEY_ESCAPE ) != GLFW_PRESS &&
-		   glfwWindowShouldClose(window) == 0 );
+	} while( glfwGetKey(main_window, GLFW_KEY_ESCAPE ) != GLFW_PRESS &&
+		   glfwWindowShouldClose(main_window) == 0 );
 
 	glfwTerminate();
 

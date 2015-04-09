@@ -40,7 +40,7 @@ void Object::render(){
 			glVertex3f(vertices[v].x, vertices[v].y, vertices[v].z);
 			
 		glEnd();
-	}	
+	}
 }
 
 void Object::move(float _x, float _y, float _z){
@@ -150,7 +150,6 @@ bool Object::load_obj_ntexture(){
 	}
 
 	for(uint64_t i = 0; i < this->faces.size(); i++){
-		printf("%ld\n", i);
 		out_vertices.push_back(vertices[faces[i].v_index[0] - 1]);
 		out_normals.push_back(normals  [faces[i].n_index[0] - 1]);
 		out_vertices.push_back(vertices[faces[i].v_index[1] - 1]);

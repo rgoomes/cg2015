@@ -3,6 +3,10 @@
 
 #include <vector>
 #include <string>
+#include <stdint.h>
+#include <string.h>
+#include <iostream>
+
 #include <GLFW/glfw3.h>
 
 #include "types.hpp"
@@ -19,7 +23,7 @@ struct Group{
 class Object {
 
 	public:
-		string path, name, texture_path, obj_path;
+		string name, texture_path, obj_path;
 
 		vector<Point> vertices, normals;
 		vector<Point2> uvs;
@@ -40,12 +44,14 @@ class Object {
 	private:
 		bool load_obj_texture();
 		bool load_obj_ntexture();
-		float x, y, z, s;
 		bool debug=false;
 		void load_debug(string path, vector<Point> &vertices, vector<Point> &normals, vector<Face> &faces, vector<Point> &uvs);
 		Group load_group(string group_name);
 		
 		vector<Group> groups;
+	protected:
+		float x, y, z, s;
+		string path;
 };
 
 #endif

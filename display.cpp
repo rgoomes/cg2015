@@ -1,29 +1,36 @@
 
 #include "display.hpp"
-#include "object.hpp"
-#include "misc.hpp"
 
-extern btRigidBody* sphereRigidBody;
+//Object chair("objects/chair");
 
-Object chair("objects/chair");
 Object colorCube("objects/cube");
 Object dei("objects/dei");
+Rigidbody chair("objects/chair", 10, btVector3(0, 30, 0));
 
 float mvp[4][4];
 float a=0;
+GLFWwindow* window;
+btDynamicsWorld* world;
+
+void set_environment(GLFWwindow* _window, btDynamicsWorld* _world){
+	window = _window;
+	world = _world;
+}
 
 void load_objects(){
 	colorCube.set_scale(0.03);
 	colorCube.load_obj(true);
 	
 	chair.set_scale(0.1);
-	chair.move(20, 6, 0);
 	chair.load_obj(true);
+	world->addRigidBody(chair.get_rigidbody());
+
 
 	dei.set_scale(0.1);
 	dei.load_obj(true);
 
 	add_lights();
+	
 }
 
 void add_lights(){
@@ -43,7 +50,7 @@ void get_mvp(float mvp[4][4]){
 	mult_matrix(mvp, m1, m2);
 }
 
-void display(GLFWwindow* window, float elapsed){
+void display(float elapsed){
 	glClearColor(0.3,0.4,0.5, 1);
 
 	glMatrixMode(GL_PROJECTION);
@@ -62,10 +69,8 @@ void display(GLFWwindow* window, float elapsed){
 	get_mvp(mvp);
 
 	//colorCube.render();
-	btTransform trans;
-	sphereRigidBody->getMotionState()->getWorldTransform(trans);
-	chair.move(trans.getOrigin().getX(), trans.getOrigin().getY(), trans.getOrigin().getZ());
 	chair.render(mvp);
+
 	
 	dei.render();
 	

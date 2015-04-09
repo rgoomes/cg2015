@@ -1,3 +1,6 @@
+#ifndef MAIN_H
+#define MAIN_H
+
 #include <stdio.h>
 #include <iostream>
 #include <math.h>
@@ -9,14 +12,21 @@
 
 #include "display.hpp"
 #include "nvidia.hpp"
-#include "shaders.hpp"
 #include "object.hpp"
 #include "misc.hpp"
 
 #define DISPLAY_FPS 1
-#define CONSOLE_FPS 1
+#define CONSOLE_FPS 0
+
+using namespace std;
 
 int SCREEN_WIDTH;
 int SCREEN_HEIGHT;
 
 void monitor_resolution(int* w, int* h);
+
+GLFWwindow* main_window;
+btDynamicsWorld* main_world;
+//extern Rigidbody chair;
+
+#endif
