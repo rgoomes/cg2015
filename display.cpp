@@ -20,7 +20,7 @@ void set_environment(GLFWwindow* _window, btDynamicsWorld* _world){
 void load_objects(){
 	colorCube.set_scale(1);
 	colorCube.load_obj(true);
-	//world->addRigidBody(colorCube.get_rigidbody());
+	world->addRigidBody(colorCube.get_rigidbody());
 	
 	chair.set_scale(0.1);
 	chair.load_obj(true);
@@ -39,8 +39,6 @@ void add_lights(){
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
 
-	GLfloat	lightpos[4] = {5.0, 15.0, 10.0, 1.0}; 
-	glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
 }
 
 void get_mvp(float mvp[4][4], float rot[16]){
@@ -59,6 +57,9 @@ void display(float elapsed){
 	int w, h;
 	glfwGetWindowSize(window, &w, &h);
 
+	GLfloat	lightpos[4] = {10.0, 20.0, 0.0, 1.0}; 
+	glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
+
 	gluPerspective(45.0f, w / (float)h, 0.1f, 5000.0f);
 	
 	glMatrixMode(GL_MODELVIEW);
@@ -71,15 +72,21 @@ void display(float elapsed){
 
 	glPushMatrix();
 		chair.get_matrix(mt);
-		
 		glMultMatrixf(mt);
-
 		get_mvp(mvp, mt);
 		
 		chair.render();
 	glPopMatrix();
-	
+
+	glPushMatrix();
+		colorCube.get_matrix(mt);
+		glMultMatrixf(mt);
+		get_mvp(mvp, mt);
 		
+		colorCube.render();
+	glPopMatrix();
+	
+
 	glTranslatef(20, 0, 0);	
 	dei.render();
 	
