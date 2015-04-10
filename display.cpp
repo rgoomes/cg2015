@@ -3,9 +3,9 @@
 
 //Object chair("objects/chair");
 
-Object colorCube("objects/cube");
+Rigidbody colorCube("objects/cube", 1, btVector3(10, 30, 0));
 Object dei("objects/dei");
-Rigidbody chair("objects/chair", 10, btVector3(0, 30, 0));
+Rigidbody chair("objects/chair", 10, btVector3(10, 30, 0));
 
 float mvp[4][4];
 float a=0;
@@ -18,13 +18,13 @@ void set_environment(GLFWwindow* _window, btDynamicsWorld* _world){
 }
 
 void load_objects(){
-	colorCube.set_scale(0.03);
+	colorCube.set_scale(1);
 	colorCube.load_obj(true);
+	//world->addRigidBody(colorCube.get_rigidbody());
 	
 	chair.set_scale(0.1);
 	chair.load_obj(true);
 	world->addRigidBody(chair.get_rigidbody());
-
 
 	dei.set_scale(0.1);
 	dei.load_obj(true);
@@ -43,10 +43,11 @@ void add_lights(){
 	glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
 }
 
-void get_mvp(float mvp[4][4]){
-	float m1[4][4], m2[4][4];
+void get_mvp(float mvp[4][4], float rot[16]){
+	float m1[4][4], m2[4][4], t[4][4];
 	glGetFloatv(GL_PROJECTION_MATRIX, m2[0]);
 	glGetFloatv(GL_MODELVIEW_MATRIX, m1[0]);
+	//mult_matrix(t, rot, m1);
 	mult_matrix(mvp, m1, m2);
 }
 
@@ -64,14 +65,22 @@ void display(float elapsed){
 	glLoadIdentity();
 	a+=0.5*elapsed;
 	gluLookAt(40*sin(a)+30,40,40*cos(a), 30,-1,0, 0, 1, 0);
-	
-	glTranslatef(20, 0, 0);
-	get_mvp(mvp);
 
-	//colorCube.render();
-	chair.render(mvp);
-
+	float mt[16];
 	
+
+	glPushMatrix();
+		chair.get_matrix(mt);
+		
+		glMultMatrixf(mt);
+
+		get_mvp(mvp, mt);
+		
+		chair.render();
+	glPopMatrix();
+	
+		
+	glTranslatef(20, 0, 0);	
 	dei.render();
 	
 }

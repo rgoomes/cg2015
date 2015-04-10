@@ -16,6 +16,7 @@ class Rigidbody : public Object	{
 		void move(float _x, float _y, float _z);
 		void render();
 		void render(float m[4][4]);
+		void get_matrix(float m[16]);
 	private:
 		btRigidBody* rigidbody;
 		btCollisionShape* get_mesh_object();
