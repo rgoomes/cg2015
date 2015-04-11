@@ -38,12 +38,12 @@ void Rigidbody::load_obj(bool has_texture){
 
 	btCollisionShape* shape = get_mesh_object();
 	btQuaternion rot(0, 0, 0, 1);
-	//rot.setRotation(btVector3(0, 1, 0), 1.2);
+	//rot.setRotation(btVector3(0, 0, 1), 1.2);
 	btDefaultMotionState* motion_state = new btDefaultMotionState(btTransform(rot, btVector3(x, y, z)));
 	btVector3 inertia(0, 0, 0);
 	shape->calculateLocalInertia(mass, inertia);
 	btRigidBody::btRigidBodyConstructionInfo rigidBodyCI(mass, motion_state, shape, inertia); // mass, motionState, shape, inertia
-	rigidBodyCI.m_restitution = 0.1f;
+	rigidBodyCI.m_restitution = 0.5f;
 	rigidBodyCI.m_friction = 0.2f;
 
 	rigidbody = new btRigidBody(rigidBodyCI);
@@ -74,26 +74,14 @@ void Rigidbody::move(float _x, float _y, float _z){
 void Rigidbody::render(){
 	btTransform trans;
 	rigidbody->getMotionState()->getWorldTransform(trans);
-	btVector3 v = trans.getOrigin();
-	x = v.getX(); y = v.getY(); z = v.getZ();
 	
-
-	Object::render();
-
-}
-
-void Rigidbody::render(float m[4][4]){
-	btTransform trans;
-	rigidbody->getMotionState()->getWorldTransform(trans);
+	float mt[16];
+	glPushMatrix();
+		get_matrix(mt);
+		glMultMatrixf(mt);
+		
+		Object::render();
+	glPopMatrix();
 	
-	btVector3 v = trans.getOrigin();
-	x = v.getX(); y = v.getY(); z = v.getZ();
 	
-	btQuaternion rot = rigidbody->getOrientation();
-	v = rot.getAxis();
-	btScalar a = rot.getAngle();
-	//printf("%f %f %f angle: %f\n", v.getX(), v.getY(), v.getZ(), a);
-	
-	Object::render(m);
-
 }

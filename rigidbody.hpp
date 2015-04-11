@@ -15,7 +15,6 @@ class Rigidbody : public Object	{
 		Rigidbody(string path, btScalar mass, btVector3 pos);
 		void move(float _x, float _y, float _z);
 		void render();
-		void render(float m[4][4]);
 		void get_matrix(float m[16]);
 	private:
 		btRigidBody* rigidbody;

@@ -18,7 +18,15 @@ Object::Object(string path){
 }
 Object::~Object(){}
 
+
 void Object::render(){
+	if(has_texture)
+		render_texture();
+	else
+		render_ntexture();
+}
+
+void Object::render_ntexture(){
 	glUseProgram(0);
 
 	for(int i = 0; i < (int)all_faces.size(); i++){
@@ -49,7 +57,10 @@ void Object::move(float _x, float _y, float _z){
 	z = _z;
 }
 
-void Object::render(float m[4][4]){
+void Object::render_texture(){
+
+	float m[4][4];
+	get_mvp(m);
 
 	for(int i=0; i<(int)groups.size(); i++){
 		Group g = groups[i];
@@ -106,6 +117,7 @@ float Object::scale(){
 }
 
 bool Object::load_obj(bool has_texture){
+	this->has_texture = has_texture;
 	if(has_texture)
 		return load_obj_texture();
 	else
@@ -264,6 +276,13 @@ bool Object::load_obj_texture(){
 
 	fclose(file);
 	return true;
+}
+
+void Object::get_mvp(float mvp[4][4]){
+	float m1[4][4], m2[4][4], t[4][4];
+	glGetFloatv(GL_MODELVIEW_MATRIX, m1[0]);
+	glGetFloatv(GL_PROJECTION_MATRIX, m2[0]);
+	mult_matrix(mvp, m1, m2);
 }
 
 void load_debug(string path, vector<Point> &vertices, vector<Point> &normals, vector<Face> &faces, vector<Point> &uvs){

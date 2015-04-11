@@ -12,6 +12,7 @@
 #include "types.hpp"
 #include "shaders.hpp"
 #include "image.hpp"
+#include "misc.hpp"
 
 using namespace std;
 
@@ -38,9 +39,10 @@ class Object {
 		void set_scale(float s);
 		float scale();
 		void render();
-		void render(float m[4][4]);
-		void move(float _x, float _y, float _z);
+		void render_ntexture();
+		void render_texture();
 		
+		void move(float _x, float _y, float _z);
 	private:
 		bool load_obj_texture();
 		bool load_obj_ntexture();
@@ -52,6 +54,8 @@ class Object {
 	protected:
 		float x, y, z, s;
 		string path;
+		bool has_texture;
+		void get_mvp(float mvp[4][4]);
 };
 
 #endif
