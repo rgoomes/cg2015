@@ -60,7 +60,7 @@ void display(float elapsed){
 	glLoadIdentity();
 	
 	a+=0.5*elapsed;
-	gluLookAt(40*sin(a)+30,40,40*cos(a), 30,-1,0, 0, 1, 0);
+	gluLookAt(80*sin(a)-30,40,80*cos(a), 30,-1,0, 0, 1, 0);
 
 	GLfloat	lightpos[4] = {10.0, 20.0, 0.0, 1.0}; 
 	glLightfv(GL_LIGHT0, GL_POSITION, lightpos);

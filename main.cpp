@@ -84,10 +84,8 @@ float frame_rate(){
 		frame = 0;
 	}
 
-#ifdef __unix
-	#if CONSOLE_FPS
-		printf("\033[A\033[2Kfps: %lf\n", fps);
-	#endif
+#if CONSOLE_FPS
+	printf("\033[A\033[2Kfps: %lf\n", fps);
 #endif
 
 	return elapsed;
