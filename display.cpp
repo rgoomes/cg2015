@@ -47,21 +47,21 @@ void get_mvp(float mvp[4][4]){
 }
 
 void display(float elapsed){
+	int w, h;
+	glfwGetWindowSize(window, &w, &h);
+
 	glClearColor(0.3,0.4,0.5, 1);
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	int w, h;
-	glfwGetWindowSize(window, &w, &h);
-
 	gluPerspective(45.0f, w / (float)h, 0.1f, 5000.0f);
 	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	
 	a+=0.5*elapsed;
 	gluLookAt(40*sin(a)+30,40,40*cos(a), 30,-1,0, 0, 1, 0);
-
+	
+	
 	GLfloat	lightpos[4] = {10.0, 20.0, 0.0, 1.0}; 
 	glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
 
