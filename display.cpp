@@ -47,18 +47,17 @@ void get_mvp(float mvp[4][4]){
 }
 
 void display(float elapsed){
+	int w, h;
+	glfwGetWindowSize(window, &w, &h);
+
 	glClearColor(0.3,0.4,0.5, 1);
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	int w, h;
-	glfwGetWindowSize(window, &w, &h);
-
 	gluPerspective(45.0f, w / (float)h, 0.1f, 5000.0f);
 	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	
 	a+=0.5*elapsed;
 	gluLookAt(80*sin(a)-30,40,80*cos(a), 30,-1,0, 0, 1, 0);
 

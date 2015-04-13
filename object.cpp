@@ -18,7 +18,6 @@ Object::Object(string path){
 }
 Object::~Object(){}
 
-
 void Object::render(){
 	if(has_texture)
 		render_texture();
@@ -292,3 +291,4 @@ void load_debug(string path, vector<Point> &vertices, vector<Point> &normals, ve
 				  << "Faces: "    << faces.size() 	 << "\t"
 				  << "Uvs: "      << uvs.size() 	 << "\n\n";
 }
+
