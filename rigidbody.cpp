@@ -43,7 +43,7 @@ void Rigidbody::load_obj(bool has_texture){
 	btVector3 inertia(0, 0, 0);
 	shape->calculateLocalInertia(mass, inertia);
 	btRigidBody::btRigidBodyConstructionInfo rigidBodyCI(mass, motion_state, shape, inertia); // mass, motionState, shape, inertia
-	rigidBodyCI.m_restitution = 0.5f;
+	rigidBodyCI.m_restitution = 1.0f;
 	rigidBodyCI.m_friction = 0.2f;
 
 	rigidbody = new btRigidBody(rigidBodyCI);

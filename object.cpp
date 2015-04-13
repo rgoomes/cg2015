@@ -66,7 +66,6 @@ void Object::render_texture(){
 
 		glUseProgram(g.program_id);
 		glUniformMatrix4fv(g.matrix_id, 1, GL_FALSE, &m[0][0]);
-		glUniform3f(g.translate_id, x, y, z);
 
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, g.texture);

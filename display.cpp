@@ -4,6 +4,7 @@
 Rigidbody colorCube("objects/cube", 1, btVector3(10, 30, 0));
 Object dei("objects/dei");
 Rigidbody chair("objects/chair", 10, btVector3(20, 30, 20));
+Rigidbody sphere("objects/sphere", 5, btVector3(20, 20, 20));
 
 float mvp[4][4];
 float a=0;
@@ -27,16 +28,19 @@ void load_objects(){
 	dei.set_scale(0.1);
 	dei.load_obj(true);
 
+	sphere.set_scale(0.1);
+	sphere.load_obj(true);
+	world->addRigidBody(sphere.get_rigidbody());
+
 	add_lights();
 	
 }
 
 void add_lights(){
-	glDepthFunc(GL_LESS);
-
+	glShadeModel (GL_SMOOTH);
+   
 	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
-
+	glEnable(GL_DEPTH_TEST);
 }
 
 void get_mvp(float mvp[4][4]){
@@ -45,6 +49,8 @@ void get_mvp(float mvp[4][4]){
 	glGetFloatv(GL_PROJECTION_MATRIX, m2[0]);
 	mult_matrix(mvp, m1, m2);
 }
+
+GLfloat light_position[] = { 1.0, 15.0, -30.0, 1.0 };
 
 void display(float elapsed){
 	int w, h;
@@ -55,19 +61,22 @@ void display(float elapsed){
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	gluPerspective(45.0f, w / (float)h, 0.1f, 5000.0f);
+
 	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	a+=0.5*elapsed;
+	a = 45;
 	gluLookAt(80*sin(a)-30,40,80*cos(a), 30,-1,0, 0, 1, 0);
 
-	GLfloat	lightpos[4] = {10.0, 20.0, 0.0, 1.0}; 
-	glLightfv(GL_LIGHT0, GL_POSITION, lightpos);
+	glEnable(GL_LIGHT0);
+	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 
 	chair.render();
 	colorCube.render();
+	sphere.render();
 
 	glTranslatef(20, 0, 0);
 	dei.render_ntexture();
 	
 }
+
