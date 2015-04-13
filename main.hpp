@@ -15,8 +15,11 @@
 #include "object.hpp"
 #include "misc.hpp"
 
+#ifdef __unix
+	#define CONSOLE_FPS 0
+#endif
+
 #define DISPLAY_FPS 1
-#define CONSOLE_FPS 0
 
 using namespace std;
 
