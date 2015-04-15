@@ -1,7 +1,7 @@
 
 #include "display.hpp"
 
-#define PI 3.14159
+#define PI 3.141592653
 
 Rigidbody colorCube("objects/cube", 1, btVector3(10, 30, 0));
 Object dei("objects/dei");
@@ -13,9 +13,9 @@ float a=0;
 GLFWwindow* window;
 btDynamicsWorld* world;
 
-double ray=5.0, ang=0.5*PI+90, inc=100;
-double obs_ini[] = {60,18,-10};
-double obs_fin[] = {obs_ini[0]-ray*cos(ang), obs_ini[1], obs_ini[2]-ray*sin(ang)};
+double horizontal_ang = PI/8, vertical_ang = PI/1.5;
+double mouse_speed = 0.002f, speed = 90.0f, xpos, ypos;
+btVector3 obs_pos(60, 18, -10);
 
 void set_environment(GLFWwindow* _window, btDynamicsWorld* _world){
 	window = _window;
@@ -57,25 +57,31 @@ void get_mvp(float mvp[4][4]){
 	mult_matrix(mvp, m1, m2);
 }
 
+void camera_view(float elapsed, int w, int h){
+	glfwGetCursorPos(window, &xpos, &ypos);
+	glfwSetCursorPos(window, w/2, h/2);
 
-void camera_view(float elapsed){
-	if(glfwGetKey(window, GLFW_KEY_UP)   || glfwGetKey(window, GLFW_KEY_W)){
-		obs_ini[0] = obs_ini[0] + elapsed*inc*cos(ang);
-		obs_ini[2] = obs_ini[2] - elapsed*inc*sin(ang);
-	}
-	if(glfwGetKey(window, GLFW_KEY_DOWN)  || glfwGetKey(window, GLFW_KEY_S)){
-		obs_ini[0] = obs_ini[0] - elapsed*inc*cos(ang);
-		obs_ini[2] = obs_ini[2] + elapsed*inc*sin(ang);
-	}
-	if(glfwGetKey(window, GLFW_KEY_LEFT)  || glfwGetKey(window, GLFW_KEY_A))
-		ang = (ang + elapsed * 1.0);
+	horizontal_ang += mouse_speed * double(w/2 - xpos);
+	vertical_ang   += mouse_speed * double(h/2 - ypos);
+
+	btVector3 dir(cos(vertical_ang)*sin(horizontal_ang), sin(vertical_ang), cos(vertical_ang)*cos(horizontal_ang));
+	btVector3 right(sin(horizontal_ang - PI/2.0f), 0, cos(horizontal_ang - PI/2.0f));
+
+	if(glfwGetKey(window, GLFW_KEY_UP)    || glfwGetKey(window, GLFW_KEY_W))
+		obs_pos += dir * elapsed * speed;
+	if(glfwGetKey(window, GLFW_KEY_DOWN)  || glfwGetKey(window, GLFW_KEY_S))
+		obs_pos -= dir * elapsed * speed;
 	if(glfwGetKey(window, GLFW_KEY_RIGHT) || glfwGetKey(window, GLFW_KEY_D))
-		ang = (ang - elapsed * 1.0);
-
-	obs_fin[0] = obs_ini[0] + ray * cos(ang);
-	obs_fin[2] = obs_ini[2] - ray * sin(ang);
-
-	gluLookAt(obs_ini[0],obs_ini[1],obs_ini[2], obs_fin[0],obs_fin[1],obs_fin[2], 0,1,0);
+		obs_pos += right * elapsed * speed;
+	if(glfwGetKey(window, GLFW_KEY_LEFT)  || glfwGetKey(window, GLFW_KEY_A))
+		obs_pos -= right * elapsed * speed;
+	
+	btVector3 tmp = obs_pos+dir;
+	btVector3 up = dir.cross(right);
+	gluLookAt(obs_pos.getX(),obs_pos.getY(),obs_pos.getZ(), 
+			  tmp.getX(),tmp.getY(),tmp.getZ(), 
+			  up.getX(), up.getY(), up.getZ()
+	);
 }
 
 GLfloat light_position[] = { 1.0, 15.0, -30.0, 1.0 };
@@ -131,18 +137,9 @@ void display(float elapsed){
 	int w, h;
 	glfwGetWindowSize(window, &w, &h);
 
-
 	glClearColor(0.3,0.4,0.5, 1);
-
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	gluPerspective(45.0f, w / (float)h, 0.1f, 5000.0f);
-
 	
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-
-	camera_view(elapsed);
+	camera_view(elapsed, w, h);
 
 	glEnable(GL_LIGHT0);
 	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
