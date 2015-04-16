@@ -13,7 +13,7 @@ float a=0;
 GLFWwindow* window;
 btDynamicsWorld* world;
 
-double horizontal_ang = PI/8, vertical_ang = PI/1.5;
+double horizontal_ang = PI*1.12, vertical_ang = PI*1.65;
 double mouse_speed = 0.002f, speed = 90.0f, xpos, ypos;
 btVector3 obs_pos(60, 18, -10);
 
@@ -80,7 +80,7 @@ void camera_view(float elapsed, int w, int h){
 	btVector3 up = dir.cross(right);
 	gluLookAt(obs_pos.getX(),obs_pos.getY(),obs_pos.getZ(), 
 			  tmp.getX(),tmp.getY(),tmp.getZ(), 
-			  up.getX(), -up.getY(), up.getZ()
+			  -up.getX(), -up.getY(), -up.getZ()
 	);
 }
 
