@@ -62,7 +62,7 @@ void camera_view(float elapsed, int w, int h){
 	glfwSetCursorPos(window, w/2, h/2);
 
 	horizontal_ang += mouse_speed * double(w/2 - xpos);
-	vertical_ang   += mouse_speed * double(h/2 - ypos);
+	vertical_ang   -= mouse_speed * double(h/2 - ypos);
 
 	btVector3 dir(cos(vertical_ang)*sin(horizontal_ang), sin(vertical_ang), cos(vertical_ang)*cos(horizontal_ang));
 	btVector3 right(sin(horizontal_ang - PI/2.0f), 0, cos(horizontal_ang - PI/2.0f));
@@ -72,12 +72,12 @@ void camera_view(float elapsed, int w, int h){
 	if(glfwGetKey(window, GLFW_KEY_DOWN)  || glfwGetKey(window, GLFW_KEY_S))
 		obs_pos -= dir * elapsed * speed;
 	if(glfwGetKey(window, GLFW_KEY_RIGHT) || glfwGetKey(window, GLFW_KEY_D))
-		obs_pos += right * elapsed * speed;
-	if(glfwGetKey(window, GLFW_KEY_LEFT)  || glfwGetKey(window, GLFW_KEY_A))
 		obs_pos -= right * elapsed * speed;
+	if(glfwGetKey(window, GLFW_KEY_LEFT)  || glfwGetKey(window, GLFW_KEY_A))
+		obs_pos += right * elapsed * speed;
 	
 	btVector3 tmp = obs_pos+dir;
-	btVector3 up = dir.cross(right);
+	btVector3 up = right.cross(dir);
 	gluLookAt(obs_pos.getX(),obs_pos.getY(),obs_pos.getZ(), 
 			  tmp.getX(),tmp.getY(),tmp.getZ(), 
 			  -up.getX(), -up.getY(), -up.getZ()
