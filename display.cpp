@@ -72,15 +72,15 @@ void camera_view(float elapsed, int w, int h){
 	if(glfwGetKey(window, GLFW_KEY_DOWN)  || glfwGetKey(window, GLFW_KEY_S))
 		obs_pos -= dir * elapsed * speed;
 	if(glfwGetKey(window, GLFW_KEY_RIGHT) || glfwGetKey(window, GLFW_KEY_D))
-		obs_pos += right * elapsed * speed;
-	if(glfwGetKey(window, GLFW_KEY_LEFT)  || glfwGetKey(window, GLFW_KEY_A))
 		obs_pos -= right * elapsed * speed;
+	if(glfwGetKey(window, GLFW_KEY_LEFT)  || glfwGetKey(window, GLFW_KEY_A))
+		obs_pos += right * elapsed * speed;
 	
 	btVector3 tmp = obs_pos+dir;
 	btVector3 up = dir.cross(right);
 	gluLookAt(obs_pos.getX(),obs_pos.getY(),obs_pos.getZ(), 
 			  tmp.getX(),tmp.getY(),tmp.getZ(), 
-			  up.getX(), up.getY(), up.getZ()
+			  up.getX(), -up.getY(), up.getZ()
 	);
 }
 
