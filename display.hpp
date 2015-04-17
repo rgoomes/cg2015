@@ -14,6 +14,13 @@
 #include "object.hpp"
 #include "rigidbody.hpp"
 
+#define WORLD_MIN_X 0 
+#define WORLD_MAX_X 250
+#define WORLD_MIN_Y 1
+#define WORLD_MAX_Y 30
+#define WORLD_MIN_Z -145
+#define WORLD_MAX_Z 145
+
 void load_objects();
 void add_lights();
 void set_environment(GLFWwindow* _window, btDynamicsWorld* _world);

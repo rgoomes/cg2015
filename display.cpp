@@ -75,7 +75,24 @@ void camera_view(float elapsed, int w, int h){
 		obs_pos -= right * elapsed * speed;
 	if(glfwGetKey(window, GLFW_KEY_LEFT)  || glfwGetKey(window, GLFW_KEY_A))
 		obs_pos += right * elapsed * speed;
+
+	double obs_x = obs_pos.getX();
+	double obs_y = obs_pos.getY();
+	double obs_z = obs_pos.getZ();
 	
+	if(obs_x > WORLD_MAX_X)
+		obs_pos.setX(WORLD_MAX_X);
+	else if(obs_x < WORLD_MIN_X)
+		obs_pos.setX(WORLD_MIN_X);
+	if(obs_y > WORLD_MAX_Y)
+		obs_pos.setY(WORLD_MAX_Y);
+	else if(obs_y < WORLD_MIN_Y)
+		obs_pos.setY(WORLD_MIN_Y);
+	if(obs_z > WORLD_MAX_Z)
+		obs_pos.setZ(WORLD_MAX_Z);
+	else if(obs_z < WORLD_MIN_Z)
+		obs_pos.setZ(WORLD_MIN_Z);
+
 	btVector3 tmp = obs_pos+dir;
 	btVector3 up = right.cross(dir);
 	gluLookAt(obs_pos.getX(),obs_pos.getY(),obs_pos.getZ(), 
