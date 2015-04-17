@@ -31,8 +31,8 @@ void Object::render_ntexture(){
 	for(int i = 0; i < (int)all_faces.size(); i++){
 		int v, n;
 		glBegin(GL_TRIANGLES);
-			v = all_faces[i].v_index[2]-1;
-			n = all_faces[i].n_index[2]-1;
+			v = all_faces[i].v_index[0]-1;
+			n = all_faces[i].n_index[0]-1;
 			glNormal3f(normals[n].x, normals[n].y, normals[n].z);
 			glVertex3f(vertices[v].x, vertices[v].y, vertices[v].z);
 
@@ -41,8 +41,8 @@ void Object::render_ntexture(){
 			glNormal3f(normals[n].x, normals[n].y, normals[n].z);
 			glVertex3f(vertices[v].x, vertices[v].y, vertices[v].z);
 
-			v = all_faces[i].v_index[0]-1;
-			n = all_faces[i].n_index[0]-1;
+			v = all_faces[i].v_index[2]-1;
+			n = all_faces[i].n_index[2]-1;
 			glNormal3f(normals[n].x, normals[n].y, normals[n].z);
 			glVertex3f(vertices[v].x, vertices[v].y, vertices[v].z);
 			

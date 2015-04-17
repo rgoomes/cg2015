@@ -5,7 +5,7 @@
 
 Rigidbody colorCube("objects/cube", 1, btVector3(10, 30, 0));
 Object dei("objects/dei");
-Rigidbody chair("objects/chair", 10, btVector3(20, 30, 20));
+Rigidbody chair("objects/chair", 10, btVector3(20, 30, 10));
 Rigidbody sphere("objects/sphere", 5, btVector3(20, 20, 20));
 
 float mvp[4][4];
@@ -13,7 +13,7 @@ float a=0;
 GLFWwindow* window;
 btDynamicsWorld* world;
 
-double horizontal_ang = PI/8, vertical_ang = PI/1.5;
+double horizontal_ang = PI/8, vertical_ang = PI/4;
 double mouse_speed = 0.002f, speed = 90.0f, xpos, ypos;
 btVector3 obs_pos(60, 18, -10);
 
@@ -22,6 +22,8 @@ void set_environment(GLFWwindow* _window, btDynamicsWorld* _world){
 	world = _world;
 }
 
+GLuint renderedTexture;
+
 void load_objects(){
 	colorCube.set_scale(1);
 	colorCube.load_obj(true);
@@ -29,7 +31,7 @@ void load_objects(){
 	
 	chair.set_scale(0.1);
 	chair.load_obj(true);
-	world->addRigidBody(chair.get_rigidbody());
+	//world->addRigidBody(chair.get_rigidbody());
 
 	dei.set_scale(0.1);
 	dei.load_obj(true);
@@ -39,7 +41,13 @@ void load_objects(){
 	world->addRigidBody(sphere.get_rigidbody());
 
 	add_lights();
-	
+
+
+	int w, h;
+	glfwGetWindowSize(window, &w, &h);
+
+	glfwSetCursorPos(window, w/2, h/2);
+	renderedTexture = get_render_buffer();
 }
 
 void add_lights(){
@@ -61,6 +69,7 @@ void camera_view(float elapsed, int w, int h){
 	glfwGetCursorPos(window, &xpos, &ypos);
 	glfwSetCursorPos(window, w/2, h/2);
 
+	printf("%lf %lf\n", w/2-xpos, h/2-ypos);
 	horizontal_ang += mouse_speed * double(w/2 - xpos);
 	vertical_ang   += mouse_speed * double(h/2 - ypos);
 
@@ -77,7 +86,7 @@ void camera_view(float elapsed, int w, int h){
 		obs_pos -= right * elapsed * speed;
 	
 	btVector3 tmp = obs_pos+dir;
-	btVector3 up = dir.cross(right);
+	btVector3 up = -dir.cross(right);
 	gluLookAt(obs_pos.getX(),obs_pos.getY(),obs_pos.getZ(), 
 			  tmp.getX(),tmp.getY(),tmp.getZ(), 
 			  up.getX(), up.getY(), up.getZ()
@@ -86,9 +95,18 @@ void camera_view(float elapsed, int w, int h){
 
 GLfloat light_position[] = { 1.0, 15.0, -30.0, 1.0 };
 
+GLuint FramebufferName = 0;
+
 int get_render_buffer(){
-		// The framebuffer, which regroups 0, 1, or more textures, and 0 or 1 depth buffer.
-	GLuint FramebufferName = 0;
+	int w, h;
+	glfwGetWindowSize(window, &w, &h);
+	printf("\n\n asdasdas %d %d\n\n", w, h);
+
+
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
+
+	// The framebuffer, which regroups 0, 1, or more textures, and 0 or 1 depth buffer.
 	glGenFramebuffers(1, &FramebufferName);
 	glBindFramebuffer(GL_FRAMEBUFFER, FramebufferName);
 
@@ -99,13 +117,15 @@ int get_render_buffer(){
 	// "Bind" the newly created texture : all future texture functions will modify this texture
 	glBindTexture(GL_TEXTURE_2D, renderedTexture);
 	 
-	// Give an empty image to OpenGL ( the last "0" )
-	glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, 1024, 768, 0,GL_RGB, GL_UNSIGNED_BYTE, 0);
-	 
-	// Poor filtering. Needed !
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexImage2D(GL_TEXTURE_2D, 0,GL_RGBA8, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+	// Give an empty image to OpenGL ( the last "0" )
+	
 	if ( !GLEW_ARB_framebuffer_object ){ // OpenGL 2.1 doesn't require this, 3.1+ does
 		printf("Your GPU does not provide framebuffer objects. Use a texture instead.");
 		return -1;
@@ -115,11 +135,11 @@ int get_render_buffer(){
 	GLuint depthrenderbuffer;
 	glGenRenderbuffers(1, &depthrenderbuffer);
 	glBindRenderbuffer(GL_RENDERBUFFER, depthrenderbuffer);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, 1024, 768);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT32, w, h);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, renderedTexture, 0);
 
 	// Set "renderedTexture" as our colour attachement #0
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, renderedTexture, 0);
+	//glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, renderedTexture, 0);
 	 
 	// Set the list of draw buffers.
 	GLenum DrawBuffers[1] = {GL_COLOR_ATTACHMENT0};
@@ -137,9 +157,43 @@ void display(float elapsed){
 	int w, h;
 	glfwGetWindowSize(window, &w, &h);
 
-	glClearColor(0.3,0.4,0.5, 1);
+	glBindFramebuffer(GL_FRAMEBUFFER, FramebufferName);
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_GREATER);
+
+	glViewport(0, 0, w, h);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPerspective(45.0f, w / (float)h, 0.1f, 5000.0f);
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
 	camera_view(elapsed, w, h);
+
+	glEnable(GL_LIGHT0);
+	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+
+	//glTranslatef(20, 0, 0);
+	dei.render_ntexture();
+
+	//glTranslatef(-20, 0, 0);
+	
+	chair.render();
+	colorCube.render();
+	sphere.render();
+
+
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	
+
+	glDepthFunc(GL_LESS);
 
 	glEnable(GL_LIGHT0);
 	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
@@ -150,27 +204,32 @@ void display(float elapsed){
 
 	glTranslatef(20, 0, 0);
 	dei.render_ntexture();
-	
 
-	GLuint texture = get_render_buffer();
-	glBindTexture(GL_TEXTURE_2D, texture);
 
+	glActiveTexture(GL_TEXTURE0);
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, renderedTexture);
+
+
+	glRotatef(45, 1, 0, 0);
+	glTranslatef(0, 10, 0);
 	glBegin(GL_TRIANGLES);
-		glTexCoord2f(0, 0);
-		glVertex3f(0, 30, 0);
-		glTexCoord2f(0, 1);
-		glVertex3f(0, 30, 10);
 		glTexCoord2f(1, 0);
+		glVertex3f(0, 30, 0);
+		glTexCoord2f(1, 1);
+		glVertex3f(0, 30, 10);
+		glTexCoord2f(0, 0);
 		glVertex3f(10, 30, 0);
 
-		glTexCoord2f(1, 1);
-		glVertex3f(10, 30, 10);
 		glTexCoord2f(0, 1);
+		glVertex3f(10, 30, 10);
+		glTexCoord2f(1, 1);
 		glVertex3f(0, 30, 10);
-		glTexCoord2f(1, 0);
+		glTexCoord2f(0, 0);
 		glVertex3f(10, 30, 0);
 	glEnd();
 	
+
 
 }
 

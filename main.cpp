@@ -27,19 +27,17 @@ void opengl_init(){
 
 	glfwInit();
 	monitor_resolution			(&SCREEN_WIDTH, &SCREEN_HEIGHT);
-	glfwWindowHint				(GLFW_SAMPLES, 4);
+	glfwWindowHint				(GLFW_SAMPLES, 1);
 	glfwWindowHint				(GLFW_CONTEXT_VERSION_MAJOR, 2);
 	glfwWindowHint				(GLFW_CONTEXT_VERSION_MINOR, 1);
 	glfwSwapInterval			(0);
 	main_window = glfwCreateWindow	(SCREEN_WIDTH/1.5, SCREEN_HEIGHT/1.5, "cg2015", NULL, NULL);
-	glfwSetInputMode			(main_window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
 	glfwMakeContextCurrent		(main_window);
 	glfwSetInputMode			(main_window, GLFW_STICKY_KEYS, GL_TRUE);
 
 	glEnable					(GL_DEPTH_TEST);
 	glDepthFunc					(GL_LESS);
-	glClearColor				(0.3,0.4,0.5, 1);
 
 	if (glewInit() != GLEW_OK) {
 		fprintf(stdin, "Failed to initialize GLEW\n");
@@ -105,7 +103,6 @@ int main(int argc, char **argv){
 	last_tick = glfwGetTime();
 	
 	do{
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		float elapsed_time = frame_rate();
 		bullet_tick(elapsed_time);

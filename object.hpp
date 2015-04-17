@@ -43,6 +43,7 @@ class Object {
 		void render_texture();
 		
 		void move(float _x, float _y, float _z);
+		vector<Group> groups;
 	private:
 		bool load_obj_texture();
 		bool load_obj_ntexture();
@@ -50,7 +51,6 @@ class Object {
 		void load_debug(string path, vector<Point> &vertices, vector<Point> &normals, vector<Face> &faces, vector<Point> &uvs);
 		Group load_group(string group_name);
 		
-		vector<Group> groups;
 	protected:
 		float x, y, z, s;
 		string path;
