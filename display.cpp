@@ -16,12 +16,12 @@ double horizontal_ang = PI*1.12, vertical_ang = PI*1.65;
 double mouse_speed = 0.002f, speed = 90.0f, xpos, ypos;
 btVector3 obs_pos(60, 18, -10);
 
-int sky_front[]  = { 1, -1, -1, -1, -1, -1, -1,  1, -1,  1,  1, -1};
-int sky_left[] 	 = { 1, -1,  1,  1, -1, -1,  1,  1, -1,  1,  1,  1};
-int sky_back[] 	 = {-1, -1,  1,  1, -1,  1,  1,  1,  1, -1,  1,  1};
-int sky_right[]  = {-1, -1, -1, -1, -1,  1, -1,  1,  1, -1,  1, -1};
-int sky_top[] 	 = {-1,  1, -1, -1,  1,  1,  1,  1,  1,  1,  1, -1};
-int sky_bottom[] = {-1, -1, -1, -1, -1,  1,  1, -1,  1,  1, -1, -1};
+int sky_front[]  = { 1, -1, -1,  1, -1,  1,  1,  1,  1,  1,  1, -1};
+int sky_left[] 	 = { 1, -1,  1, -1, -1,  1, -1,  1,  1,  1,  1,  1};
+int sky_back[] 	 = {-1, -1,  1, -1, -1, -1, -1,  1, -1, -1,  1,  1};
+int sky_right[]  = {-1, -1, -1,  1, -1, -1,  1,  1, -1, -1,  1, -1};
+int sky_top[] 	 = {-1,  1, -1,  1,  1, -1,  1,  1,  1, -1,  1,  1};
+int sky_bottom[] = { 1, -1, -1, -1, -1, -1, -1, -1,  1,  1, -1,  1};
 
 GLuint skybox[6];
 
@@ -51,7 +51,12 @@ void load_objects(){
 }
 
 void load_skytextures(){
-	
+	string skybox_path = "objects/skybox/skybox";
+
+	for(int i = 0; i < 6; i++){
+		string full_path = skybox_path + to_string(i) + ".dds";
+		skybox[i] = loadDDS(full_path.c_str());
+	}
 }
 
 void add_lights(){
@@ -132,12 +137,12 @@ void draw_skybox(double D){
 	glDisable(GL_LIGHTING);
 	glDisable(GL_BLEND);
 
-	draw_skyface(0, sky_front,  500);
-	draw_skyface(1, sky_left,   500);
-	draw_skyface(2, sky_back,   500);
-	draw_skyface(3, sky_right,  500);
-	draw_skyface(4, sky_top,    500);
-	draw_skyface(5, sky_bottom, 500);
+	draw_skyface(0, sky_front,  D);
+	draw_skyface(1, sky_left,   D);
+	draw_skyface(2, sky_back,   D);
+	draw_skyface(3, sky_right,  D);
+	draw_skyface(4, sky_top,    D);
+	draw_skyface(5, sky_bottom, D);
 
 	glPopAttrib();
 	glPopMatrix();
@@ -157,6 +162,7 @@ void display(float elapsed){
 	glLoadIdentity();
 
 	camera_view(elapsed, w, h);
+	draw_skybox(500);
 
 	glEnable(GL_LIGHT0);
 	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
