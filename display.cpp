@@ -8,14 +8,22 @@ Object dei("objects/dei");
 Rigidbody chair("objects/chair", 10, btVector3(20, 30, 10));
 Rigidbody sphere("objects/sphere", 5, btVector3(20, 20, 20));
 
-float mvp[4][4];
-float a=0;
+float mvp[4][4], a=0;
 GLFWwindow* window;
 btDynamicsWorld* world;
 
 double horizontal_ang = PI/8, vertical_ang = PI/4;
 double mouse_speed = 0.002f, speed = 90.0f, xpos, ypos;
 btVector3 obs_pos(60, 18, -10);
+
+int sky_front[]  = { 1, -1, -1, -1, -1, -1, -1,  1, -1,  1,  1, -1};
+int sky_left[] 	 = { 1, -1,  1,  1, -1, -1,  1,  1, -1,  1,  1,  1};
+int sky_back[] 	 = {-1, -1,  1,  1, -1,  1,  1,  1,  1, -1,  1,  1};
+int sky_right[]  = {-1, -1, -1, -1, -1,  1, -1,  1,  1, -1,  1, -1};
+int sky_top[] 	 = {-1,  1, -1, -1,  1,  1,  1,  1,  1,  1,  1, -1};
+int sky_bottom[] = {-1, -1, -1, -1, -1,  1,  1, -1,  1,  1, -1, -1};
+
+GLuint skybox[6];
 
 void set_environment(GLFWwindow* _window, btDynamicsWorld* _world){
 	window = _window;
@@ -50,6 +58,10 @@ void load_objects(){
 	renderedTexture = get_render_buffer();
 }
 
+void load_skytextures(){
+	
+}
+
 void add_lights(){
 	glShadeModel (GL_SMOOTH);
    
@@ -71,7 +83,7 @@ void camera_view(float elapsed, int w, int h){
 
 	printf("%lf %lf\n", w/2-xpos, h/2-ypos);
 	horizontal_ang += mouse_speed * double(w/2 - xpos);
-	vertical_ang   += mouse_speed * double(h/2 - ypos);
+	vertical_ang   -= mouse_speed * double(h/2 - ypos);
 
 	btVector3 dir(cos(vertical_ang)*sin(horizontal_ang), sin(vertical_ang), cos(vertical_ang)*cos(horizontal_ang));
 	btVector3 right(sin(horizontal_ang - PI/2.0f), 0, cos(horizontal_ang - PI/2.0f));
@@ -81,16 +93,64 @@ void camera_view(float elapsed, int w, int h){
 	if(glfwGetKey(window, GLFW_KEY_DOWN)  || glfwGetKey(window, GLFW_KEY_S))
 		obs_pos -= dir * elapsed * speed;
 	if(glfwGetKey(window, GLFW_KEY_RIGHT) || glfwGetKey(window, GLFW_KEY_D))
-		obs_pos += right * elapsed * speed;
-	if(glfwGetKey(window, GLFW_KEY_LEFT)  || glfwGetKey(window, GLFW_KEY_A))
 		obs_pos -= right * elapsed * speed;
+	if(glfwGetKey(window, GLFW_KEY_LEFT)  || glfwGetKey(window, GLFW_KEY_A))
+		obs_pos += right * elapsed * speed;
+
+	double obs_x = obs_pos.getX();
+	double obs_y = obs_pos.getY();
+	double obs_z = obs_pos.getZ();
 	
+	if(obs_x > WORLD_MAX_X)
+		obs_pos.setX(WORLD_MAX_X);
+	else if(obs_x < WORLD_MIN_X)
+		obs_pos.setX(WORLD_MIN_X);
+	//if(obs_y > WORLD_MAX_Y)
+	//t	obs_pos.setY(WORLD_MAX_Y);
+	else if(obs_y < WORLD_MIN_Y)
+		obs_pos.setY(WORLD_MIN_Y);
+	if(obs_z > WORLD_MAX_Z)
+		obs_pos.setZ(WORLD_MAX_Z);
+	else if(obs_z < WORLD_MIN_Z)
+		obs_pos.setZ(WORLD_MIN_Z);
+
 	btVector3 tmp = obs_pos+dir;
 	btVector3 up = -dir.cross(right);
+
 	gluLookAt(obs_pos.getX(),obs_pos.getY(),obs_pos.getZ(), 
 			  tmp.getX(),tmp.getY(),tmp.getZ(), 
-			  up.getX(), up.getY(), up.getZ()
+			  -up.getX(), -up.getY(), -up.getZ()
 	);
+}
+
+void draw_skyface(int pos, int *dp, double D){
+	glBindTexture(GL_TEXTURE_2D, skybox[pos]);
+	glBegin(GL_QUADS);
+		glTexCoord2f(0, 0); glVertex3f(dp[0]*D, dp[1]*D,  dp[2]*D);
+		glTexCoord2f(1, 0); glVertex3f(dp[3]*D, dp[4]*D,  dp[5]*D);
+		glTexCoord2f(1, 1); glVertex3f(dp[6]*D, dp[7]*D,  dp[8]*D);
+		glTexCoord2f(0, 1); glVertex3f(dp[9]*D, dp[10]*D, dp[11]*D);
+	glEnd();
+}
+
+void draw_skybox(double D){
+	glPushMatrix();
+     
+	glPushAttrib(GL_ENABLE_BIT);
+	glEnable(GL_TEXTURE_2D);
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_LIGHTING);
+	glDisable(GL_BLEND);
+
+	draw_skyface(0, sky_front,  500);
+	draw_skyface(1, sky_left,   500);
+	draw_skyface(2, sky_back,   500);
+	draw_skyface(3, sky_right,  500);
+	draw_skyface(4, sky_top,    500);
+	draw_skyface(5, sky_bottom, 500);
+
+	glPopAttrib();
+	glPopMatrix();
 }
 
 GLfloat light_position[] = { 1.0, 15.0, -30.0, 1.0 };
@@ -159,7 +219,9 @@ void display(float elapsed){
 
 	glBindFramebuffer(GL_FRAMEBUFFER, FramebufferName);
 	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_GREATER);
+	glDepthFunc(GL_LESS);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
 
 	glViewport(0, 0, w, h);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -190,6 +252,8 @@ void display(float elapsed){
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+	glDisable(GL_CULL_FACE);
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 
@@ -211,8 +275,7 @@ void display(float elapsed){
 	glBindTexture(GL_TEXTURE_2D, renderedTexture);
 
 
-	glRotatef(45, 1, 0, 0);
-	glTranslatef(0, 10, 0);
+	//glRotatef(45, 1, 0, 0);
 	glBegin(GL_TRIANGLES);
 		glTexCoord2f(1, 0);
 		glVertex3f(0, 30, 0);
