@@ -21,6 +21,7 @@
 #define WORLD_MIN_Z -145
 #define WORLD_MAX_Z 145
 
+void load_skytextures();
 void load_objects();
 void add_lights();
 void set_environment(GLFWwindow* _window, btDynamicsWorld* _world);
