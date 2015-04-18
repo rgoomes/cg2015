@@ -3,10 +3,15 @@
 
 #define PI 3.141592653
 
-Rigidbody colorCube("objects/cube", 1, btVector3(10, 30, 0));
-Object dei("objects/dei");
-Rigidbody chair("objects/chair", 10, btVector3(20, 30, 10));
+/*Rigidbody colorCube("objects/cube", 1, btVector3(10, 30, 0));
+
+*/
+Object colorCube("objects/cube");
 Rigidbody sphere("objects/sphere", 5, btVector3(20, 20, 20));
+Rigidbody chair("objects/chair", 10, btVector3(20, 30, 10));
+//Object chair("objects/chair");
+//Object sphere("objects/sphere");
+Object dei("objects/dei");
 
 float mvp[4][4], a=0;
 GLFWwindow* window;
@@ -31,31 +36,39 @@ void set_environment(GLFWwindow* _window, btDynamicsWorld* _world){
 }
 
 GLuint renderedTexture;
+GLuint FramebufferName = 0, depthTexture;
 
 void load_objects(){
+	int w, h;
+	glfwGetWindowSize(window, &w, &h);
+	glfwSetCursorPos(window, w/2, h/2);
+	
+	get_render_buffer();
+	printf("%d\n", depthTexture);
+		
 	colorCube.set_scale(1);
+	colorCube.move(0, 20, 0);
 	colorCube.load_obj(true);
-	world->addRigidBody(colorCube.get_rigidbody());
+	colorCube.set_shadowmap(depthTexture);
+	//world->addRigidBody(colorCube.get_rigidbody());
 	
 	chair.set_scale(0.1);
 	chair.load_obj(true);
-	//world->addRigidBody(chair.get_rigidbody());
+	chair.set_shadowmap(depthTexture);
+	world->addRigidBody(chair.get_rigidbody());
 
 	dei.set_scale(0.1);
+	dei.set_shadowmap(depthTexture);
 	dei.load_obj(true);
 
 	sphere.set_scale(0.1);
 	sphere.load_obj(true);
+	sphere.set_shadowmap(depthTexture);
 	world->addRigidBody(sphere.get_rigidbody());
 
 	add_lights();
 
 
-	int w, h;
-	glfwGetWindowSize(window, &w, &h);
-
-	glfwSetCursorPos(window, w/2, h/2);
-	renderedTexture = get_render_buffer();
 }
 
 void load_skytextures(){
@@ -155,13 +168,10 @@ void draw_skybox(double D){
 
 GLfloat light_position[] = { 1.0, 15.0, -30.0, 1.0 };
 
-GLuint FramebufferName = 0;
 
-int get_render_buffer(){
+void get_render_buffer(){
 	int w, h;
 	glfwGetWindowSize(window, &w, &h);
-	printf("\n\n asdasdas %d %d\n\n", w, h);
-
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
@@ -170,109 +180,100 @@ int get_render_buffer(){
 	glGenFramebuffers(1, &FramebufferName);
 	glBindFramebuffer(GL_FRAMEBUFFER, FramebufferName);
 
-	// The texture we're going to render to
-	GLuint renderedTexture;
-	glGenTextures(1, &renderedTexture);
-	 
-	// "Bind" the newly created texture : all future texture functions will modify this texture
-	glBindTexture(GL_TEXTURE_2D, renderedTexture);
-	 
-	glTexImage2D(GL_TEXTURE_2D, 0,GL_RGBA8, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	// Depth texture. Slower than a depth buffer, but you can sample it later in your shader
+	glGenTextures(1, &depthTexture);
+	glBindTexture(GL_TEXTURE_2D, depthTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0,GL_DEPTH_COMPONENT16, w, h, 0,GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); 
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE);
 
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexture, 0);
 
-	// Give an empty image to OpenGL ( the last "0" )
-	
-	if ( !GLEW_ARB_framebuffer_object ){ // OpenGL 2.1 doesn't require this, 3.1+ does
-		printf("Your GPU does not provide framebuffer objects. Use a texture instead.");
-		return -1;
-	}
-
-	// The depth buffer
-	GLuint depthrenderbuffer;
-	glGenRenderbuffers(1, &depthrenderbuffer);
-	glBindRenderbuffer(GL_RENDERBUFFER, depthrenderbuffer);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT32, w, h);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, renderedTexture, 0);
-
-	// Set "renderedTexture" as our colour attachement #0
-	//glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, renderedTexture, 0);
-	 
-	// Set the list of draw buffers.
-	GLenum DrawBuffers[1] = {GL_COLOR_ATTACHMENT0};
-	glDrawBuffers(1, DrawBuffers); // "1" is the size of DrawBuffers
+	// No color output in the bound framebuffer, only depth.
+	glDrawBuffer(GL_NONE);
+	glReadBuffer(GL_NONE);
 
 	// Always check that our framebuffer is ok
 	if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-		printf("error\n");
+		printf("Error creating depth render buffer.\n");
 
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	return renderedTexture;
 }
 
 void display(float elapsed){
 	int w, h;
 	glfwGetWindowSize(window, &w, &h);
 
+	// RENDER BUFFER RENDERING
+
 	glBindFramebuffer(GL_FRAMEBUFFER, FramebufferName);
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LESS);
+	glViewport(0, 0, w, h);
+	
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
 
-	glViewport(0, 0, w, h);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(45.0f, w / (float)h, 0.1f, 5000.0f);
+	glOrtho(-100, 100, -100, 100, -100, 100);
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+	gluLookAt(0, 0, -1, 0, 0, 0, 0, 1, 0);
+	//camera_view(elapsed, w, h);
+
+	glEnable(GL_LIGHT0);
+	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+
+	//glTranslatef(20, 0, 0);
+	//dei.render_shadow();
+
+	//glTranslatef(-20, 0, 0);
+	
+	//chair.render_shadow();
+	//colorCube.render_shadow();
+	chair.render_shadow();
+	sphere.render_shadow();
+
+
+	// SCREEN RENDERING
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	//glDisable(GL_CULL_FACE);
+
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	
+	
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPerspective(45.0f, w / (float)h, 0.1f, 1000.0f);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
 	camera_view(elapsed, w, h);
 
-	glEnable(GL_LIGHT0);
-	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+	//glEnable(GL_LIGHT0);
+	//glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 
-	//glTranslatef(20, 0, 0);
-	dei.render_ntexture();
-
-	//glTranslatef(-20, 0, 0);
-	
-	chair.render();
-	colorCube.render();
+	//chair.render();
+	//colorCube.render();
 	sphere.render();
-
-
-
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-	glDisable(GL_CULL_FACE);
-
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
-
-	glDepthFunc(GL_LESS);
-
-	glEnable(GL_LIGHT0);
-	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-
 	chair.render();
-	colorCube.render();
-	sphere.render();
 
 	glTranslatef(20, 0, 0);
 	dei.render_ntexture();
 
 
-	glActiveTexture(GL_TEXTURE0);
+	/*glActiveTexture(GL_TEXTURE0);
 	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, renderedTexture);
+	glBindTexture(GL_TEXTURE_2D, depthTexture);
 
 
 	//glRotatef(45, 1, 0, 0);
@@ -291,8 +292,6 @@ void display(float elapsed){
 		glTexCoord2f(0, 0);
 		glVertex3f(10, 30, 0);
 	glEnd();
-	
-
+	*/
 
 }
-

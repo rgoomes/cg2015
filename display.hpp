@@ -26,6 +26,6 @@ void load_objects();
 void add_lights();
 void set_environment(GLFWwindow* _window, btDynamicsWorld* _world);
 void display(float elapsed);
-int get_render_buffer();
+void get_render_buffer();
 
 #endif

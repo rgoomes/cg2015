@@ -71,6 +71,17 @@ void Rigidbody::move(float _x, float _y, float _z){
 	
 }
 
+void Rigidbody::render_shadow(){
+	float mt[16];
+	glPushMatrix();
+		get_matrix(mt);
+		glMultMatrixf(mt);
+		
+		Object::render_shadow();
+	glPopMatrix();
+	
+}
+
 void Rigidbody::render(){
 	btTransform trans;
 	rigidbody->getMotionState()->getWorldTransform(trans);

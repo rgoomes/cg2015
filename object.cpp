@@ -56,20 +56,43 @@ void Object::move(float _x, float _y, float _z){
 	z = _z;
 }
 
+void Object::get_depthbiasmvp(float dbmvp[4][4]){
+	//glPushMatrix();
+	
+	//float mvp[4][4];
+	//get_mvp(mvp);
+	
+	float bias[4][4] = {{0.5, 0.0, 0.0, 0.0}, 
+						{0.0, 0.5, 0.0, 0.0},
+						{0.0, 0.0, 0.5, 0.0},
+						{0.5, 0.5, 0.5, 1.0}};
+	mult_matrix(dbmvp, depthMVP, bias);
+	
+	//glPopMatrix();
+}
+
 void Object::render_texture(){
 
 	float m[4][4];
 	get_mvp(m);
+	float depthbias_mvp[4][4];
+	get_depthbiasmvp(depthbias_mvp);
 
 	for(int i=0; i<(int)groups.size(); i++){
 		Group g = groups[i];
 
 		glUseProgram(g.program_id);
 		glUniformMatrix4fv(g.matrix_id, 1, GL_FALSE, &m[0][0]);
-
+		glUniformMatrix4fv(g.depthbias_id, 1, GL_FALSE, &depthbias_mvp[0][0]);
+		
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, g.texture);
 		glUniform1i(g.texture_id, 0);
+
+
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, shadowmap);
+		glUniform1i(g.shadowmap_id, 1);
 
 		// 1rst attribute buffer : vertices
 		glEnableVertexAttribArray(g.vertexposition_modelspace_id);
@@ -104,6 +127,53 @@ void Object::render_texture(){
 	}
 
 
+}
+
+void Object::render_shadow(){
+	
+	get_mvp(this->depthMVP);
+
+	for(int i=0; i<(int)groups.size(); i++){
+		Group g = groups[i];
+
+		glUseProgram(g.shadow_program_id);
+		glUniformMatrix4fv(g.shadow_matrix_id, 1, GL_FALSE, &depthMVP[0][0]);
+
+		// 1rst attribute buffer : vertices
+		glEnableVertexAttribArray(g.vertexposition_modelspace_id);
+		glBindBuffer(GL_ARRAY_BUFFER, g.vertexbuffer);
+		glVertexAttribPointer(
+			g.vertexposition_modelspace_id,  // The attribute we want to configure
+			3,                            // size
+			GL_FLOAT,                     // type
+			GL_FALSE,                     // normalized?
+			0,                            // stride
+			(void*)0                      // array buffer offset
+		);
+		
+		// 2nd attribute buffer : UVs
+		glEnableVertexAttribArray(g.vertexUV_id);
+		glBindBuffer(GL_ARRAY_BUFFER, g.uvbuffer);
+		glVertexAttribPointer(
+			g.vertexUV_id,                // The attribute we want to configure
+			2,                            // size : U+V => 2
+			GL_FLOAT,                     // type
+			GL_FALSE,                     // normalized?
+			0,                            // stride
+			(void*)0                      // array buffer offset
+		);
+
+		// Draw the triangles !
+		glDrawArrays(GL_TRIANGLES, 0, g.size*3); // 12*3 indices starting at 0 -> 12 triangles
+
+		glDisableVertexAttribArray(g.vertexposition_modelspace_id);
+		glDisableVertexAttribArray(g.vertexUV_id);
+		
+	}	
+}
+
+void Object::set_shadowmap(GLuint dt){
+	shadowmap = dt;
 }
 
 void Object::set_scale(float s){
@@ -194,9 +264,11 @@ Group Object::load_group(string group_name){
 	Group g;
 
 	g.program_id = load_shaders( "objects/textureVertexShader.glsl", "objects/textureFragmentShader.glsl" );
+	g.shadow_program_id = load_shaders( "objects/depthVertexShader.glsl", "objects/depthFragmentShader.glsl" );
 	g.matrix_id = glGetUniformLocation(g.program_id, "MVP");
-	g.translate_id = glGetUniformLocation(g.program_id, "translate");
-
+	g.depthbias_id = glGetUniformLocation(g.program_id, "DepthBiasMVP");
+	g.shadowmap_id = glGetUniformLocation(g.program_id, "shadowMap");
+	
 	g.vertexposition_modelspace_id = glGetAttribLocation(g.program_id, "vertexPosition_modelspace");
 	g.vertexUV_id = glGetAttribLocation(g.program_id, "vertexUV");
 
@@ -204,6 +276,9 @@ Group Object::load_group(string group_name){
 	g.texture = loadDDS(texture_path.c_str());
 	g.texture_id  = glGetUniformLocation(g.program_id, "mytextureSampler");
 	texture_path = path + "/" + group_name + ".dds";
+	
+	g.shadow_matrix_id = glGetUniformLocation(g.shadow_program_id, "depthMVP");
+
 	
 	glGenBuffers(1, &g.vertexbuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, g.vertexbuffer);
@@ -277,7 +352,7 @@ bool Object::load_obj_texture(){
 }
 
 void Object::get_mvp(float mvp[4][4]){
-	float m1[4][4], m2[4][4], t[4][4];
+	float m1[4][4], m2[4][4];
 	glGetFloatv(GL_MODELVIEW_MATRIX, m1[0]);
 	glGetFloatv(GL_PROJECTION_MATRIX, m2[0]);
 	mult_matrix(mvp, m1, m2);
