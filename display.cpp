@@ -16,15 +16,6 @@ double horizontal_ang = PI*1.12, vertical_ang = PI*1.65;
 double mouse_speed = 0.002f, speed = 90.0f, xpos, ypos;
 btVector3 obs_pos(60, 18, -10);
 
-int sky_front[]  = { 1, -1, -1,  1, -1,  1,  1,  1,  1,  1,  1, -1};
-int sky_left[] 	 = { 1, -1,  1, -1, -1,  1, -1,  1,  1,  1,  1,  1};
-int sky_back[] 	 = {-1, -1,  1, -1, -1, -1, -1,  1, -1, -1,  1,  1};
-int sky_right[]  = {-1, -1, -1,  1, -1, -1,  1,  1, -1, -1,  1, -1};
-int sky_top[] 	 = {-1,  1, -1,  1,  1, -1,  1,  1,  1, -1,  1,  1};
-int sky_bottom[] = { 1, -1, -1, -1, -1, -1, -1, -1,  1,  1, -1,  1};
-
-GLuint skybox[6];
-
 void set_environment(GLFWwindow* _window, btDynamicsWorld* _world){
 	window = _window;
 	world = _world;
@@ -50,13 +41,9 @@ void load_objects(){
 	
 }
 
-void load_skytextures(){
-	string skybox_path = "objects/skybox/skybox";
+void load_textures(){
+	load_skybox();
 
-	for(int i = 0; i < 6; i++){
-		string full_path = skybox_path + to_string(i) + ".dds";
-		skybox[i] = loadDDS(full_path.c_str());
-	}
 }
 
 void add_lights(){
@@ -113,39 +100,9 @@ void camera_view(float elapsed, int w, int h){
 	btVector3 tmp = obs_pos+dir;
 	btVector3 up = right.cross(dir);
 	gluLookAt(obs_pos.getX(),obs_pos.getY(),obs_pos.getZ(), 
-			  tmp.getX(),tmp.getY(),tmp.getZ(), 
-			  -up.getX(), -up.getY(), -up.getZ()
+			      tmp.getX(),    tmp.getY(),    tmp.getZ(), 
+			      -up.getX(),    -up.getY(),    -up.getZ()
 	);
-}
-
-void draw_skyface(int pos, int *dp, double D){
-	glBindTexture(GL_TEXTURE_2D, skybox[pos]);
-	glBegin(GL_QUADS);
-		glTexCoord2f(0, 0); glVertex3f(dp[0]*D, dp[1]*D,  dp[2]*D);
-		glTexCoord2f(1, 0); glVertex3f(dp[3]*D, dp[4]*D,  dp[5]*D);
-		glTexCoord2f(1, 1); glVertex3f(dp[6]*D, dp[7]*D,  dp[8]*D);
-		glTexCoord2f(0, 1); glVertex3f(dp[9]*D, dp[10]*D, dp[11]*D);
-	glEnd();
-}
-
-void draw_skybox(double D){
-	glPushMatrix();
-     
-	glPushAttrib(GL_ENABLE_BIT);
-	glEnable(GL_TEXTURE_2D);
-	glDisable(GL_DEPTH_TEST);
-	glDisable(GL_LIGHTING);
-	glDisable(GL_BLEND);
-
-	draw_skyface(0, sky_front,  D);
-	draw_skyface(1, sky_left,   D);
-	draw_skyface(2, sky_back,   D);
-	draw_skyface(3, sky_right,  D);
-	draw_skyface(4, sky_top,    D);
-	draw_skyface(5, sky_bottom, D);
-
-	glPopAttrib();
-	glPopMatrix();
 }
 
 GLfloat light_position[] = { 1.0, 15.0, -30.0, 1.0 };
@@ -175,4 +132,3 @@ void display(float elapsed){
 	dei.render_ntexture();
 	
 }
-
