@@ -47,10 +47,13 @@ void load_textures(){
 }
 
 void add_lights(){
-	glShadeModel (GL_SMOOTH);
-   
+	glShadeModel(GL_SMOOTH);
 	glEnable(GL_LIGHTING);
-	glEnable(GL_DEPTH_TEST);
+
+	GLfloat light_position[] = { 1.0, 15.0, -30.0, 1.0 };
+
+	glEnable(GL_LIGHT0);
+	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 
 }
 
@@ -105,8 +108,6 @@ void camera_view(float elapsed, int w, int h){
 	);
 }
 
-GLfloat light_position[] = { 1.0, 15.0, -30.0, 1.0 };
-
 void display(float elapsed){
 	int w, h;
 	glfwGetWindowSize(window, &w, &h);
@@ -120,9 +121,6 @@ void display(float elapsed){
 
 	camera_view(elapsed, w, h);
 	draw_skybox(500);
-
-	glEnable(GL_LIGHT0);
-	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 
 	chair.render();
 	colorCube.render();

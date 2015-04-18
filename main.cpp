@@ -102,6 +102,7 @@ int main(int argc, char **argv){
 
 	load_objects();
 	load_textures();
+	add_lights();
 
 	last_tick = glfwGetTime();
 
