@@ -21,7 +21,8 @@ struct Group{
 	string texture_path;
 	GLuint program_id, shadow_program_id, matrix_id, vertexposition_modelspace_id, vertexUV_id, 
 	texture, texture_id, shadowmap_id, depthbias_id, shadow_matrix_id,
-	vertexbuffer, uvbuffer, size;
+	vertexbuffer, uvbuffer, normalbuffer, size,
+	viewmatrix_id, lightdir_id, normal_id;
 };
 
 class Object {
