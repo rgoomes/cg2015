@@ -36,9 +36,6 @@ void load_objects(){
 	sphere.set_scale(0.1);
 	sphere.load_obj(true);
 	world->addRigidBody(sphere.get_rigidbody());
-
-	add_lights();
-	
 }
 
 void load_textures(){
