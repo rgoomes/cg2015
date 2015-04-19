@@ -72,11 +72,20 @@ void Object::get_depthbiasmvp(float dbmvp[4][4]){
 }
 
 void Object::render_texture(){
-
+	printf("asasd\n");
 	float m[4][4];
-	get_mvp(m);
 	float depthbias_mvp[4][4];
 	get_depthbiasmvp(depthbias_mvp);
+
+	float view[4][4], model[16];
+	glGetFloatv(GL_MODELVIEW_MATRIX, view[0]);
+	get_matrix(model);
+
+	glPushMatrix();
+		glMultMatrixf(model);
+		get_mvp(m);
+		
+	glPopMatrix();
 
 	for(int i=0; i<(int)groups.size(); i++){
 		Group g = groups[i];
@@ -84,6 +93,9 @@ void Object::render_texture(){
 		glUseProgram(g.program_id);
 		glUniformMatrix4fv(g.matrix_id, 1, GL_FALSE, &m[0][0]);
 		glUniformMatrix4fv(g.depthbias_id, 1, GL_FALSE, &depthbias_mvp[0][0]);
+		glUniformMatrix4fv(g.viewmatrix_id, 1, GL_FALSE, &view[0][0]);
+		glUniformMatrix4fv(g.modelmatrix_id, 1, GL_FALSE, model);
+		glUniform3f(g.lightdir_id, 0, 0, -1);
 		
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, g.texture);
@@ -112,6 +124,18 @@ void Object::render_texture(){
 		glVertexAttribPointer(
 			g.vertexUV_id,                // The attribute we want to configure
 			2,                            // size : U+V => 2
+			GL_FLOAT,                     // type
+			GL_FALSE,                     // normalized?
+			0,                            // stride
+			(void*)0                      // array buffer offset
+		);
+
+		// 3rd attribute buffer : normals
+		glEnableVertexAttribArray(g.normal_id);
+		glBindBuffer(GL_ARRAY_BUFFER, g.normalbuffer);
+		glVertexAttribPointer(
+			g.normal_id,				  // The attribute we want to configure
+			3,                            // size
 			GL_FLOAT,                     // type
 			GL_FALSE,                     // normalized?
 			0,                            // stride
@@ -268,9 +292,13 @@ Group Object::load_group(string group_name){
 	g.matrix_id = glGetUniformLocation(g.program_id, "MVP");
 	g.depthbias_id = glGetUniformLocation(g.program_id, "DepthBiasMVP");
 	g.shadowmap_id = glGetUniformLocation(g.program_id, "shadowMap");
-	
+	g.viewmatrix_id = glGetUniformLocation(g.program_id, "V");
+	g.modelmatrix_id = glGetUniformLocation(g.program_id, "M");
+	g.lightdir_id = glGetUniformLocation(g.program_id, "LightInvDirection_worldspace");
+
 	g.vertexposition_modelspace_id = glGetAttribLocation(g.program_id, "vertexPosition_modelspace");
 	g.vertexUV_id = glGetAttribLocation(g.program_id, "vertexUV");
+	g.normal_id = glGetAttribLocation(g.program_id, "vertexNormal_modelspace");
 
 	g.size = out_vertices.size();
 	g.texture = loadDDS(texture_path.c_str());
@@ -287,6 +315,10 @@ Group Object::load_group(string group_name){
 	glGenBuffers(1, &g.uvbuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, g.uvbuffer);
 	glBufferData(GL_ARRAY_BUFFER, out_uvs.size()*sizeof(Point2), out_uvs.data(), GL_DYNAMIC_DRAW);
+
+	glGenBuffers(1, &g.normalbuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, g.normalbuffer);
+	glBufferData(GL_ARRAY_BUFFER, out_normals.size()*sizeof(Point), out_normals.data(), GL_DYNAMIC_DRAW);
 
 	all_faces.insert(all_faces.end(),faces.begin(),faces.end());
 
@@ -366,3 +398,6 @@ void load_debug(string path, vector<Point> &vertices, vector<Point> &normals, ve
 				  << "Uvs: "      << uvs.size() 	 << "\n\n";
 }
 
+void Object::get_matrix(float m[16]){
+
+}

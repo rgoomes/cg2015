@@ -8,7 +8,7 @@
 */
 Object colorCube("objects/cube");
 Rigidbody sphere("objects/sphere", 5, btVector3(20, 20, 20));
-Rigidbody chair("objects/chair", 10, btVector3(20, 30, 10));
+Rigidbody chair("objects/chair", 10, btVector3(20, 30, 20));
 //Object chair("objects/chair");
 //Object sphere("objects/sphere");
 Object dei("objects/dei");
@@ -20,15 +20,6 @@ btDynamicsWorld* world;
 double horizontal_ang = PI/8, vertical_ang = PI/4;
 double mouse_speed = 0.002f, speed = 90.0f, xpos, ypos;
 btVector3 obs_pos(60, 18, -10);
-
-int sky_front[]  = { 1, -1, -1, -1, -1, -1, -1,  1, -1,  1,  1, -1};
-int sky_left[] 	 = { 1, -1,  1,  1, -1, -1,  1,  1, -1,  1,  1,  1};
-int sky_back[] 	 = {-1, -1,  1,  1, -1,  1,  1,  1,  1, -1,  1,  1};
-int sky_right[]  = {-1, -1, -1, -1, -1,  1, -1,  1,  1, -1,  1, -1};
-int sky_top[] 	 = {-1,  1, -1, -1,  1,  1,  1,  1,  1,  1,  1, -1};
-int sky_bottom[] = {-1, -1, -1, -1, -1,  1,  1, -1,  1,  1, -1, -1};
-
-GLuint skybox[6];
 
 void set_environment(GLFWwindow* _window, btDynamicsWorld* _world){
 	window = _window;
@@ -44,7 +35,6 @@ void load_objects(){
 	glfwSetCursorPos(window, w/2, h/2);
 	
 	get_render_buffer();
-	printf("%d\n", depthTexture);
 		
 	colorCube.set_scale(1);
 	colorCube.move(0, 20, 0);
@@ -66,20 +56,21 @@ void load_objects(){
 	sphere.set_shadowmap(depthTexture);
 	world->addRigidBody(sphere.get_rigidbody());
 
-	add_lights();
-
-
 }
 
-void load_skytextures(){
-	
+void load_textures(){
+	load_skybox();
+
 }
 
 void add_lights(){
-	glShadeModel (GL_SMOOTH);
-   
+	glShadeModel(GL_SMOOTH);
 	glEnable(GL_LIGHTING);
-	glEnable(GL_DEPTH_TEST);
+
+	GLfloat light_position[] = { 1.0, 15.0, -30.0, 1.0 };
+
+	glEnable(GL_LIGHT0);
+	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 
 }
 
@@ -94,7 +85,6 @@ void camera_view(float elapsed, int w, int h){
 	glfwGetCursorPos(window, &xpos, &ypos);
 	glfwSetCursorPos(window, w/2, h/2);
 
-	printf("%lf %lf\n", w/2-xpos, h/2-ypos);
 	horizontal_ang += mouse_speed * double(w/2 - xpos);
 	vertical_ang   -= mouse_speed * double(h/2 - ypos);
 
@@ -131,43 +121,13 @@ void camera_view(float elapsed, int w, int h){
 	btVector3 up = -dir.cross(right);
 
 	gluLookAt(obs_pos.getX(),obs_pos.getY(),obs_pos.getZ(), 
-			  tmp.getX(),tmp.getY(),tmp.getZ(), 
-			  -up.getX(), -up.getY(), -up.getZ()
+			      tmp.getX(),    tmp.getY(),    tmp.getZ(), 
+			      -up.getX(),    -up.getY(),    -up.getZ()
 	);
 }
 
-void draw_skyface(int pos, int *dp, double D){
-	glBindTexture(GL_TEXTURE_2D, skybox[pos]);
-	glBegin(GL_QUADS);
-		glTexCoord2f(0, 0); glVertex3f(dp[0]*D, dp[1]*D,  dp[2]*D);
-		glTexCoord2f(1, 0); glVertex3f(dp[3]*D, dp[4]*D,  dp[5]*D);
-		glTexCoord2f(1, 1); glVertex3f(dp[6]*D, dp[7]*D,  dp[8]*D);
-		glTexCoord2f(0, 1); glVertex3f(dp[9]*D, dp[10]*D, dp[11]*D);
-	glEnd();
-}
-
-void draw_skybox(double D){
-	glPushMatrix();
-     
-	glPushAttrib(GL_ENABLE_BIT);
-	glEnable(GL_TEXTURE_2D);
-	glDisable(GL_DEPTH_TEST);
-	glDisable(GL_LIGHTING);
-	glDisable(GL_BLEND);
-
-	draw_skyface(0, sky_front,  500);
-	draw_skyface(1, sky_left,   500);
-	draw_skyface(2, sky_back,   500);
-	draw_skyface(3, sky_right,  500);
-	draw_skyface(4, sky_top,    500);
-	draw_skyface(5, sky_bottom, 500);
-
-	glPopAttrib();
-	glPopMatrix();
-}
 
 GLfloat light_position[] = { 1.0, 15.0, -30.0, 1.0 };
-
 
 void get_render_buffer(){
 	int w, h;
@@ -258,6 +218,7 @@ void display(float elapsed){
 	glLoadIdentity();
 
 	camera_view(elapsed, w, h);
+	draw_skybox(500);
 
 	//glEnable(GL_LIGHT0);
 	//glLightfv(GL_LIGHT0, GL_POSITION, light_position);
@@ -269,6 +230,7 @@ void display(float elapsed){
 
 	glTranslatef(20, 0, 0);
 	dei.render_ntexture();
+
 
 
 	/*glActiveTexture(GL_TEXTURE0);

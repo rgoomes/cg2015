@@ -4,7 +4,6 @@
 varying vec2 UV;
 varying vec3 Normal_cameraspace;
 varying vec3 LightDirection_cameraspace;
-
 varying vec4 ShadowCoord;
 
 // Values that stay constant for the whole mesh.
@@ -44,9 +43,10 @@ void main(){
 	
 	// Material properties
 	vec3 MaterialDiffuseColor = texture2D( myTextureSampler, UV ).rgb;
+	vec3 MaterialAmbientColor = vec3(0.1,0.1,0.1) * MaterialDiffuseColor;
 
-	//vec3 n = normalize(Normal_cameraspace);
-	//vec3 l = normalize(LightDirection_cameraspace);
+	vec3 n = normalize(Normal_cameraspace);
+	vec3 l = normalize(LightDirection_cameraspace);
 	/*float visibility = shadow2D( shadowMap, vec3(ShadowCoord.xy, (ShadowCoord.z)/ShadowCoord.w) ).r;
 
 	float bias = 0.001;
@@ -54,11 +54,14 @@ void main(){
 	    visibility = 0.5;
 	}*/
 	float visibility=1.0;
-	float bias = 0.005;
+	float cosTheta = clamp( dot( n,l ), 0,1 );
 
 	// ...variable bias
-	// float bias = 0.005*tan(acos(cosTheta));
+	float bias = 0.005;
+	//float bias = 0.001*tan(acos(cosTheta));
 	// bias = clamp(bias, 0,0.01);
+	//float bias = 0.005*tan(acos(cosTheta));
+	//bias = clamp(bias, 0,0.01);
 
 	// Sample the shadow map 4 times
 	for (int i=0;i<4;i++){
@@ -66,6 +69,7 @@ void main(){
 		//  - Always the same samples.
 		//    Gives a fixed pattern in the shadow, but no noise
 		int index = i;
+		//int index = int(mod(int(4.0*random(gl_FragCoord.xyy, i)), 4));
 		//  - A random sample, based on the pixel's screen location. 
 		//    No banding, but the shadow moves with the camera, which looks weird.
 		//int index = int(mod(int(16.0*random(gl_FragCoord.xyy, i)), 16));
@@ -75,16 +79,25 @@ void main(){
 		
 		// being fully in the shadow will eat up 4*0.2 = 0.8
 		// 0.2 potentially remain, which is quite dark.
-		visibility -= 0.2*(1.0-shadow2D( shadowMap, vec3(ShadowCoord.xy + poissonDisk[index]/700.0,  (ShadowCoord.z-bias)/ShadowCoord.w )).r);
+		visibility -= 0.2*(1.0-shadow2D( shadowMap, vec3(ShadowCoord.xy + poissonDisk[index]/1000.0,  (ShadowCoord.z-bias)/ShadowCoord.w )).r);
 	}
+	/*if ( shadow2D( shadowMap, vec3(ShadowCoord.xy, (ShadowCoord.z)/ShadowCoord.w) ).r  <  ShadowCoord.z-bias){
+	    visibility = 0;
+	}*/
 	
 
 /*	float bias = 0.005;
 	float visibility = 1.0;
-	if ( shadow2D( shadowMap, vec3(ShadowCoord.xy, (ShadowCoord.z)/ShadowCoord.w) ).r  <  ShadowCoord.z-bias){
-	    visibility = 0;
-	}*/
+	*/
 
-	gl_FragColor.rgb = visibility * MaterialDiffuseColor * LightColor;
+	//gl_FragColor.rgb = n;
+	//gl_FragColor.rgb = visibility * MaterialDiffuseColor * LightColor;
+
+
+	gl_FragColor.rgb = 
+		// Ambient : simulates indirect lighting
+		MaterialAmbientColor +
+		// Diffuse : "color" of the object
+		visibility * MaterialDiffuseColor * LightColor * cosTheta;
 
 }

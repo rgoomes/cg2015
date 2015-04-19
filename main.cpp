@@ -99,7 +99,8 @@ int main(int argc, char **argv){
 	main_world->stepSimulation(0.00001, 60);
 
 	load_objects();
-	load_skytextures();
+	load_textures();
+	add_lights();
 
 	last_tick = glfwGetTime();
 	

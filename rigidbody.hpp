@@ -17,6 +17,7 @@ class Rigidbody : public Object	{
 		void render();
 		void get_matrix(float m[16]);
 		void render_shadow();
+		void render_texture();
 	private:
 		btRigidBody* rigidbody;
 		btCollisionShape* get_mesh_object();

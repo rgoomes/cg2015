@@ -22,7 +22,7 @@ struct Group{
 	GLuint program_id, shadow_program_id, matrix_id, vertexposition_modelspace_id, vertexUV_id, 
 	texture, texture_id, shadowmap_id, depthbias_id, shadow_matrix_id,
 	vertexbuffer, uvbuffer, normalbuffer, size,
-	viewmatrix_id, lightdir_id, normal_id;
+	viewmatrix_id, modelmatrix_id, lightdir_id, normal_id;
 };
 
 class Object {
@@ -44,7 +44,7 @@ class Object {
 		float scale();
 		void render();
 		void render_ntexture();
-		void render_texture();
+		virtual void render_texture();
 		void set_shadowmap(GLuint dt);
 		void render_shadow();
 		
@@ -56,15 +56,16 @@ class Object {
 		bool debug=false;
 		void load_debug(string path, vector<Point> &vertices, vector<Point> &normals, vector<Face> &faces, vector<Point> &uvs);
 		Group load_group(string group_name);
-		void get_depthbiasmvp(float dbmvp[4][4]);
 		
+	protected:
 		GLuint shadowmap;
 		float depthMVP[4][4];
-	protected:
+		void get_depthbiasmvp(float dbmvp[4][4]);
 		float x, y, z, s;
 		string path;
 		bool has_texture;
 		void get_mvp(float mvp[4][4]);
+		void get_matrix(float m[16]);
 };
 
 #endif
