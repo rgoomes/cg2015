@@ -72,7 +72,6 @@ void Object::get_depthbiasmvp(float dbmvp[4][4]){
 }
 
 void Object::render_texture(){
-	printf("asasd\n");
 	float m[4][4];
 	float depthbias_mvp[4][4];
 	get_depthbiasmvp(depthbias_mvp);
@@ -148,6 +147,7 @@ void Object::render_texture(){
 		glDisableVertexAttribArray(g.vertexposition_modelspace_id);
 		glDisableVertexAttribArray(g.vertexUV_id);
 		
+		glDisable(GL_TEXTURE_2D);
 	}
 
 

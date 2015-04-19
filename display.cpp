@@ -6,7 +6,7 @@
 /*Rigidbody colorCube("objects/cube", 1, btVector3(10, 30, 0));
 
 */
-Object colorCube("objects/cube");
+Rigidbody colorCube("objects/cube", 5, btVector3(20, 20, 40));
 Rigidbody sphere("objects/sphere", 5, btVector3(20, 20, 20));
 Rigidbody chair("objects/chair", 10, btVector3(20, 30, 10));
 //Object chair("objects/chair");
@@ -37,10 +37,9 @@ void load_objects(){
 	get_render_buffer();
 		
 	colorCube.set_scale(1);
-	colorCube.move(0, 20, 0);
 	colorCube.load_obj(true);
 	colorCube.set_shadowmap(depthTexture);
-	//world->addRigidBody(colorCube.get_rigidbody());
+	world->addRigidBody(colorCube.get_rigidbody());
 	
 	chair.set_scale(0.1);
 	chair.load_obj(true);
@@ -173,39 +172,32 @@ void display(float elapsed){
 	glViewport(0, 0, w, h);
 	
 	glEnable(GL_CULL_FACE);
-	//glCullFace(GL_FRONT);
+	glCullFace(GL_FRONT);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(-100, 100, -100, 100, -100, 100);
+	glOrtho(-100, 100, -100, 100, -100, 100); // directional light
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
 	gluLookAt(0, 0, -1, 0, 0, 0, 0, 1, 0);
-	//camera_view(elapsed, w, h);
 
 	glEnable(GL_LIGHT0);
 	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 
-	//glTranslatef(20, 0, 0);
-	//dei.render_shadow();
-
-	//glTranslatef(-20, 0, 0);
-	
-	//chair.render_shadow();
-	//colorCube.render_shadow();
-	chair.render_shadow();
+	colorCube.render_shadow();
 	sphere.render_shadow();
-
+	chair.render_shadow();
+	//dei.render_shadow();
 
 	// SCREEN RENDERING
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	//glCullFace(GL_BACK);
+	glCullFace(GL_BACK);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
@@ -223,37 +215,11 @@ void display(float elapsed){
 	//glEnable(GL_LIGHT0);
 	//glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 
-	//chair.render();
-	//colorCube.render();
+	colorCube.render();
 	sphere.render();
 	chair.render();
 
-	glTranslatef(20, 0, 0);
 	dei.render_ntexture();
-
-
-
-	/*glActiveTexture(GL_TEXTURE0);
-	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, depthTexture);
-
-
-	//glRotatef(45, 1, 0, 0);
-	glBegin(GL_TRIANGLES);
-		glTexCoord2f(1, 0);
-		glVertex3f(0, 30, 0);
-		glTexCoord2f(1, 1);
-		glVertex3f(0, 30, 10);
-		glTexCoord2f(0, 0);
-		glVertex3f(10, 30, 0);
-
-		glTexCoord2f(0, 1);
-		glVertex3f(10, 30, 10);
-		glTexCoord2f(1, 1);
-		glVertex3f(0, 30, 10);
-		glTexCoord2f(0, 0);
-		glVertex3f(10, 30, 0);
-	glEnd();
-	*/
+	//glTranslatef(20, 0, 0);
 
 }
