@@ -8,7 +8,7 @@
 */
 Object colorCube("objects/cube");
 Rigidbody sphere("objects/sphere", 5, btVector3(20, 20, 20));
-Rigidbody chair("objects/chair", 10, btVector3(20, 30, 20));
+Rigidbody chair("objects/chair", 10, btVector3(20, 30, 10));
 //Object chair("objects/chair");
 //Object sphere("objects/sphere");
 Object dei("objects/dei");
