@@ -55,24 +55,6 @@ btDynamicsWorld* getDynamicWorld(){
 	return new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
 }
 
-void bullet_init(){
-	main_world = getDynamicWorld();
-
-	main_world->setGravity(btVector3(0, -10, 0));
-
-	btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 1);
-	btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, -1, 0)));
-	btRigidBody::btRigidBodyConstructionInfo groundRigidBodyCI(0, groundMotionState, groundShape, btVector3(0, 0, 0));
-	btRigidBody* groundRigidBody = new btRigidBody(groundRigidBodyCI);
-	main_world->addRigidBody(groundRigidBody);
-	
-}
-
-void bullet_tick(float elapsed){	
-	main_world->stepSimulation(elapsed, 60);
-
-}
-
 float frame_rate(){
 	frame++;
 	tm = glfwGetTime();
@@ -94,10 +76,9 @@ float frame_rate(){
 
 int main(int argc, char **argv){
 	opengl_init();
-	bullet_init();
-	set_environment(main_window, main_world);
 	
-	main_world->stepSimulation(0.00001, 60);
+	main_world = new World(main_window);
+	set_environment(main_window, main_world);
 
 	load_objects();
 	load_textures();
@@ -108,8 +89,7 @@ int main(int argc, char **argv){
 	do{
 
 		float elapsed_time = frame_rate();
-		bullet_tick(elapsed_time);
-
+		
 		display(elapsed_time);
 
 		glfwSwapBuffers(main_window);
