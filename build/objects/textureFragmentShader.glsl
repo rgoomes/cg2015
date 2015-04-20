@@ -46,9 +46,11 @@ void main(){
 	vec3 MaterialDiffuseColor = texture2D( myTextureSampler, UV ).rgb;
 	vec3 MaterialAmbientColor = vec3(0.1,0.1,0.1) * MaterialDiffuseColor;
 	vec3 MaterialSpecColor = vec3(1.0, 1.0, 1.0);
+	vec3 lightPos = vec3(-1.0,-1.0, -1.0);
 
 	vec3 n = normalize(Normal_cameraspace);
 	vec3 l = normalize(LightDirection_cameraspace);
+	vec3 lightDir = normalize(lightPos);
 	
 	float visibility=1.0;
 	float cosTheta = clamp( dot( n,l ), 0,1 );
@@ -56,10 +58,10 @@ void main(){
 	float specular = 0.0;
 	//if(cosTheta > 0){
 		vec3 viewDir = normalize(-vertPos);
-		vec3 halfDir = normalize(l + viewDir);
+		vec3 halfDir = normalize(lightDir + viewDir);
 		float specAngle = max(dot(halfDir, n), 0.0);
-		specular = pow(specAngle, 16.0);
-	// 	}
+		specular = pow(specAngle, 128.0);
+	//}
 
 	float bias = 0.005;
 	// ...variable bias
