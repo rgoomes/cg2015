@@ -98,7 +98,7 @@ void Rigidbody::render(){
 }
 
 void Rigidbody::render_texture(){
-
+	
 	float m[4][4];
 	float depthbias_mvp[4][4];
 	get_depthbiasmvp(depthbias_mvp);
@@ -128,7 +128,6 @@ void Rigidbody::render_texture(){
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, g.texture);
 		glUniform1i(g.texture_id, 0);
-
 
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, shadowmap);
