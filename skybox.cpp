@@ -21,7 +21,6 @@ void load_skybox(){
 
 void draw_skyface(int pos, int *d, double D){
 	glBindTexture(GL_TEXTURE_2D, skybox[pos]);
-	printf("%d\n", skybox[pos]);
 	glBegin(GL_QUADS);
 		glTexCoord2f(0, 0); glVertex3f(d[0]*D,  d[1]*D,  d[2]*D);
 		glTexCoord2f(1, 0); glVertex3f(d[3]*D,  d[4]*D,  d[5]*D);

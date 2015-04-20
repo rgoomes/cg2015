@@ -66,11 +66,6 @@ void add_lights(){
 	glShadeModel(GL_SMOOTH);
 	glEnable(GL_LIGHTING);
 
-	GLfloat light_position[] = { 1.0, 15.0, -30.0, 1.0 };
-
-	glEnable(GL_LIGHT0);
-	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-
 }
 
 void get_mvp(float mvp[4][4]){
@@ -172,7 +167,7 @@ void display(float elapsed){
 	glViewport(0, 0, w, h);
 	
 	glEnable(GL_CULL_FACE);
-	glCullFace(GL_FRONT);
+	//glCullFace(GL_FRONT);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -185,8 +180,8 @@ void display(float elapsed){
 
 	gluLookAt(0, 0, -1, 0, 0, 0, 0, 1, 0);
 
-	glEnable(GL_LIGHT0);
-	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+	//glEnable(GL_LIGHT0);
+	//glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 
 	colorCube.render_shadow();
 	sphere.render_shadow();
@@ -200,7 +195,7 @@ void display(float elapsed){
 	glCullFace(GL_BACK);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
+		
 	
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -211,6 +206,11 @@ void display(float elapsed){
 
 	camera_view(elapsed, w, h);
 	draw_skybox(500);
+
+	GLfloat light_position[] = { 1.0, 15.0, -30.0, 1.0 };
+
+	glEnable(GL_LIGHT0);
+	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 
 	//glEnable(GL_LIGHT0);
 	//glLightfv(GL_LIGHT0, GL_POSITION, light_position);
