@@ -102,8 +102,8 @@ void camera_view(float elapsed, int w, int h){
 		obs_pos.setX(WORLD_MAX_X);
 	else if(obs_x < WORLD_MIN_X)
 		obs_pos.setX(WORLD_MIN_X);
-	//if(obs_y > WORLD_MAX_Y)
-	//t	obs_pos.setY(WORLD_MAX_Y);
+	if(obs_y > WORLD_MAX_Y)
+		obs_pos.setY(WORLD_MAX_Y);
 	else if(obs_y < WORLD_MIN_Y)
 		obs_pos.setY(WORLD_MIN_Y);
 	if(obs_z > WORLD_MAX_Z)
@@ -119,7 +119,6 @@ void camera_view(float elapsed, int w, int h){
 			      -up.getX(),    -up.getY(),    -up.getZ()
 	);
 }
-
 
 GLfloat light_position[] = { 1.0, 15.0, -30.0, 1.0 };
 

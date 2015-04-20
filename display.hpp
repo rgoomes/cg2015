@@ -15,8 +15,8 @@
 #include "rigidbody.hpp"
 #include "skybox.hpp"
 
-#define WORLD_MIN_X 0 
-#define WORLD_MAX_X 250
+#define WORLD_MIN_X -20 
+#define WORLD_MAX_X 230
 #define WORLD_MIN_Y 1
 #define WORLD_MAX_Y 30
 #define WORLD_MIN_Z -145

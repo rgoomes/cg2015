@@ -27,12 +27,13 @@ void opengl_init(){
 
 	glfwInit();
 	monitor_resolution			(&SCREEN_WIDTH, &SCREEN_HEIGHT);
-	glfwWindowHint				(GLFW_SAMPLES, 1);
+	glfwWindowHint				(GLFW_SAMPLES, 16);
 	glfwWindowHint				(GLFW_CONTEXT_VERSION_MAJOR, 2);
 	glfwWindowHint				(GLFW_CONTEXT_VERSION_MINOR, 1);
 	glfwSwapInterval			(0);
 	main_window = glfwCreateWindow	(SCREEN_WIDTH/1.5, SCREEN_HEIGHT/1.5, "cg2015", NULL, NULL);
-
+ 	glfwSetInputMode			(main_window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+ 	
 	glfwMakeContextCurrent		(main_window);
 	glfwSetInputMode			(main_window, GLFW_STICKY_KEYS, GL_TRUE);
 
