@@ -45,8 +45,8 @@ void main(){
 	
 	// Material properties
 	vec3 MaterialDiffuseColor = texture2D( myTextureSampler, UV ).rgb;
-	vec3 MaterialAmbientColor = vec3(0.2,0.2,0.2) * MaterialDiffuseColor;
-	vec3 MaterialSpecColor = vec3(1.0, 1.0, 1.0);
+	vec3 MaterialAmbientColor = 0.2 * MaterialDiffuseColor;
+	vec3 MaterialSpecColor = MaterialAmbientColor;
 	vec3 lightPos = vec3(1.0, 1.0, 1.0);
 
 	vec3 n = normalize(Normal_cameraspace);
@@ -57,46 +57,30 @@ void main(){
 	float cosTheta = clamp( dot( n,-l ), 0,1 );
 
 	float specular = 0.0;
-	//if(dot(n, lightDir) > 0.0){
+	if(dot(n, l) > 0.0){
 		vec3 viewDir = normalize(-vertPos);
 		specular = pow(max(0.0, dot(reflect(l, n), viewDir)), 16);
-	//}
+	}
 
 	float bias = 0.005;
 	// ...variable bias
-	//float bias = 0.001*tan(acos(cosTheta));
-	//bias = clamp(bias, 0,0.01);
+	//float bias = 0.001*tan(acos(cosTheta)); bias = clamp(bias, 0,0.01);
 	
 	// Sample the shadow map 4 times
 	for (int i=0;i<4;i++){
-		// use either :
-		//  - Always the same samples.
-		//    Gives a fixed pattern in the shadow, but no noise
-		//int index = i;
-		//int index = int(mod(int(4.0*random(gl_FragCoord.xyy, i)), 4));
-		//  - A random sample, based on the pixel's screen location. 
-		//    No banding, but the shadow moves with the camera, which looks weird.
+		
 		int index = int(mod(int(16.0*random(gl_FragCoord.xyy, i)), 16));
-		//  - A random sample, based on the pixel's position in world space.
-		//    The position is rounded to the millimeter to avoid too much aliasing
-		//index = mod(int(16.0*random(floor(Position_worldspace.xyz*1000.0), i)), 16);
 		if(mod(index, 2) == 0)
 			index = i;
-		// being fully in the shadow will eat up 4*0.2 = 0.8
-		// 0.2 potentially remain, which is quite dark.
-
 		visibility -= 0.2*(1.0-shadow2D( shadowMap, vec3(ShadowCoord.xy + poissonDisk[index]/2000.0,  (ShadowCoord.z-bias)/ShadowCoord.w )).r);
 	}
-	/*if ( shadow2D( shadowMap, vec3(ShadowCoord.xy, (ShadowCoord.z)/ShadowCoord.w) ).r  <  ShadowCoord.z-bias){
-	    visibility = 0;
-	}*/
 	
 	gl_FragColor.rgb = 
 		// Ambient : simulates indirect lighting
 		MaterialAmbientColor +
 		// Diffuse : "color" of the object
 		visibility * MaterialDiffuseColor * LightColor * cosTheta + 
+		// Specular: causes intel bug
 		specular * MaterialSpecColor;
-
 
 }
