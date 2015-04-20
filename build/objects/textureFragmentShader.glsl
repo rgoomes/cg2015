@@ -47,14 +47,10 @@ void main(){
 
 	vec3 n = normalize(Normal_cameraspace);
 	vec3 l = normalize(LightDirection_cameraspace);
-	/*float visibility = shadow2D( shadowMap, vec3(ShadowCoord.xy, (ShadowCoord.z)/ShadowCoord.w) ).r;
-
-	float bias = 0.001;
-	if ( shadow2D( shadowMap, ShadowCoord.xyz ).z  <  ShadowCoord.z-bias){
-	    visibility = 0.5;
-	}*/
+	
 	float visibility=1.0;
 	float cosTheta = clamp( dot( n,l ), 0,1 );
+	cosTheta = clamp(dot( n,l ), 0,1 );
 
 	float bias = 0.005;
 	// ...variable bias
@@ -66,36 +62,27 @@ void main(){
 		// use either :
 		//  - Always the same samples.
 		//    Gives a fixed pattern in the shadow, but no noise
-		int index = i;
+		//int index = i;
 		//int index = int(mod(int(4.0*random(gl_FragCoord.xyy, i)), 4));
 		//  - A random sample, based on the pixel's screen location. 
 		//    No banding, but the shadow moves with the camera, which looks weird.
-		//int index = int(mod(int(16.0*random(gl_FragCoord.xyy, i)), 16));
+		int index = int(mod(int(16.0*random(gl_FragCoord.xyy, i)), 16));
 		//  - A random sample, based on the pixel's position in world space.
 		//    The position is rounded to the millimeter to avoid too much aliasing
 		//int index = mod(int(16.0*random(floor(Position_worldspace.xyz*1000.0), i)), 16);
 		
 		// being fully in the shadow will eat up 4*0.2 = 0.8
 		// 0.2 potentially remain, which is quite dark.
-		visibility -= 0.2*(1.0-shadow2D( shadowMap, vec3(ShadowCoord.xy + poissonDisk[index]/2000.0,  (ShadowCoord.z-bias)/ShadowCoord.w )).r);
+		visibility -= 0.2*(1.0-shadow2D( shadowMap, vec3(ShadowCoord.xy /*+ poissonDisk[index]/4000.0*/,  (ShadowCoord.z-bias)/ShadowCoord.w )).r);
 	}
 	/*if ( shadow2D( shadowMap, vec3(ShadowCoord.xy, (ShadowCoord.z)/ShadowCoord.w) ).r  <  ShadowCoord.z-bias){
 	    visibility = 0;
 	}*/
 	
-
-/*	float bias = 0.005;
-	float visibility = 1.0;
-	*/
-
-	//gl_FragColor.rgb = n;
-	//gl_FragColor.rgb = visibility * MaterialDiffuseColor * LightColor;
-
-
 	gl_FragColor.rgb = 
 		// Ambient : simulates indirect lighting
 		MaterialAmbientColor +
 		// Diffuse : "color" of the object
-		visibility * MaterialDiffuseColor * LightColor * cosTheta;
+		MaterialDiffuseColor * LightColor * cosTheta;
 
 }
