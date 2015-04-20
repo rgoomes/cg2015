@@ -172,7 +172,7 @@ void display(float elapsed){
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(-100, 100, -100, 100, -100, 100); // directional light
+	glOrtho(-40, 40, -40, 40, -40, 40); // directional light
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();

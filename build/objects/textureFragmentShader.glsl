@@ -57,10 +57,10 @@ void main(){
 	float cosTheta = clamp( dot( n,-l ), 0,1 );
 
 	float specular = 0.0;
-	if(dot(n, lightDir) > 0.0){
+	//if(dot(n, lightDir) > 0.0){
 		vec3 viewDir = normalize(-vertPos);
 		specular = pow(max(0.0, dot(reflect(l, n), viewDir)), 16);
-	}
+	//}
 
 	float bias = 0.005;
 	// ...variable bias
@@ -79,11 +79,13 @@ void main(){
 		int index = int(mod(int(16.0*random(gl_FragCoord.xyy, i)), 16));
 		//  - A random sample, based on the pixel's position in world space.
 		//    The position is rounded to the millimeter to avoid too much aliasing
-		//int index = mod(int(16.0*random(floor(Position_worldspace.xyz*1000.0), i)), 16);
-		
+		//index = mod(int(16.0*random(floor(Position_worldspace.xyz*1000.0), i)), 16);
+		if(mod(index, 2) == 0)
+			index = i;
 		// being fully in the shadow will eat up 4*0.2 = 0.8
 		// 0.2 potentially remain, which is quite dark.
-		visibility -= 0.2*(1.0-shadow2D( shadowMap, vec3(ShadowCoord.xy /*+ poissonDisk[index]/4000.0*/,  (ShadowCoord.z-bias)/ShadowCoord.w )).r);
+
+		visibility -= 0.2*(1.0-shadow2D( shadowMap, vec3(ShadowCoord.xy + poissonDisk[index]/2000.0,  (ShadowCoord.z-bias)/ShadowCoord.w )).r);
 	}
 	/*if ( shadow2D( shadowMap, vec3(ShadowCoord.xy, (ShadowCoord.z)/ShadowCoord.w) ).r  <  ShadowCoord.z-bias){
 	    visibility = 0;
