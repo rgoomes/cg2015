@@ -304,7 +304,7 @@ Group Object::load_group(string group_name){
 	g.texture = loadDDS(texture_path.c_str());
 	g.texture_id  = glGetUniformLocation(g.program_id, "mytextureSampler");
 	texture_path = path + "/" + group_name + ".dds";
-	
+
 	g.shadow_matrix_id = glGetUniformLocation(g.shadow_program_id, "depthMVP");
 
 	
@@ -373,7 +373,8 @@ bool Object::load_obj_texture(){
 	}
 
 	Group g = load_group("");
-	groups.push_back(g);
+	if(g.size > 0)
+		groups.push_back(g);
 	printf("Loaded %s\n", obj_path.c_str());
 	
 	/*if(debug)

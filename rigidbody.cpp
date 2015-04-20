@@ -115,6 +115,8 @@ void Rigidbody::render_texture(){
 
 	for(int i=0; i<(int)groups.size(); i++){
 		Group g = groups[i];
+		if(g.size == 0)
+			continue;
 
 		glUseProgram(g.program_id);
 		glUniformMatrix4fv(g.matrix_id, 1, GL_FALSE, &m[0][0]);

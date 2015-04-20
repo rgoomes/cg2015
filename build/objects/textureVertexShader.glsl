@@ -24,10 +24,10 @@ void main(){
 	gl_Position =  MVP * vec4(vertexPosition_modelspace,1);
 	ShadowCoord = DepthBiasMVP * vec4(vertexPosition_modelspace,1);
 	
-	vec4 vertPos4 = M * V * vec4(vertexPosition_modelspace, 1.0);
+	vec4 vertPos4 = V * M * vec4(vertexPosition_modelspace, 1.0);
 	vertPos = vec3(vertPos4) / vertPos4.w; 
 
-	LightDirection_cameraspace = (V * vec4(LightInvDirection_worldspace, 0)).xyz;
+	LightDirection_cameraspace = (V * vec4(-LightInvDirection_worldspace, 0)).xyz;
 	//Normal_cameraspace = (V * vec4(vertexNormal_modelspace, 0)).xyz;
 	Normal_cameraspace = (V * M * vec4(vertexNormal_modelspace, 0)).xyz;
 
