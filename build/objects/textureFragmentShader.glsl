@@ -5,6 +5,7 @@ varying vec2 UV;
 varying vec3 Normal_cameraspace;
 varying vec3 LightDirection_cameraspace;
 varying vec4 ShadowCoord;
+varying vec3 vertPos;
 
 // Values that stay constant for the whole mesh.
 uniform sampler2D myTextureSampler;
@@ -44,13 +45,21 @@ void main(){
 	// Material properties
 	vec3 MaterialDiffuseColor = texture2D( myTextureSampler, UV ).rgb;
 	vec3 MaterialAmbientColor = vec3(0.1,0.1,0.1) * MaterialDiffuseColor;
+	vec3 MaterialSpecColor = vec3(1.0, 1.0, 1.0);
 
 	vec3 n = normalize(Normal_cameraspace);
 	vec3 l = normalize(LightDirection_cameraspace);
 	
 	float visibility=1.0;
 	float cosTheta = clamp( dot( n,l ), 0,1 );
-	cosTheta = clamp(dot( n,l ), 0,1 );
+
+	float specular = 0.0;
+	//if(cosTheta > 0){
+		vec3 viewDir = normalize(-vertPos);
+		vec3 halfDir = normalize(l + viewDir);
+		float specAngle = max(dot(halfDir, n), 0.0);
+		specular = pow(specAngle, 16.0);
+	// 	}
 
 	float bias = 0.005;
 	// ...variable bias
@@ -83,6 +92,7 @@ void main(){
 		// Ambient : simulates indirect lighting
 		MaterialAmbientColor +
 		// Diffuse : "color" of the object
-		MaterialDiffuseColor * LightColor * cosTheta;
+		MaterialDiffuseColor * LightColor * cosTheta + 
+		specular * MaterialSpecColor;
 
 }
