@@ -39,12 +39,15 @@ void World::addObject(Object* obj){
 }
 
 void World::camera_view(float elapsed, int w, int h){
-	glfwGetCursorPos(window, &xpos, &ypos);
-	glfwSetCursorPos(window, w/2, h/2);
 
-	horizontal_ang += mouse_speed * double(w/2 - xpos);
-	vertical_ang   -= mouse_speed * double(h/2 - ypos);
+	if(glfwGetWindowAttrib(window, GLFW_FOCUSED)){
+		glfwGetCursorPos(window, &xpos, &ypos);
+		glfwSetCursorPos(window, w/2, h/2);
 
+		horizontal_ang += mouse_speed * double(w/2 - xpos);
+		vertical_ang   -= mouse_speed * double(h/2 - ypos);
+	}
+	
 	btVector3 dir(cos(vertical_ang)*sin(horizontal_ang), sin(vertical_ang), cos(vertical_ang)*cos(horizontal_ang));
 	btVector3 right(sin(horizontal_ang - PI/2.0f), 0, cos(horizontal_ang - PI/2.0f));
 
