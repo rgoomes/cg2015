@@ -14,11 +14,16 @@
 #include "object.hpp"
 #include "rigidbody.hpp"
 #include "world.hpp"
+#include "loader.hpp"
+
+class World;
+class Object;
+class Rigidbody;
 
 void load_textures();
 void load_objects();
 void add_lights();
-void set_environment(GLFWwindow* _window, World* _world);
+void set_environment(GLFWwindow* _window, World* _world, Loader* _loader);
 void display(float elapsed);
 void get_render_buffer();
 

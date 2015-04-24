@@ -1,4 +1,7 @@
+
 #include "world.hpp"
+#include "object.hpp"
+#include "rigidbody.hpp"
 
 double horizontal_ang = PI/8, vertical_ang = PI/4;
 double mouse_speed = 0.002f, speed = 90.0f, xpos, ypos;
@@ -175,7 +178,7 @@ void World::update(float elapsed){
 	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 
 	for(i=0; i<(int)objects.size();  i++){
-		((Rigidbody*)objects[i])->render_texture(); // Todo
+		((Rigidbody*)objects[i])->render_texture(); // TODO
 	}
 }
 

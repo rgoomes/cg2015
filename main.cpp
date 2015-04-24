@@ -78,7 +78,8 @@ int main(int argc, char **argv){
 	opengl_init();
 	
 	main_world = new World(main_window);
-	set_environment(main_window, main_world);
+	main_loader = new Loader();
+	set_environment(main_window, main_world, main_loader);
 
 	load_objects();
 	load_textures();

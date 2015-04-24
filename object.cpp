@@ -6,16 +6,36 @@
 
 using namespace std;
 
+Object::Object(string path, Loader* loader, World* world){
+	this->path = path;
+	int l = this->path.find_last_of("/");
+	this->name = this->path.substr(l+1, string::npos);
+	this->texture_path = this->path + "/" + this->name + ".dds";
+	this->obj_path = this->path + "/" + this->name + ".obj";
+	this->s = 1.0;
+	x=0; y=0; z=0;
+	this->loader = loader;
+	this->world = world;
+}
+
 Object::Object(string path){
 	this->path = path;
 	int l = this->path.find_last_of("/");
 	this->name = this->path.substr(l+1, string::npos);
 	this->texture_path = this->path + "/" + this->name + ".dds";
 	this->obj_path = this->path + "/" + this->name + ".obj";
-	std::cout << this->obj_path << "\n";
 	this->s = 1.0;
 	x=0; y=0; z=0;
 }
+
+void Object::attachLoader(Loader* loader){
+	this->loader = loader;
+}
+
+void Object::attachWorld(World* world){
+	this->world = world;
+}
+
 Object::~Object(){}
 
 void Object::render(){
@@ -210,63 +230,10 @@ float Object::scale(){
 
 bool Object::load_obj(bool has_texture){
 	this->has_texture = has_texture;
-	if(has_texture)
-		return load_obj_texture();
-	else
-		return load_obj_ntexture();
-}
-
-bool Object::load_obj_ntexture(){
-	FILE *file = fopen(obj_path.c_str(), "r");
-	if(!file)
-		return false;
-
-	int tmp=1;
-	char line[256], *tmp_c;
-	char buffer[1000];
-	while(fscanf(file, "%s", line) != EOF){
-		Point coord;
-		Point2 coord2;
-		Face face;
-
-		if(!strcmp(line, "v")){
-			tmp = fscanf(file, "%f %f %f", &coord.x, &coord.y, &coord.z);
-			coord.x *= s; coord.y *= s; coord.z *= s;
-			this->vertices.push_back(coord);
-		} else if(!strcmp(line, "vn")){
-			tmp = fscanf(file, "%f %f %f", &coord.x, &coord.y, &coord.z);
-			this->normals.push_back(coord);
-		} else if(!strcmp(line, "vt")){
-			tmp = fscanf(file, "%f %f", &coord2.x, &coord2.y);
-			this->uvs.push_back(coord2);
-		} else if(!strcmp(line, "f")){
-			tmp = fscanf(file, "%d//%d %d//%d %d//%d", &face.v_index[0], &face.n_index[0],
-			&face.v_index[1], &face.n_index[1], &face.v_index[2], &face.n_index[2]);
-			this->faces.push_back(face);
-		} else if(!strcmp(line, "#")){
-			tmp_c = fgets(buffer, 1000, file);
-			if(tmp_c == NULL) return false;
-			//printf("Comment: %s\n", buffer);
-		}
-
-		if(tmp <= 0)
-			return false;
-	}
-
-	for(uint64_t i = 0; i < this->faces.size(); i++){
-		out_vertices.push_back(vertices[faces[i].v_index[0] - 1]);
-		out_normals.push_back(normals  [faces[i].n_index[0] - 1]);
-		out_vertices.push_back(vertices[faces[i].v_index[1] - 1]);
-		out_normals.push_back(normals  [faces[i].n_index[1] - 1]);
-		out_vertices.push_back(vertices[faces[i].v_index[2] - 1]);
-		out_normals.push_back(normals  [faces[i].n_index[2] - 1]);
-	}
-
-	/*if(debug)
-		load_debug(path, vertices, normals, faces, uvs);*/
-
-	fclose(file);
-	return true;
+	bool status = load_obj_texture();
+	if(!status)
+		printf("Error: load failed\n");
+	return status;
 }
 
 Group Object::load_group(string group_name){
@@ -286,9 +253,8 @@ Group Object::load_group(string group_name){
 	}
 
 	Group g;
-
-	g.program_id = load_shaders( "objects/textureVertexShader.glsl", "objects/textureFragmentShader.glsl" );
-	g.shadow_program_id = load_shaders( "objects/depthVertexShader.glsl", "objects/depthFragmentShader.glsl" );
+	g.program_id = loader->get_shaders( "objects/textureVertexShader.glsl", "objects/textureFragmentShader.glsl" );
+	g.shadow_program_id = loader->get_shaders( "objects/depthVertexShader.glsl", "objects/depthFragmentShader.glsl" );
 	g.matrix_id = glGetUniformLocation(g.program_id, "MVP");
 	g.depthbias_id = glGetUniformLocation(g.program_id, "DepthBiasMVP");
 	g.shadowmap_id = glGetUniformLocation(g.program_id, "shadowMap");
@@ -301,7 +267,7 @@ Group Object::load_group(string group_name){
 	g.normal_id = glGetAttribLocation(g.program_id, "vertexNormal_modelspace");
 
 	g.size = out_vertices.size();
-	g.texture = loadDDS(texture_path.c_str());
+	g.texture = loader->get_texture(texture_path.c_str());
 	g.texture_id  = glGetUniformLocation(g.program_id, "mytextureSampler");
 	texture_path = path + "/" + group_name + ".dds";
 
@@ -328,6 +294,7 @@ Group Object::load_group(string group_name){
 
 bool Object::load_obj_texture(){
 	FILE *file = fopen(obj_path.c_str(), "r");
+
 	if(!file)
 		return false;
 

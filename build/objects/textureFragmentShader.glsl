@@ -31,7 +31,6 @@ vec2 poissonDisk[16] = vec2[](
    vec2( 0.14383161, -0.14100790 ) 
 );
 
-
 float random(vec3 seed, int i){
 	vec4 seed4 = vec4(seed,i);
 	float dot_product = dot(seed4, vec4(12.9898,78.233,45.164,94.673));
@@ -46,7 +45,7 @@ void main(){
 	// Material properties
 	vec3 MaterialDiffuseColor = texture2D( myTextureSampler, UV ).rgb;
 	vec3 MaterialAmbientColor = 0.2 * MaterialDiffuseColor;
-	vec3 MaterialSpecColor = MaterialAmbientColor;
+	vec3 MaterialSpecColor = vec3(0.9, 0.9, 0.9);
 	vec3 lightPos = vec3(1.0, 1.0, 1.0);
 
 	vec3 n = normalize(Normal_cameraspace);
@@ -57,10 +56,10 @@ void main(){
 	float cosTheta = clamp( dot( n,-l ), 0,1 );
 
 	float specular = 0.0;
-	if(dot(n, l) > 0.0){
+	//if(dot(n, l) > 0.0){
 		vec3 viewDir = normalize(-vertPos);
 		specular = pow(max(0.0, dot(reflect(l, n), viewDir)), 16);
-	}
+	//}
 
 	float bias = 0.005;
 	// ...variable bias
@@ -75,12 +74,14 @@ void main(){
 		visibility -= 0.2*(1.0-shadow2D( shadowMap, vec3(ShadowCoord.xy + poissonDisk[index]/2000.0,  (ShadowCoord.z-bias)/ShadowCoord.w )).r);
 	}
 	
+
 	gl_FragColor.rgb = 
 		// Ambient : simulates indirect lighting
 		MaterialAmbientColor +
 		// Diffuse : "color" of the object
 		visibility * MaterialDiffuseColor * LightColor * cosTheta + 
 		// Specular: causes intel bug
-		specular * MaterialSpecColor;
+		visibility * specular * MaterialSpecColor;
 
+	//gl_FragColor.a = 0.5;
 }

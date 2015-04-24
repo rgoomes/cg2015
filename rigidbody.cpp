@@ -1,6 +1,5 @@
 
 #include "rigidbody.hpp"
-#include <btBulletDynamicsCommon.h>
 
 using namespace std;
 

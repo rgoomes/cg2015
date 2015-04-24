@@ -1,7 +1,6 @@
 
 #include "display.hpp"
 
-
 Rigidbody *colorCube;
 Rigidbody *sphere;
 Rigidbody *chair;
@@ -10,35 +9,45 @@ Object *dei;
 float mvp[4][4], a=0;
 GLFWwindow* window;
 World* world;
+Loader* loader;
 
-void set_environment(GLFWwindow* _window, World* _world){
+void set_environment(GLFWwindow* _window, World* _world, Loader* _loader){
 	window = _window;
 	world = _world;
+	loader = _loader;
 }
-
 
 void load_objects(){
 	int w, h;
 	glfwGetWindowSize(window, &w, &h);
 	glfwSetCursorPos(window, w/2, h/2);
-	
+		
 	colorCube = new Rigidbody("objects/cube", 5, btVector3(10, 20, 40));
-	sphere = new Rigidbody("objects/sphere", 5, btVector3(20, 20, 20));
-	chair = new Rigidbody("objects/chair", 10, btVector3(20, 30, 10));
-	dei = new Object("objects/dei");
-
+	colorCube->attachLoader(loader);
+	colorCube->attachWorld(world);
 	colorCube->set_scale(1);
 	colorCube->load_obj(true);
 	world->addObject(colorCube);
-	
-	chair->set_scale(0.1);
-	chair->load_obj(true);
-	world->addObject(chair);
 
-	sphere->set_scale(0.1);
-	sphere->load_obj(true);
-	world->addObject(sphere);
+	for(int i=0; i<1; i++){
+		sphere = new Rigidbody("objects/sphere", 5, btVector3(20, 20*i, 20));
+		sphere->attachLoader(loader);
+		sphere->attachWorld(world);
+		sphere->set_scale(0.1);
+		sphere->load_obj(true);
+		world->addObject(sphere);
+	}
 
+	for(int i=0; i<1; i++){
+		chair = new Rigidbody("objects/chair", 10, btVector3(0, 30, -10+i*10));
+		chair->attachLoader(loader);
+		chair->attachWorld(world);
+		chair->set_scale(0.1);
+		chair->load_obj(true);
+		world->addObject(chair);
+	}
+
+	dei = new Object("objects/dei", loader, world);
 	dei->set_scale(0.1);
 	dei->load_obj(true);
 }
@@ -51,6 +60,9 @@ void load_textures(){
 void add_lights(){
 	glShadeModel(GL_SMOOTH);
 	glEnable(GL_LIGHTING);
+
+	//glEnable(GL_BLEND);
+	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 }
 

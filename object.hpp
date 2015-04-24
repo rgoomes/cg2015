@@ -14,8 +14,11 @@
 #include "shaders.hpp"
 #include "image.hpp"
 #include "misc.hpp"
+#include "loader.hpp"
+#include "world.hpp"
 
 using namespace std;
+
 
 struct Group{
 	string texture_path;
@@ -37,6 +40,7 @@ class Object {
 		vector<Face> faces, all_faces;
 
 		Object(string path);
+		Object(string path, Loader* loader, World* world);
 		~Object();
 
 		bool load_obj(bool texture);
@@ -44,19 +48,21 @@ class Object {
 		float scale();
 		void render();
 		void render_ntexture();
-		virtual void render_texture();
+		void render_texture();
 		void set_shadowmap(GLuint dt);
 		void render_shadow();
+		void attachLoader(Loader* loader);
+		void attachWorld(World* world);
 		
 		void move(float _x, float _y, float _z);
 		vector<Group> groups;
 	private:
 		bool load_obj_texture();
-		bool load_obj_ntexture();
 		bool debug=false;
 		void load_debug(string path, vector<Point> &vertices, vector<Point> &normals, vector<Face> &faces, vector<Point> &uvs);
 		Group load_group(string group_name);
-		
+		Loader* loader = NULL;
+		World* world = NULL;
 	protected:
 		GLuint shadowmap;
 		float depthMVP[4][4];

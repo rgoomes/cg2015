@@ -1,15 +1,13 @@
 #ifndef WORLD_H
 #define WORLD_H
 
+#include <vector>
 #include <math.h>
-#include <GL/glew.h>
-#include <GL/glu.h>
 #include <GLFW/glfw3.h>
+#include <GL/glu.h>
 #include <btBulletDynamicsCommon.h>
 
 #include "misc.hpp"
-#include "object.hpp"
-#include "rigidbody.hpp"
 #include "skybox.hpp"
 
 #define WORLD_MIN_X -20 
@@ -18,6 +16,11 @@
 #define WORLD_MAX_Y 30
 #define WORLD_MIN_Z -145
 #define WORLD_MAX_Z 145
+
+using namespace std;
+
+class Object;
+class Rigidbody;
 
 class World{
 	public:

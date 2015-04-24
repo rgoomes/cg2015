@@ -7,7 +7,9 @@
 
 typedef enum{MESH, CONVEXHULL, SPHERE, CUBE} ColliderType;
 
-class Rigidbody : public Object	{
+class Object;
+
+class Rigidbody : public Object{
 
 	public:
 		btRigidBody* get_rigidbody();
