@@ -52,12 +52,6 @@ btRigidBody* Rigidbody::get_rigidbody(){
 	return rigidbody;
 }
 
-void Rigidbody::get_matrix(float m[16]){
-	btTransform trans;
-	rigidbody->getMotionState()->getWorldTransform(trans);
-	trans.getOpenGLMatrix(m);
-}
-
 void Rigidbody::move(float _x, float _y, float _z){
 	x = _x;
 	y = _y;
@@ -70,33 +64,7 @@ void Rigidbody::move(float _x, float _y, float _z){
 	
 }
 
-void Rigidbody::render_shadow(){
-	float mt[16];
-	glPushMatrix();
-		get_matrix(mt);
-		glMultMatrixf(mt);
-		
-		Object::render_shadow();
-	glPopMatrix();
-	
-}
-
-void Rigidbody::render(){
-	/*btTransform trans;
-	rigidbody->getMotionState()->getWorldTransform(trans);
-	
-	float mt[16];*/
-	/*glPushMatrix();
-		get_matrix(mt);
-		glMultMatrixf(mt);
-		
-	glPopMatrix();*/
-	
-	Object::render();
-	
-}
-
-void Rigidbody::render_texture(){
+/*void Rigidbody::render_texture(){
 	
 	float m[4][4];
 	float depthbias_mvp[4][4];
@@ -176,5 +144,9 @@ void Rigidbody::render_texture(){
 		
 	}
 
+}*/
 
+btTransform* Rigidbody::get_transform(){
+	rigidbody->getMotionState()->getWorldTransform(trans);
+	return &trans;
 }

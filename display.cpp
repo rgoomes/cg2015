@@ -1,7 +1,7 @@
 
 #include "display.hpp"
 
-Rigidbody *colorCube;
+Object *colorCube;
 Rigidbody *sphere;
 Rigidbody *chair;
 Object *dei;
@@ -22,32 +22,30 @@ void load_objects(){
 	glfwGetWindowSize(window, &w, &h);
 	glfwSetCursorPos(window, w/2, h/2);
 		
-	colorCube = new Rigidbody("objects/cube", 5, btVector3(10, 20, 40));
-	colorCube->attachLoader(loader);
-	colorCube->attachWorld(world);
+	colorCube = new Object("objects/cube");
+	colorCube->attach_loader(loader);
 	colorCube->set_scale(1);
 	colorCube->load_obj(true);
+	colorCube->move(0, 20, 0);
 	world->addObject(colorCube);
 
 	for(int i=0; i<1; i++){
 		sphere = new Rigidbody("objects/sphere", 5, btVector3(20, 20*i, 20));
-		sphere->attachLoader(loader);
-		sphere->attachWorld(world);
+		sphere->attach_loader(loader);
 		sphere->set_scale(0.1);
 		sphere->load_obj(true);
 		world->addObject(sphere);
 	}
 
-	for(int i=0; i<1; i++){
-		chair = new Rigidbody("objects/chair", 10, btVector3(0, 30, -10+i*10));
-		chair->attachLoader(loader);
-		chair->attachWorld(world);
+	for(int i=0; i<5; i++){
+		chair = new Rigidbody("objects/chair", 10, btVector3(i*10, 20, -10+i*10));
+		chair->attach_loader(loader);
 		chair->set_scale(0.1);
 		chair->load_obj(true);
 		world->addObject(chair);
 	}
 
-	dei = new Object("objects/dei", loader, world);
+	dei = new Object("objects/dei", loader);
 	dei->set_scale(0.1);
 	dei->load_obj(true);
 }

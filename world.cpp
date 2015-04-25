@@ -35,10 +35,11 @@ void World::tick(float elapsed){
 }
 
 void World::addObject(Object* obj){
-	Rigidbody* r = (Rigidbody*)obj;
-	r->set_shadowmap(renderedTexture);
-	objects.push_back(r);
-	physicsWorld->addRigidBody(r->get_rigidbody());
+	obj->set_shadowmap(renderedTexture);
+	objects.push_back(obj);
+	obj->attach_world(this);
+	if(obj->type() == "rigidbody")
+		physicsWorld->addRigidBody(((Rigidbody*)obj)->get_rigidbody());
 }
 
 void World::camera_view(float elapsed, int w, int h){
@@ -149,7 +150,7 @@ void World::update(float elapsed){
 	gluLookAt(0, 0, -1, 0, 0, 0, 0, 1, 0);
 
 	for(i=0; i<(int)objects.size();  i++){
-		((Rigidbody*)objects[i])->render_shadow(); // TODO
+		objects[i]->render_shadow(); // TODO
 	}
 
 	// SCREEN RENDERING
@@ -164,7 +165,7 @@ void World::update(float elapsed){
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(45.0f, window_width / (float)window_height, 0.1f, 1000.0f);
+	gluPerspective(45.0f, window_width / (float)window_height, 0.1f, 1500.0f);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -178,7 +179,7 @@ void World::update(float elapsed){
 	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 
 	for(i=0; i<(int)objects.size();  i++){
-		((Rigidbody*)objects[i])->render_texture(); // TODO
+		objects[i]->render_texture(); // TODO
 	}
 }
 

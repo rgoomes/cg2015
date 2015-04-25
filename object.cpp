@@ -6,16 +6,9 @@
 
 using namespace std;
 
-Object::Object(string path, Loader* loader, World* world){
-	this->path = path;
-	int l = this->path.find_last_of("/");
-	this->name = this->path.substr(l+1, string::npos);
-	this->texture_path = this->path + "/" + this->name + ".dds";
-	this->obj_path = this->path + "/" + this->name + ".obj";
-	this->s = 1.0;
-	x=0; y=0; z=0;
+Object::Object(string path, Loader* loader)
+: Object(path){
 	this->loader = loader;
-	this->world = world;
 }
 
 Object::Object(string path){
@@ -28,11 +21,11 @@ Object::Object(string path){
 	x=0; y=0; z=0;
 }
 
-void Object::attachLoader(Loader* loader){
+void Object::attach_loader(Loader* loader){
 	this->loader = loader;
 }
 
-void Object::attachWorld(World* world){
+void Object::attach_world(World* world){
 	this->world = world;
 }
 
@@ -173,8 +166,14 @@ void Object::render_texture(){
 
 }
 
+
+
 void Object::render_shadow(){
-	
+	float mt[16];
+	glPushMatrix();
+	get_matrix(mt);
+	glMultMatrixf(mt);
+
 	get_mvp(this->depthMVP);
 
 	for(int i=0; i<(int)groups.size(); i++){
@@ -214,6 +213,8 @@ void Object::render_shadow(){
 		glDisableVertexAttribArray(g.vertexUV_id);
 		
 	}	
+		
+	glPopMatrix();
 }
 
 void Object::set_shadowmap(GLuint dt){
@@ -367,5 +368,12 @@ void load_debug(string path, vector<Point> &vertices, vector<Point> &normals, ve
 }
 
 void Object::get_matrix(float m[16]){
-
+	get_transform()->getOpenGLMatrix(m);
 }
+
+btTransform* Object::get_transform(){
+	btQuaternion rot(0, 0, 0, 1);
+	trans = btTransform(rot, btVector3(x, y, z));
+	return &trans;
+}
+

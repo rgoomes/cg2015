@@ -40,7 +40,7 @@ class Object {
 		vector<Face> faces, all_faces;
 
 		Object(string path);
-		Object(string path, Loader* loader, World* world);
+		Object(string path, Loader* loader);
 		~Object();
 
 		bool load_obj(bool texture);
@@ -51,11 +51,12 @@ class Object {
 		void render_texture();
 		void set_shadowmap(GLuint dt);
 		void render_shadow();
-		void attachLoader(Loader* loader);
-		void attachWorld(World* world);
+		void attach_loader(Loader* loader);
+		void attach_world(World* world);
 		
 		void move(float _x, float _y, float _z);
 		vector<Group> groups;
+		virtual string type(){return "object";}
 	private:
 		bool load_obj_texture();
 		bool debug=false;
@@ -63,6 +64,7 @@ class Object {
 		Group load_group(string group_name);
 		Loader* loader = NULL;
 		World* world = NULL;
+		void get_matrix(float m[16]);
 	protected:
 		GLuint shadowmap;
 		float depthMVP[4][4];
@@ -71,7 +73,8 @@ class Object {
 		string path;
 		bool has_texture;
 		void get_mvp(float mvp[4][4]);
-		void get_matrix(float m[16]);
+		virtual btTransform* get_transform();
+		btTransform trans;
 };
 
 #endif
