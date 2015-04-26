@@ -73,8 +73,6 @@ void get_mvp(float mvp[4][4]){
 
 GLfloat light_position[] = { 1.0, 15.0, -30.0, 1.0 };
 
-
-
 void display(float elapsed){
 	int w, h;
 	glfwGetWindowSize(window, &w, &h);
