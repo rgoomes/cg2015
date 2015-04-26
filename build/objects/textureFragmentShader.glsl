@@ -86,5 +86,5 @@ void main(){
 		// Specular: causes intel bug
 		visibility * specular * MaterialSpecColor;
 
-	//gl_FragColor.a = 0.5;
+	gl_FragColor.a = 1;
 }
