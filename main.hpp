@@ -12,7 +12,6 @@
 
 #include "display.hpp"
 #include "nvidia.hpp"
-#include "object.hpp"
 #include "misc.hpp"
 #include "world.hpp"
 

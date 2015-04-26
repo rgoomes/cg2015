@@ -147,7 +147,7 @@ void World::update(float elapsed){
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	gluLookAt(0, 0, -1, 0, 0, 0, 0, 1, 0);
+	gluLookAt(-0.5, 0.8, 0.5, 0, 0, 0, 0, 1, 0);
 
 	for(i=0; i<(int)objects.size();  i++){
 		objects[i]->render_shadow(); // TODO
@@ -173,10 +173,10 @@ void World::update(float elapsed){
 	camera_view(elapsed, window_width, window_height);
 	draw_skybox(500);
 
-	GLfloat light_position[] = { 1.0, 15.0, -30.0, 1.0 };
+	/*GLfloat light_position[] = { 1.0, 15.0, -30.0, 1.0 };
 
 	glEnable(GL_LIGHT0);
-	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+	glLightfv(GL_LIGHT0, GL_POSITION, light_position);*/
 
 	for(i=0; i<(int)objects.size();  i++){
 		objects[i]->render_texture(); // TODO

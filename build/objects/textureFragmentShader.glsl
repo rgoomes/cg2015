@@ -11,6 +11,7 @@ varying vec3 vertPos;
 uniform sampler2D myTextureSampler;
 uniform sampler2DShadow shadowMap;
 uniform mat4 V;
+uniform int has_texture;
 
 vec2 poissonDisk[16] = vec2[]( 
    vec2( -0.94201624, -0.39906216 ), 
@@ -43,20 +44,22 @@ void main(){
 	vec3 LightColor = vec3(1,1,1);
 	
 	// Material properties
-	vec3 MaterialDiffuseColor = texture2D( myTextureSampler, UV ).rgb;
-	vec3 MaterialAmbientColor = 0.2 * MaterialDiffuseColor;
-	vec3 MaterialSpecColor = vec3(0.9, 0.9, 0.9);
-	vec3 lightPos = vec3(1.0, 1.0, 1.0);
+	vec3 MaterialDiffuseColor;
+	if(has_texture != 0)
+		MaterialDiffuseColor = texture2D( myTextureSampler, UV ).rgb;
+	else
+		MaterialDiffuseColor = vec3(0.6, 0.6, 0.6);
+	vec3 MaterialAmbientColor = 0.4 * MaterialDiffuseColor;
+	vec3 MaterialSpecColor = vec3(0.7, 0.7, 0.7);
 
 	vec3 n = normalize(Normal_cameraspace);
 	vec3 l = normalize(LightDirection_cameraspace);
-	vec3 lightDir = normalize(lightPos);
 	
 	float visibility=1.0;
 	float cosTheta = clamp( dot( n,-l ), 0,1 );
 
 	float specular = 0.0;
-	//if(dot(n, l) > 0.0){
+	//if(dot(n, -l) > 0.0){
 		vec3 viewDir = normalize(-vertPos);
 		specular = pow(max(0.0, dot(reflect(l, n), viewDir)), 16);
 	//}

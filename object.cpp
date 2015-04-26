@@ -107,12 +107,15 @@ void Object::render_texture(){
 		glUniformMatrix4fv(g.depthbias_id, 1, GL_FALSE, &depthbias_mvp[0][0]);
 		glUniformMatrix4fv(g.viewmatrix_id, 1, GL_FALSE, &view[0][0]);
 		glUniformMatrix4fv(g.modelmatrix_id, 1, GL_FALSE, model);
-		glUniform3f(g.lightdir_id, 0, 0, -1);
+		glUniform3f(g.lightdir_id, -0.5, 0.8, 0.5);
 		
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, g.texture);
 		glUniform1i(g.texture_id, 0);
-
+		if(!g.texture)
+			glUniform1i(g.has_texture_id, 0);
+		else
+			glUniform1i(g.has_texture_id, 1);
 
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, shadowmap);
@@ -262,6 +265,7 @@ Group Object::load_group(string group_name){
 	g.viewmatrix_id = glGetUniformLocation(g.program_id, "V");
 	g.modelmatrix_id = glGetUniformLocation(g.program_id, "M");
 	g.lightdir_id = glGetUniformLocation(g.program_id, "LightInvDirection_worldspace");
+	g.has_texture_id = glGetUniformLocation(g.program_id, "has_texture");
 
 	g.vertexposition_modelspace_id = glGetAttribLocation(g.program_id, "vertexPosition_modelspace");
 	g.vertexUV_id = glGetAttribLocation(g.program_id, "vertexUV");

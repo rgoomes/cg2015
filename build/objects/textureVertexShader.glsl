@@ -18,6 +18,7 @@ uniform mat4 DepthBiasMVP;
 uniform mat4 V;
 uniform mat4 M;
 uniform vec3 LightInvDirection_worldspace;
+uniform int has_texture;
 
 void main(){
 	// Output position of the vertex, in clip space : MVP * position

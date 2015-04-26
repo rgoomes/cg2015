@@ -25,7 +25,8 @@ struct Group{
 	GLuint program_id, shadow_program_id, matrix_id, vertexposition_modelspace_id, vertexUV_id, 
 	texture, texture_id, shadowmap_id, depthbias_id, shadow_matrix_id,
 	vertexbuffer, uvbuffer, normalbuffer, size,
-	viewmatrix_id, modelmatrix_id, lightdir_id, normal_id;
+	viewmatrix_id, modelmatrix_id, lightdir_id, normal_id,
+	has_texture_id;
 };
 
 class Object {
