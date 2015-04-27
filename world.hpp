@@ -17,6 +17,8 @@
 #define WORLD_MIN_Z -145
 #define WORLD_MAX_Z 145
 
+#define SHADOW_RES 1024
+
 using namespace std;
 
 class Object;

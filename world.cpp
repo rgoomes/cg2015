@@ -106,7 +106,7 @@ GLuint World::get_render_buffer(){
 	GLuint depthTexture;
 	glGenTextures(1, &depthTexture);
 	glBindTexture(GL_TEXTURE_2D, depthTexture);
-	glTexImage2D(GL_TEXTURE_2D, 0,GL_DEPTH_COMPONENT16, w, h, 0,GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+	glTexImage2D(GL_TEXTURE_2D, 0,GL_DEPTH_COMPONENT16, SHADOW_RES, SHADOW_RES, 0,GL_DEPTH_COMPONENT, GL_FLOAT, 0);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -133,7 +133,7 @@ void World::update(float elapsed){
 	tick(elapsed);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, FramebufferName);
-	glViewport(0, 0, window_width, window_height);
+	glViewport(0, 0, SHADOW_RES, SHADOW_RES);
 	
 	glDisable(GL_CULL_FACE);
 	glCullFace(GL_FRONT);
@@ -142,7 +142,7 @@ void World::update(float elapsed){
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(-40, 40, -40, 40, -40, 40); // directional light
+	glOrtho(-300, 300, -2, 300, -300, 300); // directional light
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -156,6 +156,7 @@ void World::update(float elapsed){
 	// SCREEN RENDERING
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glViewport(0, 0, window_width, window_height);
 
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);

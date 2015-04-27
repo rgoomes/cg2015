@@ -71,9 +71,9 @@ void main(){
 	// Sample the shadow map 4 times
 	for (int i=0;i<4;i++){
 		
-		int index = int(mod(int(16.0*random(gl_FragCoord.xyy, i)), 16));
-		if(mod(index, 2) == 0)
-			index = i;
+		//int index = int(mod(int(16.0*random(gl_FragCoord.xyy, i)), 16));
+		//if(mod(index, 2) == 0)
+		int	index = i;
 		visibility -= 0.2*(1.0-shadow2D( shadowMap, vec3(ShadowCoord.xy + poissonDisk[index]/2000.0,  (ShadowCoord.z-bias)/ShadowCoord.w )).r);
 	}
 	
