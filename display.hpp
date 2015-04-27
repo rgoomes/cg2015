@@ -13,19 +13,18 @@
 #include "misc.hpp"
 #include "object.hpp"
 #include "rigidbody.hpp"
-#include "skybox.hpp"
+#include "world.hpp"
+#include "loader.hpp"
 
-#define WORLD_MIN_X 0 
-#define WORLD_MAX_X 250
-#define WORLD_MIN_Y 1
-#define WORLD_MAX_Y 30
-#define WORLD_MIN_Z -145
-#define WORLD_MAX_Z 145
+class World;
+class Object;
+class Rigidbody;
 
 void load_textures();
 void load_objects();
 void add_lights();
-void set_environment(GLFWwindow* _window, btDynamicsWorld* _world);
+void set_environment(GLFWwindow* _window, World* _world, Loader* _loader);
 void display(float elapsed);
+void get_render_buffer();
 
 #endif

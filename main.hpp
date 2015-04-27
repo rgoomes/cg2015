@@ -12,8 +12,8 @@
 
 #include "display.hpp"
 #include "nvidia.hpp"
-#include "object.hpp"
 #include "misc.hpp"
+#include "world.hpp"
 
 #ifdef __unix
 	#define CONSOLE_FPS 1
@@ -29,7 +29,8 @@ int SCREEN_HEIGHT;
 void monitor_resolution(int* w, int* h);
 
 GLFWwindow* main_window;
-btDynamicsWorld* main_world;
+World* main_world;
+Loader* main_loader;
 //extern Rigidbody chair;
 
 #endif

@@ -27,19 +27,18 @@ void opengl_init(){
 
 	glfwInit();
 	monitor_resolution			(&SCREEN_WIDTH, &SCREEN_HEIGHT);
-	glfwWindowHint				(GLFW_SAMPLES, 4);
+	glfwWindowHint				(GLFW_SAMPLES, 16);
 	glfwWindowHint				(GLFW_CONTEXT_VERSION_MAJOR, 2);
 	glfwWindowHint				(GLFW_CONTEXT_VERSION_MINOR, 1);
 	glfwSwapInterval			(0);
 	main_window = glfwCreateWindow	(SCREEN_WIDTH/1.5, SCREEN_HEIGHT/1.5, "cg2015", NULL, NULL);
-	glfwSetInputMode			(main_window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-
+ 	glfwSetInputMode			(main_window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+ 	
 	glfwMakeContextCurrent		(main_window);
 	glfwSetInputMode			(main_window, GLFW_STICKY_KEYS, GL_TRUE);
 
 	glEnable					(GL_DEPTH_TEST);
 	glDepthFunc					(GL_LESS);
-	glClearColor				(0.3,0.4,0.5, 1);
 
 	if (glewInit() != GLEW_OK) {
 		fprintf(stdin, "Failed to initialize GLEW\n");
@@ -54,24 +53,6 @@ btDynamicsWorld* getDynamicWorld(){
 	btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver;
 
 	return new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
-}
-
-void bullet_init(){
-	main_world = getDynamicWorld();
-
-	main_world->setGravity(btVector3(0, -10, 0));
-
-	btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 1);
-	btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, -1, 0)));
-	btRigidBody::btRigidBodyConstructionInfo groundRigidBodyCI(0, groundMotionState, groundShape, btVector3(0, 0, 0));
-	btRigidBody* groundRigidBody = new btRigidBody(groundRigidBodyCI);
-	main_world->addRigidBody(groundRigidBody);
-	
-}
-
-void bullet_tick(float elapsed){	
-	main_world->stepSimulation(elapsed, 60);
-
 }
 
 float frame_rate(){
@@ -95,23 +76,21 @@ float frame_rate(){
 
 int main(int argc, char **argv){
 	opengl_init();
-	bullet_init();
-	set_environment(main_window, main_world);
 	
-	main_world->stepSimulation(0.00001, 60);
+	main_world = new World(main_window);
+	main_loader = new Loader();
+	set_environment(main_window, main_world, main_loader);
 
 	load_objects();
 	load_textures();
 	add_lights();
 
 	last_tick = glfwGetTime();
-
+	
 	do{
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		float elapsed_time = frame_rate();
-		bullet_tick(elapsed_time);
-
+		
 		display(elapsed_time);
 
 		glfwSwapBuffers(main_window);

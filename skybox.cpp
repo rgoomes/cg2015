@@ -30,9 +30,11 @@ void draw_skyface(int pos, int *d, double D){
 }
 
 void draw_skybox(double D){
+	glUseProgram(0);
 	glPushMatrix();
      
 	glPushAttrib(GL_ENABLE_BIT);
+	glActiveTexture(GL_TEXTURE0);
 	glEnable(GL_TEXTURE_2D);
 	glDisable(GL_DEPTH_TEST);
 	glDisable(GL_LIGHTING);
