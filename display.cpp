@@ -37,7 +37,7 @@ void load_objects(){
 	}
 
 	for(int i=0; i<5; i++){
-		chair = new Rigidbody("objects/chair", 10, btVector3(i*10, 20, -10+i*10));
+		chair = new Rigidbody("objects/chair", 10, btVector3(i*10, 60, -10+i*10));
 		chair->attach_loader(loader);
 		chair->set_scale(0.1);
 		chair->load_obj(true);

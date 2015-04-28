@@ -12,6 +12,7 @@ uniform sampler2D myTextureSampler;
 uniform sampler2DShadow shadowMap;
 uniform mat4 V;
 uniform int has_texture;
+uniform float Ns, Tf;
 
 vec2 poissonDisk[16] = vec2[]( 
    vec2( -0.94201624, -0.39906216 ), 
@@ -61,7 +62,7 @@ void main(){
 	float specular = 0.0;
 	//if(dot(n, -l) > 0.0){
 		vec3 viewDir = normalize(-vertPos);
-		specular = pow(max(0.0, dot(reflect(l, n), viewDir)), 16);
+		specular = pow(max(0.0, dot(reflect(l, n), viewDir)), Ns);
 	//}
 
 	float bias = 0.005;
@@ -71,9 +72,9 @@ void main(){
 	// Sample the shadow map 4 times
 	for (int i=0;i<4;i++){
 		
-		//int index = int(mod(int(16.0*random(gl_FragCoord.xyy, i)), 16));
+		int index = int(mod(int(16.0*random(gl_FragCoord.xyy, i)), 16));
 		//if(mod(index, 2) == 0)
-		int	index = i;
+		//int	index = i;
 		visibility -= 0.2*(1.0-shadow2D( shadowMap, vec3(ShadowCoord.xy + poissonDisk[index]/2000.0,  (ShadowCoord.z-bias)/ShadowCoord.w )).r);
 	}
 	
@@ -86,5 +87,5 @@ void main(){
 		// Specular: causes intel bug
 		visibility * specular * MaterialSpecColor;
 
-	gl_FragColor.a = 1;
+	gl_FragColor.a = Tf;
 }

@@ -34,11 +34,9 @@ Object::~Object(){}
 void Object::render(){
 	if(has_texture)
 		render_texture();
-	else
-		render_ntexture();
 }
 
-void Object::render_ntexture(){
+/*void Object::render_ntexture(){
 	glUseProgram(0);
 
 	for(int i = 0; i < (int)all_faces.size(); i++){
@@ -61,7 +59,7 @@ void Object::render_ntexture(){
 			
 		glEnd();
 	}
-}
+}*/
 
 void Object::move(float _x, float _y, float _z){
 	x = _x;
@@ -70,10 +68,6 @@ void Object::move(float _x, float _y, float _z){
 }
 
 void Object::get_depthbiasmvp(float dbmvp[4][4]){
-	//glPushMatrix();
-	
-	//float mvp[4][4];
-	//get_mvp(mvp);
 	
 	float bias[4][4] = {{0.5, 0.0, 0.0, 0.0}, 
 						{0.0, 0.5, 0.0, 0.0},
@@ -81,7 +75,12 @@ void Object::get_depthbiasmvp(float dbmvp[4][4]){
 						{0.5, 0.5, 0.5, 1.0}};
 	mult_matrix(dbmvp, depthMVP, bias);
 	
-	//glPopMatrix();
+}
+
+void Object::set_material(Group& g, Material& m){
+	glUniform1f(g.Ns_id, m.Ns);
+	glUniform1f(g.Tf_id, m.Tf);
+	//printf("Tf %f\n", m.Tf);
 }
 
 void Object::render_texture(){
@@ -99,8 +98,8 @@ void Object::render_texture(){
 		
 	glPopMatrix();
 
-	for(int i=0; i<(int)groups.size(); i++){
-		Group g = groups[i];
+	for(int i=0; i<(int)this->model.groups.size(); i++){
+		Group g = this->model.groups[i];
 
 		glUseProgram(g.program_id);
 		glUniformMatrix4fv(g.matrix_id, 1, GL_FALSE, &m[0][0]);
@@ -120,6 +119,8 @@ void Object::render_texture(){
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, shadowmap);
 		glUniform1i(g.shadowmap_id, 1);
+
+		set_material(g, g.material);
 
 		// 1rst attribute buffer : vertices
 		glEnableVertexAttribArray(g.vertexposition_modelspace_id);
@@ -179,8 +180,8 @@ void Object::render_shadow(){
 
 	get_mvp(this->depthMVP);
 
-	for(int i=0; i<(int)groups.size(); i++){
-		Group g = groups[i];
+	for(int i=0; i<(int)this->model.groups.size(); i++){
+		Group g = this->model.groups[i];
 
 		glUseProgram(g.shadow_program_id);
 		glUniformMatrix4fv(g.shadow_matrix_id, 1, GL_FALSE, &depthMVP[0][0]);
@@ -234,125 +235,9 @@ float Object::scale(){
 
 bool Object::load_obj(bool has_texture){
 	this->has_texture = has_texture;
-	bool status = load_obj_texture();
-	if(!status)
-		printf("Error: load failed\n");
-	return status;
-}
-
-Group Object::load_group(string group_name){
-	out_vertices.clear();
-	out_normals.clear();
-	out_uvs.clear();
-	for(uint64_t i = 0; i < this->faces.size(); i++){
-		out_vertices.push_back(vertices	[faces[i].v_index[0] - 1]);
-		out_normals.push_back(normals 	[faces[i].n_index[0] - 1]);
-		out_uvs.push_back(uvs 			[faces[i].t_index[0] - 1]);
-		out_vertices.push_back(vertices	[faces[i].v_index[1] - 1]);
-		out_normals.push_back(normals 	[faces[i].n_index[1] - 1]);
-		out_uvs.push_back(uvs 			[faces[i].t_index[1] - 1]);
-		out_vertices.push_back(vertices	[faces[i].v_index[2] - 1]);
-		out_normals.push_back(normals 	[faces[i].n_index[2] - 1]);
-		out_uvs.push_back(uvs 			[faces[i].t_index[2] - 1]);
-	}
-
-	Group g;
-	g.program_id = loader->get_shaders( "objects/textureVertexShader.glsl", "objects/textureFragmentShader.glsl" );
-	g.shadow_program_id = loader->get_shaders( "objects/depthVertexShader.glsl", "objects/depthFragmentShader.glsl" );
-	g.matrix_id = glGetUniformLocation(g.program_id, "MVP");
-	g.depthbias_id = glGetUniformLocation(g.program_id, "DepthBiasMVP");
-	g.shadowmap_id = glGetUniformLocation(g.program_id, "shadowMap");
-	g.viewmatrix_id = glGetUniformLocation(g.program_id, "V");
-	g.modelmatrix_id = glGetUniformLocation(g.program_id, "M");
-	g.lightdir_id = glGetUniformLocation(g.program_id, "LightInvDirection_worldspace");
-	g.has_texture_id = glGetUniformLocation(g.program_id, "has_texture");
-
-	g.vertexposition_modelspace_id = glGetAttribLocation(g.program_id, "vertexPosition_modelspace");
-	g.vertexUV_id = glGetAttribLocation(g.program_id, "vertexUV");
-	g.normal_id = glGetAttribLocation(g.program_id, "vertexNormal_modelspace");
-
-	g.size = out_vertices.size();
-	g.texture = loader->get_texture(texture_path.c_str());
-	g.texture_id  = glGetUniformLocation(g.program_id, "mytextureSampler");
-	texture_path = path + "/" + group_name + ".dds";
-
-	g.shadow_matrix_id = glGetUniformLocation(g.shadow_program_id, "depthMVP");
-
-	
-	glGenBuffers(1, &g.vertexbuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, g.vertexbuffer);
-	glBufferData(GL_ARRAY_BUFFER, out_vertices.size()*sizeof(Point), out_vertices.data(), GL_DYNAMIC_DRAW);
-	
-	glGenBuffers(1, &g.uvbuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, g.uvbuffer);
-	glBufferData(GL_ARRAY_BUFFER, out_uvs.size()*sizeof(Point2), out_uvs.data(), GL_DYNAMIC_DRAW);
-
-	glGenBuffers(1, &g.normalbuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, g.normalbuffer);
-	glBufferData(GL_ARRAY_BUFFER, out_normals.size()*sizeof(Point), out_normals.data(), GL_DYNAMIC_DRAW);
-
-	all_faces.insert(all_faces.end(),faces.begin(),faces.end());
-
-	faces.clear();
-	return g;
-}
-
-bool Object::load_obj_texture(){
-	FILE *file = fopen(obj_path.c_str(), "r");
-
-	if(!file)
-		return false;
-
-	int tmp=1;
-	char buffer[1000];
-	char line[256], *tmp_c;
-	string texture_path;
-	while(fscanf(file, "%s", line) != EOF){
-		Point coord;
-		Point2 coord2;
-		Face face;
-
-		if(!strcmp(line, "v")){
-			tmp = fscanf(file, "%f %f %f", &coord.x, &coord.y, &coord.z);
-			coord.x *= s; coord.y *= s; coord.z *= s;
-			this->vertices.push_back(coord);
-		} else if(!strcmp(line, "vn")){
-			tmp = fscanf(file, "%f %f %f", &coord.x, &coord.y, &coord.z);
-			this->normals.push_back(coord);
-		} else if(!strcmp(line, "vt")){
-			tmp = fscanf(file, "%f %f", &coord2.x, &coord2.y);
-			this->uvs.push_back(coord2);
-		} else if(!strcmp(line, "f")){
-			tmp = fscanf(file, "%d/%d/%d %d/%d/%d %d/%d/%d", &face.v_index[0], &face.t_index[0], &face.n_index[0],
-			&face.v_index[1], &face.t_index[1], &face.n_index[1], &face.v_index[2], &face.t_index[2], &face.n_index[2]);
-
-			this->faces.push_back(face);
-		}else if(!strcmp(line, "#")){
-			tmp_c = fgets(buffer, 1000, file);
-			if(tmp_c == NULL) return false;
-			//printf("Comment: %s\n", buffer);
-		}else if(!strcmp(line, "g")){
-			char group_name[30];
-			tmp = fscanf(file, "%s", group_name);
-			
-			Group g = load_group(group_name);
-
-			groups.push_back(g);
-		}
-
-		if(tmp <= 0)
-			return false;
-	}
-
-	Group g = load_group("");
-	if(g.size > 0)
-		groups.push_back(g);
-	printf("Loaded %s\n", obj_path.c_str());
-	
-	/*if(debug)
-		load_debug(path, vertices, normals, faces, uvs);*/
-
-	fclose(file);
+	model = loader->get_model(path, s);
+	//if(model == NULL)
+	//	printf("Error: load failed\n");
 	return true;
 }
 
@@ -361,14 +246,6 @@ void Object::get_mvp(float mvp[4][4]){
 	glGetFloatv(GL_MODELVIEW_MATRIX, m1[0]);
 	glGetFloatv(GL_PROJECTION_MATRIX, m2[0]);
 	mult_matrix(mvp, m1, m2);
-}
-
-void load_debug(string path, vector<Point> &vertices, vector<Point> &normals, vector<Face> &faces, vector<Point> &uvs){
-		std::cout << "Loading object: " << path 	 << "\n"
-				  << "Vertices: " << vertices.size() << "\t"
-				  << "Normals: "  << normals.size()  << "\t"
-				  << "Faces: "    << faces.size() 	 << "\t"
-				  << "Uvs: "      << uvs.size() 	 << "\n\n";
 }
 
 void Object::get_matrix(float m[16]){

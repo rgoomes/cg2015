@@ -142,7 +142,7 @@ void World::update(float elapsed){
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(-300, 300, -2, 300, -300, 300); // directional light
+	glOrtho(-40, 40, -2, 40, -40, 40); // directional light
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -150,7 +150,7 @@ void World::update(float elapsed){
 	gluLookAt(-0.5, 0.8, 0.5, 0, 0, 0, 0, 1, 0);
 
 	for(i=0; i<(int)objects.size();  i++){
-		objects[i]->render_shadow(); // TODO
+		objects[i]->render_shadow();
 	}
 
 	// SCREEN RENDERING
@@ -180,7 +180,7 @@ void World::update(float elapsed){
 	glLightfv(GL_LIGHT0, GL_POSITION, light_position);*/
 
 	for(i=0; i<(int)objects.size();  i++){
-		objects[i]->render_texture(); // TODO
+		objects[i]->render_texture();
 	}
 }
 

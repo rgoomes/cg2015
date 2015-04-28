@@ -16,13 +16,13 @@ btCollisionShape* Rigidbody::get_mesh_object(){
 	btTriangleMesh *mesh = new btTriangleMesh();
 	int v;
 
-	for (int i=0; i < (int)all_faces.size(); i++){
-		v = all_faces[i].v_index[0]-1;
-		btVector3 btVertex3(vertices[v].x, vertices[v].y, vertices[v].z);
-		v = all_faces[i].v_index[1]-1;
-		btVector3 btVertex2(vertices[v].x, vertices[v].y, vertices[v].z);
-		v = all_faces[i].v_index[2]-1;
-		btVector3 btVertex1(vertices[v].x, vertices[v].y, vertices[v].z);
+	for (int i=0; i < (int)model.all_faces.size(); i++){
+		v = model.all_faces[i].v_index[0]-1;
+		btVector3 btVertex3(model.vertices[v].x, model.vertices[v].y, model.vertices[v].z);
+		v = model.all_faces[i].v_index[1]-1;
+		btVector3 btVertex2(model.vertices[v].x, model.vertices[v].y, model.vertices[v].z);
+		v = model.all_faces[i].v_index[2]-1;
+		btVector3 btVertex1(model.vertices[v].x, model.vertices[v].y, model.vertices[v].z);
 		
 		mesh->addTriangle(btVertex1, btVertex2, btVertex3);
 	}
