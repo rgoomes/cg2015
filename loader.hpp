@@ -1,6 +1,8 @@
 #ifndef LOADER_H
 #define LOADER_H
 
+#define GLM_FORCE_RADIANS
+
 #include <map>
 #include <vector>
 #include <utility>
