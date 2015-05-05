@@ -21,7 +21,7 @@ GLuint Loader::get_shaders(string pathVertex, string pathFragment){
 	}
 }
 
-Model Loader::get_model(string path, float scale){
+Model* Loader::get_model(string path, float scale){
 	this->s = scale;
 	if(models.find(path) == models.end()){
 		models[path] = load_model(path);
@@ -30,7 +30,7 @@ Model Loader::get_model(string path, float scale){
 		return models[path];
 }
 
-Model Loader::load_model(string path){
+Model* Loader::load_model(string path){
 	normals.clear();
 	uvs.clear();
 	out_vertices.clear();
@@ -48,7 +48,7 @@ Model Loader::load_model(string path){
 	this->texture_path = this->path + "/" + this->name + ".dds";
 	this->obj_path = this->path + "/" + this->name + ".obj";
 	
-	Model model;
+	Model *model = new Model;
 	FILE *file = fopen(obj_path.c_str(), "r");
 
 	if(!file)
@@ -108,9 +108,9 @@ Model Loader::load_model(string path){
 
 	fclose(file);
 
-	model.vertices = vertices;
-	model.all_faces = all_faces;
-	model.groups = groups;
+	model->vertices = vertices;
+	model->all_faces = all_faces;
+	model->groups = groups;
 
 	return model;
 }

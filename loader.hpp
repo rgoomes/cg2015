@@ -46,11 +46,11 @@ class Loader{
 		~Loader();
 		GLuint get_texture(string path);
 		GLuint get_shaders(string pathVertex, string pathFragment);
-		Model get_model(string path, float scale);
+		Model* get_model(string path, float scale);
 	private:
 		map<string, GLuint> textures;
 		map<pair<string, string>, GLuint> shaders;
-		map<string, Model> models;
+		map<string, Model*> models;
 
 		vector<Point> normals;
 		vector<Point2> uvs;
@@ -66,7 +66,7 @@ class Loader{
 
 		vector<Group> groups;
 
-		Model load_model(string path);
+		Model* load_model(string path);
 		Group load_group(string group_name);
 		void load_mtl(string path, string name);
 		void init_material(Material& m);

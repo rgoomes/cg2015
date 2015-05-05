@@ -106,8 +106,8 @@ void Object::render_texture(){
 		
 	glPopMatrix();
 
-	for(int i=0; i<(int)this->model.groups.size(); i++){
-		Group g = this->model.groups[i];
+	for(int i=0; i<(int)this->model->groups.size(); i++){
+		Group g = this->model->groups[i];
 		if(g.material.Tf < 1)
 			continue;
 
@@ -188,8 +188,8 @@ void Object::render_glass(){
 		
 	glPopMatrix();
 
-	for(int i=0; i<(int)this->model.groups.size(); i++){
-		Group g = this->model.groups[i];
+	for(int i=0; i<(int)this->model->groups.size(); i++){
+		Group g = this->model->groups[i];
 		if(g.material.Tf == 1)
 			continue;
 
@@ -271,8 +271,8 @@ void Object::render_shadow(){
 
 	get_mvp(this->depthMVP);
 
-	for(int i=0; i<(int)this->model.groups.size(); i++){
-		Group g = this->model.groups[i];
+	for(int i=0; i<(int)this->model->groups.size(); i++){
+		Group g = this->model->groups[i];
 
 		glUseProgram(g.shadow_program_id);
 		glUniformMatrix4fv(g.shadow_matrix_id, 1, GL_FALSE, &depthMVP[0][0]);

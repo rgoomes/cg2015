@@ -53,7 +53,7 @@ class Object {
 		void get_matrix(float m[16]);
 		void set_material(Group& g, Material& m);
 	protected:
-		Model model;
+		Model* model;
 
 		GLuint shadowmap;
 		float depthMVP[4][4];
