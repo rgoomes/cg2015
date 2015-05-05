@@ -163,7 +163,6 @@ Group Loader::load_group(string group_name){
 	else
 		init_material(g.material);
 	set_material_ids(g, g.material);
-	cur_material = "";
 
 
 	g.shadow_matrix_id = glGetUniformLocation(g.shadow_program_id, "depthMVP");
