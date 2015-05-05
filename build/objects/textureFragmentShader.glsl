@@ -77,6 +77,8 @@ void main(){
 		//int	index = i;
 		visibility -= 0.2*(1.0-shadow2D( shadowMap, vec3(ShadowCoord.xy + poissonDisk[index]/2000.0,  (ShadowCoord.z-bias)/ShadowCoord.w )).r);
 	}
+	if(ShadowCoord.x < 0 || ShadowCoord.x > 1 || ShadowCoord.y < 0 || ShadowCoord.y > 1)
+		visibility = 1;
 	
 
 	gl_FragColor.rgb = 
