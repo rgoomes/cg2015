@@ -6,14 +6,13 @@ int sky_left[] 	 = { 1, -1,  1, -1, -1,  1, -1,  1,  1,  1,  1,  1};
 int sky_back[] 	 = {-1, -1,  1, -1, -1, -1, -1,  1, -1, -1,  1,  1};
 int sky_right[]  = {-1, -1, -1,  1, -1, -1,  1,  1, -1, -1,  1, -1};
 int sky_top[] 	 = {-1,  1, -1,  1,  1, -1,  1,  1,  1, -1,  1,  1};
-int sky_bottom[] = { 1, -1, -1, -1, -1, -1, -1, -1,  1,  1, -1,  1};
 
 GLuint skybox[6];
 
 void load_skybox(){
 	string skybox_path = "objects/skybox/skybox";
 
-	for(int i = 0; i < 6; i++){
+	for(int i = 0; i < 5; i++){
 		string full_path = skybox_path + std::to_string(i) + ".dds";
 		skybox[i] = loadDDS(full_path.c_str());
 	}
@@ -45,7 +44,6 @@ void draw_skybox(double D){
 	draw_skyface(2, sky_back,   D);
 	draw_skyface(3, sky_right,  D);
 	draw_skyface(4, sky_top,    D);
-	draw_skyface(5, sky_bottom, D);
 
 	glPopAttrib();
 	glPopMatrix();
