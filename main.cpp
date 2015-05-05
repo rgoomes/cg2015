@@ -31,7 +31,7 @@ void opengl_init(){
 	glfwWindowHint				(GLFW_CONTEXT_VERSION_MAJOR, 2);
 	glfwWindowHint				(GLFW_CONTEXT_VERSION_MINOR, 1);
 	glfwSwapInterval			(0);
-	main_window = glfwCreateWindow	(SCREEN_WIDTH/4, SCREEN_HEIGHT/4, "cg2015", NULL, NULL);
+	main_window = glfwCreateWindow	(SCREEN_WIDTH/1.5, SCREEN_HEIGHT/1.5, "cg2015", NULL, NULL);
  	glfwSetInputMode			(main_window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
  	
 	glfwMakeContextCurrent		(main_window);
