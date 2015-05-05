@@ -10,12 +10,12 @@
 #include "misc.hpp"
 #include "skybox.hpp"
 
-#define WORLD_MIN_X -20 
-#define WORLD_MAX_X 230
-#define WORLD_MIN_Y 1
-#define WORLD_MAX_Y 40
-#define WORLD_MIN_Z -145
-#define WORLD_MAX_Z 145
+#define WORLD_MIN_X -20000 
+#define WORLD_MAX_X 23000
+#define WORLD_MIN_Y -1000
+#define WORLD_MAX_Y 40000
+#define WORLD_MIN_Z -14500
+#define WORLD_MAX_Z 14500
 
 #define SHADOW_RES 4096
 

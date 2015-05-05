@@ -27,7 +27,7 @@ void opengl_init(){
 
 	glfwInit();
 	monitor_resolution			(&SCREEN_WIDTH, &SCREEN_HEIGHT);
-	glfwWindowHint				(GLFW_SAMPLES, 16);
+	glfwWindowHint				(GLFW_SAMPLES, 4);
 	glfwWindowHint				(GLFW_CONTEXT_VERSION_MAJOR, 2);
 	glfwWindowHint				(GLFW_CONTEXT_VERSION_MINOR, 1);
 	glfwSwapInterval			(0);
