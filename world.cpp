@@ -182,6 +182,9 @@ void World::update(float elapsed){
 	for(i=0; i<(int)objects.size();  i++){
 		objects[i]->render_texture();
 	}
+	for(i=0; i<(int)objects.size();  i++){
+		objects[i]->render_glass();
+	}
 }
 
 

@@ -33,9 +33,10 @@ class Object {
 		void set_scale(float s);
 		float scale();
 		void render();
-		void render_texture();
 		void set_shadowmap(GLuint dt);
 		void render_shadow();
+		void render_texture();
+		void render_glass();
 		void attach_loader(Loader* loader);
 		void attach_world(World* world);
 		
