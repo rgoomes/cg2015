@@ -19,7 +19,8 @@ struct Material{
 	vec3 Kd, Ka, Ks;
 	float Tf, Ns;
 	int illum;
-	string bump, map_Ka;
+	GLuint map_Kd;
+	string bump;
 };
 
 struct Group{
@@ -67,7 +68,7 @@ class Loader{
 
 		Model load_model(string path);
 		Group load_group(string group_name);
-		void load_mtl(FILE* file);
+		void load_mtl(string path, string name);
 		void init_material(Material& m);
 		void set_material_ids(Group &g, Material& m);
 };

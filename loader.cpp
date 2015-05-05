@@ -47,7 +47,6 @@ Model Loader::load_model(string path){
 	this->name = this->path.substr(l+1, string::npos);
 	this->texture_path = this->path + "/" + this->name + ".dds";
 	this->obj_path = this->path + "/" + this->name + ".obj";
-	this->mtl_path = this->path + "/" + this->name + ".mtl";
 	
 	Model model;
 	FILE *file = fopen(obj_path.c_str(), "r");
@@ -55,8 +54,7 @@ Model Loader::load_model(string path){
 	if(!file)
 		return model;
 
-	FILE *file_mtl = fopen(mtl_path.c_str(), "r");
-	load_mtl(file_mtl);
+	load_mtl(this->path, this->name);
 
 	int tmp=1;
 	char buffer[1000];
@@ -120,6 +118,7 @@ Model Loader::load_model(string path){
 void Loader::set_material_ids(Group &g, Material& m){
 	g.Ns_id = glGetUniformLocation(g.program_id, "Ns");
 	g.Tf_id = glGetUniformLocation(g.program_id, "Tf");
+	g.texture_id = glGetUniformLocation(g.program_id, "mytextureSampler");
 }
 
 Group Loader::load_group(string group_name){
@@ -154,8 +153,6 @@ Group Loader::load_group(string group_name){
 	g.normal_id = glGetAttribLocation(g.program_id, "vertexNormal_modelspace");
 
 	g.size = out_vertices.size();
-	g.texture = get_texture(texture_path.c_str());
-	g.texture_id  = glGetUniformLocation(g.program_id, "mytextureSampler");
 	texture_path = path + "/" + group_name + ".dds";
 	if(cur_material != ""){
 		g.material = materials[cur_material];
@@ -193,12 +190,15 @@ void Loader::init_material(Material& m){
 	m.Tf = 1.0f; 				// transmission (average of 3 components)
 	m.Ks = vec3(0.9, 0.9, 0.9);	// specular color
 	m.Ns = 16.0f; 				// specular exponent
-	m.map_Ka = ""; 				// texture
+	m.map_Kd = 0; 				// texture
 	m.bump = ""; 				// bump texture
 	//m.Ni = 1.0f; 				// 
 }
 
-void Loader::load_mtl(FILE* file){
+void Loader::load_mtl(string path, string name){
+	string mtl_path = path + "/" + name + ".mtl";
+	FILE *file = fopen(mtl_path.c_str(), "r");	
+
 	if(!file)
 		return;
 
@@ -230,6 +230,9 @@ void Loader::load_mtl(FILE* file){
 			fscanf(file, "%f %f %f", &m.Tf, &m.Tf, &m.Tf);
 		}else if(prop == "Ns"){
 			fscanf(file, "%f", &m.Ns);
+		}else if(prop == "map_Kd"){
+			fscanf(file, "%s", p);
+			m.map_Kd = get_texture( path + "/" + p );
 		}else{
 			fgets(p, 64, file);
 		}

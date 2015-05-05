@@ -80,6 +80,14 @@ void Object::get_depthbiasmvp(float dbmvp[4][4]){
 void Object::set_material(Group& g, Material& m){
 	glUniform1f(g.Ns_id, m.Ns);
 	glUniform1f(g.Tf_id, m.Tf);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, m.map_Kd);
+	glUniform1i(g.texture_id, 0);
+	if(!g.material.map_Kd)
+		glUniform1i(g.has_texture_id, 0);
+	else
+		glUniform1i(g.has_texture_id, 1);
 	//printf("Tf %f\n", m.Tf);
 }
 
@@ -110,19 +118,12 @@ void Object::render_texture(){
 		glUniformMatrix4fv(g.modelmatrix_id, 1, GL_FALSE, model);
 		glUniform3f(g.lightdir_id, -0.5, 0.8, 0.5);
 		
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, g.texture);
-		glUniform1i(g.texture_id, 0);
-		if(!g.texture)
-			glUniform1i(g.has_texture_id, 0);
-		else
-			glUniform1i(g.has_texture_id, 1);
+		set_material(g, g.material);
 
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, shadowmap);
 		glUniform1i(g.shadowmap_id, 1);
 
-		set_material(g, g.material);
 
 		// 1rst attribute buffer : vertices
 		glEnableVertexAttribArray(g.vertexposition_modelspace_id);
