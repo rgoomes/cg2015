@@ -51,7 +51,7 @@ void main(){
 	// Material properties
 	vec3 MaterialDiffuseColor;
 	if(has_texture != 0)
-		MaterialDiffuseColor = texture2D( myTextureSampler, UV ).rgb;
+		MaterialDiffuseColor = texture2D( myTextureSampler, vec2(UV.x, 1-UV.y) ).rgb;
 	else
 		MaterialDiffuseColor = vec3(0.6, 0.6, 0.6);
 	vec3 MaterialAmbientColor = 0.4 * MaterialDiffuseColor;
