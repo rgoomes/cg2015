@@ -112,6 +112,7 @@ Model* Loader::load_model(string path){
 	model->all_faces = all_faces;
 	model->groups = groups;
 
+	cur_material = "";
 	return model;
 }
 
@@ -119,6 +120,7 @@ void Loader::set_material_ids(Group &g, Material& m){
 	g.Ns_id = glGetUniformLocation(g.program_id, "Ns");
 	g.Tf_id = glGetUniformLocation(g.program_id, "Tf");
 	g.texture_id = glGetUniformLocation(g.program_id, "mytextureSampler");
+	g.bump_id = glGetUniformLocation(g.program_id, "bumpSampler");
 }
 
 Group Loader::load_group(string group_name){
@@ -135,6 +137,8 @@ Group Loader::load_group(string group_name){
 		out_vertices.push_back(vertices	[faces[i].v_index[2] - 1]);
 		out_normals.push_back(normals 	[faces[i].n_index[2] - 1]);
 		out_uvs.push_back(uvs 			[faces[i].t_index[2] - 1]);
+		Point tangent, bitangent;
+		calcTangentSpace(out_tangents, out_bitangents, out_vertices, out_uvs);
 	}
 	
 	Group g;
@@ -177,6 +181,16 @@ Group Loader::load_group(string group_name){
 	glBindBuffer(GL_ARRAY_BUFFER, g.normalbuffer);
 	glBufferData(GL_ARRAY_BUFFER, out_normals.size()*sizeof(Point), out_normals.data(), GL_DYNAMIC_DRAW);
 
+	if(g.material.bump != 0){
+		glGenBuffers(1, &g.tangentbuffer);
+		glBindBuffer(GL_ARRAY_BUFFER, g.tangentbuffer);
+		glBufferData(GL_ARRAY_BUFFER, out_tangents.size()*sizeof(Point), out_tangents.data(), GL_DYNAMIC_DRAW);
+
+		glGenBuffers(1, &g.bitangentbuffer);
+		glBindBuffer(GL_ARRAY_BUFFER, g.bitangentbuffer);
+		glBufferData(GL_ARRAY_BUFFER, out_bitangents.size()*sizeof(Point), out_bitangents.data(), GL_DYNAMIC_DRAW);		
+	}	
+
 	all_faces.insert(all_faces.end(),faces.begin(),faces.end());
 
 	faces.clear();
@@ -191,7 +205,7 @@ void Loader::init_material(Material& m){
 	m.Ks = vec3(0.9, 0.9, 0.9);	// specular color
 	m.Ns = 16.0f; 				// specular exponent
 	m.map_Kd = 0; 				// texture
-	m.bump = ""; 				// bump texture
+	m.bump = 0; 				// bump texture
 	//m.Ni = 1.0f; 				// 
 }
 
@@ -232,7 +246,11 @@ void Loader::load_mtl(string path, string name){
 			fscanf(file, "%f", &m.Ns);
 		}else if(prop == "map_Kd"){
 			fscanf(file, "%s", p);
-			m.map_Kd = get_texture( path + "/" + p );
+			m.map_Kd = get_texture(path + "/" + p);
+		}else if(prop == "bump"){
+			fscanf(file, "%s", p);
+			printf("%s\n", p);
+			m.bump = get_texture(path + "/" + p);
 		}else{
 			fgets(p, 64, file);
 		}
@@ -241,3 +259,65 @@ void Loader::load_mtl(string path, string name){
 
 }
 
+
+void Loader::calcTangentSpace(
+	// outputs
+	std::vector<Point> & tangents,
+	std::vector<Point> & bitangents,
+	// inputs
+	std::vector<Point> & vertices,
+	std::vector<Point2> & uvs
+){
+	int i = vertices.size();
+
+	// vertices
+	glm::vec3 v0 = glm::vec3(vertices[i-2].x, vertices[i-2].y, vertices[i-2].z);
+	glm::vec3 v1 = glm::vec3(vertices[i-1].x, vertices[i-1].y, vertices[i-1].z);
+	glm::vec3 v2 = glm::vec3(vertices[ i ].x, vertices[ i ].y, vertices[ i ].z);
+
+	// UVs
+	glm::vec2 uv0 = glm::vec2(uvs[i-2].x, uvs[i-2].y);
+	glm::vec2 uv1 = glm::vec2(uvs[i-1].x, uvs[i-1].y);
+	glm::vec2 uv2 = glm::vec2(uvs[ i ].x, uvs[ i ].y);
+
+	// Edges of the triangle : postion delta
+	glm::vec3 deltaPos1 = v1-v0;
+	glm::vec3 deltaPos2 = v2-v0;
+
+	// UV delta
+	glm::vec2 deltaUV1 = uv1-uv0;
+	glm::vec2 deltaUV2 = uv2-uv0;
+
+	float r = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV1.y * deltaUV2.x);
+	glm::vec3 tg = (deltaPos1 * deltaUV2.y - deltaPos2 * deltaUV1.y)*r;
+	glm::vec3 btg = (deltaPos2 * deltaUV1.x - deltaPos1 * deltaUV2.x)*r;
+
+	Point tangent = {tg.x, tg.y, tg.z};
+	Point bitangent = {btg.x, btg.y, btg.z};
+
+	tangents.push_back(tangent);
+	tangents.push_back(tangent);
+	tangents.push_back(tangent);
+
+	bitangents.push_back(bitangent);
+	bitangents.push_back(bitangent);
+	bitangents.push_back(bitangent);
+
+	// See "Going Further"
+	/*for (unsigned int i=0; i<vertices.size(); i+=1 )
+	{
+		glm::vec3 & n = normals[i];
+		glm::vec3 & t = tangents[i];
+		glm::vec3 & b = bitangents[i];
+		
+		// Gram-Schmidt orthogonalize
+		t = glm::normalize(t - n * glm::dot(n, t));
+		
+		// Calculate handedness
+		if (glm::dot(glm::cross(n, t), b) < 0.0f){
+			t = t * -1.0f;
+		}
+
+	}*/
+
+}

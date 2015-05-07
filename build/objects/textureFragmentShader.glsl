@@ -4,14 +4,19 @@
 varying vec2 UV;
 varying vec3 Normal_cameraspace;
 varying vec3 LightDirection_cameraspace;
+varying vec3 LightDirection_tangentspace;
 varying vec4 ShadowCoord;
 varying vec3 vertPos;
+varying vec3 vertexTangent_modelspace;
+varying vec3 vertexBitangent_modelspace;
 
 // Values that stay constant for the whole mesh.
 uniform sampler2D myTextureSampler;
+uniform sampler2D bumpSampler;
 uniform sampler2DShadow shadowMap;
 uniform mat4 V;
 uniform int has_texture;
+uniform int has_bump;
 uniform float Ns, Tf;
 
 vec2 poissonDisk[16] = vec2[]( 
@@ -43,7 +48,6 @@ void main(){
 
 	// Light emission properties
 	vec3 LightColor = vec3(1,1,1);
-	
 	// Material properties
 	vec3 MaterialDiffuseColor;
 	if(has_texture != 0)
@@ -53,7 +57,13 @@ void main(){
 	vec3 MaterialAmbientColor = 0.4 * MaterialDiffuseColor;
 	vec3 MaterialSpecColor = vec3(0.7, 0.7, 0.7);
 
-	vec3 n = normalize(Normal_cameraspace);
+	vec3 TextureNormal_tangentspace = normalize(texture2D( bumpSampler, vec2(UV.x,-UV.y) ).rgb*2.0 - 1.0);
+	//vec3 n = normalize(Normal_cameraspace);
+	vec3 n;
+	if(has_bump != 0)
+		n = normalize(TextureNormal_tangentspace);
+	else
+		n = normalize(Normal_cameraspace);
 	vec3 l = normalize(LightDirection_cameraspace);
 	
 	float visibility=1.0;
@@ -65,9 +75,9 @@ void main(){
 		specular = pow(max(0.0, dot(reflect(l, n), viewDir)), Ns);
 	//}
 
-	float bias = 0.005;
+	//float bias = 0.005;
 	// ...variable bias
-	//float bias = 0.001*tan(acos(cosTheta)); bias = clamp(bias, 0,0.01);
+	float bias = 0.005*tan(acos(cosTheta)); bias = clamp(bias, 0,0.01);
 	
 	// Sample the shadow map 4 times
 	for (int i=0;i<4;i++){
@@ -77,17 +87,20 @@ void main(){
 		//int	index = i;
 		visibility -= 0.2*(1.0-shadow2D( shadowMap, vec3(ShadowCoord.xy + poissonDisk[index]/2000.0,  (ShadowCoord.z-bias)/ShadowCoord.w )).r);
 	}
-	if(ShadowCoord.x < 0 || ShadowCoord.x > 1 || ShadowCoord.y < 0 || ShadowCoord.y > 1)
+	if(ShadowCoord.x < 0 || ShadowCoord.x > 1 || ShadowCoord.y < 0 || ShadowCoord.y > 1)//{
 		visibility = 1;
-	
-
+/*		gl_FragColor.rgba = vec4(1, 0, 0, 1);
+	}else{*/
 	gl_FragColor.rgb = 
 		// Ambient : simulates indirect lighting
 		MaterialAmbientColor +
 		// Diffuse : "color" of the object
 		visibility * MaterialDiffuseColor * LightColor * cosTheta + 
 		// Specular: causes intel bug
-		visibility * specular * MaterialSpecColor;
+		visibility*visibility * specular * MaterialSpecColor;
 
 	gl_FragColor.a = Tf;
+	
+	//}
+
 }

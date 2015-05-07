@@ -19,17 +19,16 @@ struct Material{
 	vec3 Kd, Ka, Ks;
 	float Tf, Ns;
 	int illum;
-	GLuint map_Kd;
-	string bump;
+	GLuint map_Kd, bump;
 };
 
 struct Group{
 	string texture_path;
 	GLuint  program_id, shadow_program_id, matrix_id, vertexposition_modelspace_id, vertexUV_id, 
-			texture, texture_id, shadowmap_id, depthbias_id, shadow_matrix_id,
-			vertexbuffer, uvbuffer, normalbuffer, size,
+			texture, texture_id, bump_id, shadowmap_id, depthbias_id, shadow_matrix_id,
+			vertexbuffer, uvbuffer, normalbuffer, tangentbuffer, bitangentbuffer, size,
 			viewmatrix_id, modelmatrix_id, lightdir_id, normal_id,
-			has_texture_id;
+			has_texture_id, has_bump_id;
 	Material material;
 	GLuint Ns_id, Tf_id;
 };
@@ -54,7 +53,7 @@ class Loader{
 
 		vector<Point> normals;
 		vector<Point2> uvs;
-		vector<Point> out_vertices, out_normals;
+		vector<Point> out_vertices, out_normals, out_tangents, out_bitangents;
 		vector<Point2> out_uvs;
 		vector<Face> faces;
 		vector<Face> all_faces;
@@ -69,6 +68,7 @@ class Loader{
 		Model* load_model(string path);
 		Group load_group(string group_name);
 		void load_mtl(string path, string name);
+		void calcTangentSpace(std::vector<Point> & tangents, std::vector<Point> & bitangents, std::vector<Point> & vertices, std::vector<Point2> & uvs);
 		void init_material(Material& m);
 		void set_material_ids(Group &g, Material& m);
 };

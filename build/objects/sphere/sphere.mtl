@@ -1,0 +1,3 @@
+newmtl spheremat
+map_Kd earth.dds
+Tf 1 1 1

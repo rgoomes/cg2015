@@ -4,12 +4,15 @@
 attribute vec3 vertexPosition_modelspace;
 attribute vec2 vertexUV;
 attribute vec3 vertexNormal_modelspace;
+varying vec3 vertexTangent_modelspace;
+varying vec3 vertexBitangent_modelspace;
 
 // Output data ; will be interpolated for each fragment.
 varying vec2 UV;
 varying vec3 vertPos;
 varying vec4 ShadowCoord;
 varying vec3 LightDirection_cameraspace;
+varying vec3 LightDirection_tangentspace;
 varying vec3 Normal_cameraspace;
 
 // Values that stay constant for the whole mesh.
@@ -33,5 +36,19 @@ void main(){
 	
 	// UV of the vertex. No special space for this one.
 	UV = vertexUV;
+
+	mat3 MV3 = mat3(V * M);
+	vec3 vertexTangent_cameraspace = MV3 * vertexTangent_modelspace;
+	vec3 vertexBitangent_cameraspace = MV3 * vertexBitangent_modelspace;
+	vec3 vertexNormal_cameraspace = MV3 * vertexNormal_modelspace;
+	
+	mat3 TBN = transpose(mat3(
+		vertexTangent_cameraspace,
+		vertexBitangent_cameraspace,
+		vertexNormal_cameraspace	
+	)); // You can use dot products instead of building this matrix and transposing it. See References for details.
+
+	LightDirection_tangentspace = TBN * LightDirection_cameraspace;
+
 }
 

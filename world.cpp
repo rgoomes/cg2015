@@ -143,7 +143,7 @@ void World::update(float elapsed){
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
-	glOrtho(-250, 250, -250, 250, -250, 250); // directional light
+	glOrtho(-200, 310, -150, 270, -250, 150); // directional light
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();

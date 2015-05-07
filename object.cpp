@@ -88,7 +88,15 @@ void Object::set_material(Group& g, Material& m){
 		glUniform1i(g.has_texture_id, 0);
 	else
 		glUniform1i(g.has_texture_id, 1);
-	//printf("Tf %f\n", m.Tf);
+
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, m.bump);
+	glUniform1i(g.bump_id, 0);
+	if(!g.material.bump)
+		glUniform1i(g.has_bump_id, 0);
+	else
+		glUniform1i(g.has_bump_id, 1);
+
 }
 
 void Object::render_texture(){
@@ -107,7 +115,7 @@ void Object::render_texture(){
 	glPopMatrix();
 
 	for(int i=0; i<(int)this->model->groups.size(); i++){
-		Group g = this->model->groups[i];
+		Group& g = this->model->groups[i];
 		if(g.material.Tf < 1)
 			continue;
 
@@ -189,7 +197,7 @@ void Object::render_glass(){
 	glPopMatrix();
 
 	for(int i=0; i<(int)this->model->groups.size(); i++){
-		Group g = this->model->groups[i];
+		Group& g = this->model->groups[i];
 		if(g.material.Tf == 1)
 			continue;
 
@@ -203,7 +211,7 @@ void Object::render_glass(){
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, g.texture);
 		glUniform1i(g.texture_id, 0);
-		if(!g.texture)
+		if(!g.material.map_Kd)
 			glUniform1i(g.has_texture_id, 0);
 		else
 			glUniform1i(g.has_texture_id, 1);
@@ -272,7 +280,7 @@ void Object::render_shadow(){
 	get_mvp(this->depthMVP);
 
 	for(int i=0; i<(int)this->model->groups.size(); i++){
-		Group g = this->model->groups[i];
+		Group& g = this->model->groups[i];
 
 		glUseProgram(g.shadow_program_id);
 		glUniformMatrix4fv(g.shadow_matrix_id, 1, GL_FALSE, &depthMVP[0][0]);
@@ -283,18 +291,6 @@ void Object::render_shadow(){
 		glVertexAttribPointer(
 			g.vertexposition_modelspace_id,  // The attribute we want to configure
 			3,                            // size
-			GL_FLOAT,                     // type
-			GL_FALSE,                     // normalized?
-			0,                            // stride
-			(void*)0                      // array buffer offset
-		);
-		
-		// 2nd attribute buffer : UVs
-		glEnableVertexAttribArray(g.vertexUV_id);
-		glBindBuffer(GL_ARRAY_BUFFER, g.uvbuffer);
-		glVertexAttribPointer(
-			g.vertexUV_id,                // The attribute we want to configure
-			2,                            // size : U+V => 2
 			GL_FLOAT,                     // type
 			GL_FALSE,                     // normalized?
 			0,                            // stride
@@ -327,8 +323,7 @@ float Object::scale(){
 bool Object::load_obj(bool has_texture){
 	this->has_texture = has_texture;
 	model = loader->get_model(path, s);
-	//if(model == NULL)
-	//	printf("Error: load failed\n");
+	
 	return true;
 }
 
