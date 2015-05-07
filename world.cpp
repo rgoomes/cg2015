@@ -3,7 +3,8 @@
 #include "object.hpp"
 #include "rigidbody.hpp"
 
-double horizontal_ang = PI/8, vertical_ang = PI/4;
+bool ftick = true;
+double horizontal_ang = PI/2, vertical_ang = -PI;
 double mouse_speed = 0.002f, speed = 90.0f, xpos, ypos;
 btVector3 obs_pos(60, 18, -10);
 
@@ -48,8 +49,12 @@ void World::camera_view(float elapsed, int w, int h){
 		glfwGetCursorPos(window, &xpos, &ypos);
 		glfwSetCursorPos(window, w/2, h/2);
 
-		horizontal_ang += mouse_speed * double(w/2 - xpos);
-		vertical_ang   -= mouse_speed * double(h/2 - ypos);
+		if(xpos != 0 && ypos != 0)
+			ftick = false;
+		if(!ftick){
+			horizontal_ang += mouse_speed * double(w/2 - xpos);
+			vertical_ang   -= mouse_speed * double(h/2 - ypos);
+		}
 	}
 	
 	btVector3 dir(cos(vertical_ang)*sin(horizontal_ang), sin(vertical_ang), cos(vertical_ang)*cos(horizontal_ang));
@@ -88,7 +93,6 @@ void World::camera_view(float elapsed, int w, int h){
 			      tmp.getX(),    tmp.getY(),    tmp.getZ(), 
 			      -up.getX(),    -up.getY(),    -up.getZ()
 	);
-
 }
 
 GLuint World::get_render_buffer(){
@@ -197,6 +201,4 @@ World::World(GLFWwindow* window){
 	init();
 
 	renderedTexture = get_render_buffer();
-
 }
-
