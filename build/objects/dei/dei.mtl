@@ -1,6 +1,5 @@
 newmtl initialShadingGroup
 illum 4
-bump wood.dds
 Kd 0.50 0.50 0.50
 Ka 0.00 0.00 0.00
 Tf 1.00 1.00 1.00
@@ -11,14 +10,12 @@ Kd 0.50 0.50 0.50
 Ka 0.00 0.00 0.00
 Tf 0.27 0.27 0.27
 Ni 1.00
-bump wood.dds
 newmtl lambert5SG
 illum 4
 Kd 0.00 0.00 0.00
 Ka 0.00 0.00 0.00
 Tf 1.00 1.00 1.00
 map_Kd wood.dds
-bump wood.dds
 Ni 1.00
 newmtl lambert8SG
 illum 4

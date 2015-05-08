@@ -9,6 +9,7 @@
 
 #include "misc.hpp"
 #include "skybox.hpp"
+#include "camera.hpp"
 
 #define WORLD_MIN_X -20000 
 #define WORLD_MAX_X 23000
@@ -17,7 +18,7 @@
 #define WORLD_MIN_Z -14500
 #define WORLD_MAX_Z 14500
 
-#define SHADOW_RES 4096
+#define SHADOW_RES 1024
 
 using namespace std;
 
@@ -31,6 +32,7 @@ class World{
 		World(GLFWwindow* window);
 
 	private:
+		Camera* camera;
 		btDynamicsWorld* physicsWorld;
 		vector<Object*> objects;
 		GLFWwindow* window;
@@ -42,8 +44,6 @@ class World{
 		GLuint get_render_buffer();
 		void tick(float elapsed);
 		void init();
-		void camera_view(float elapsed, int w, int h);
-
 };
 
 #endif

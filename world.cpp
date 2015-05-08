@@ -3,11 +3,6 @@
 #include "object.hpp"
 #include "rigidbody.hpp"
 
-bool ftick = true;
-double horizontal_ang = PI/2, vertical_ang = -PI;
-double mouse_speed = 0.002f, speed = 90.0f, xpos, ypos;
-btVector3 obs_pos(60, 18, -10);
-
 btDynamicsWorld* World::getDynamicWorld(){
 	btBroadphaseInterface* broadphase = new btDbvtBroadphase();
 	btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();
@@ -41,58 +36,6 @@ void World::addObject(Object* obj){
 	obj->attach_world(this);
 	if(obj->type() == "rigidbody")
 		physicsWorld->addRigidBody(((Rigidbody*)obj)->get_rigidbody());
-}
-
-void World::camera_view(float elapsed, int w, int h){
-
-	if(glfwGetWindowAttrib(window, GLFW_FOCUSED)){
-		glfwGetCursorPos(window, &xpos, &ypos);
-		glfwSetCursorPos(window, w/2, h/2);
-
-		if(xpos != 0 && ypos != 0)
-			ftick = false;
-		if(!ftick){
-			horizontal_ang += mouse_speed * double(w/2 - xpos);
-			vertical_ang   -= mouse_speed * double(h/2 - ypos);
-		}
-	}
-	
-	btVector3 dir(cos(vertical_ang)*sin(horizontal_ang), sin(vertical_ang), cos(vertical_ang)*cos(horizontal_ang));
-	btVector3 right(sin(horizontal_ang - PI/2.0f), 0, cos(horizontal_ang - PI/2.0f));
-
-	if(glfwGetKey(window, GLFW_KEY_UP)    || glfwGetKey(window, GLFW_KEY_W))
-		obs_pos += dir * elapsed * speed;
-	if(glfwGetKey(window, GLFW_KEY_DOWN)  || glfwGetKey(window, GLFW_KEY_S))
-		obs_pos -= dir * elapsed * speed;
-	if(glfwGetKey(window, GLFW_KEY_RIGHT) || glfwGetKey(window, GLFW_KEY_D))
-		obs_pos -= right * elapsed * speed;
-	if(glfwGetKey(window, GLFW_KEY_LEFT)  || glfwGetKey(window, GLFW_KEY_A))
-		obs_pos += right * elapsed * speed;
-
-	double obs_x = obs_pos.getX();
-	double obs_y = obs_pos.getY();
-	double obs_z = obs_pos.getZ();
-	
-	if(obs_x > WORLD_MAX_X)
-		obs_pos.setX(WORLD_MAX_X);
-	else if(obs_x < WORLD_MIN_X)
-		obs_pos.setX(WORLD_MIN_X);
-	if(obs_y > WORLD_MAX_Y)
-		obs_pos.setY(WORLD_MAX_Y);
-	else if(obs_y < WORLD_MIN_Y)
-		obs_pos.setY(WORLD_MIN_Y);
-	if(obs_z > WORLD_MAX_Z)
-		obs_pos.setZ(WORLD_MAX_Z);
-	else if(obs_z < WORLD_MIN_Z)
-		obs_pos.setZ(WORLD_MIN_Z);
-
-	btVector3 tmp = obs_pos+dir;
-	btVector3 up = -dir.cross(right);
-
-	gluLookAt(obs_pos.getX(),obs_pos.getY(),obs_pos.getZ(), 
-			      tmp.getX(),    tmp.getY(),    tmp.getZ(), 
-			      -up.getX(),    -up.getY(),    -up.getZ()
-	);
 }
 
 GLuint World::get_render_buffer(){
@@ -176,7 +119,7 @@ void World::update(float elapsed){
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	camera_view(elapsed, window_width, window_height);
+	camera->update(window, elapsed);
 	draw_skybox(500);
 
 	/*GLfloat light_position[] = { 1.0, 15.0, -30.0, 1.0 };
@@ -201,4 +144,6 @@ World::World(GLFWwindow* window){
 	init();
 
 	renderedTexture = get_render_buffer();
+
+	camera = new Camera(window_width, window_height);
 }
