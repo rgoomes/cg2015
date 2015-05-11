@@ -26,8 +26,8 @@ void update_state(float elapsed, int key_state){
 }
 
 // TODO: MOVE FROM POINT1 TO POINT2 SMOOTHLY
-void Camera::move(btVector3 p1, btVector3 p2){
-
+void Camera::move(GLFWwindow* window, btVector3 p1, btVector3 p2){
+	pair<btVector3, btVector3> p = this->mouse_update(window);
 }
 
 pair<btVector3, btVector3> Camera::mouse_update(GLFWwindow* window){
@@ -67,7 +67,6 @@ void Camera::game_camera(GLFWwindow* window, float elapsed){
 		update_state(elapsed, 1);
 	if(glfwGetKey(window, GLFW_KEY_DOWN)  || glfwGetKey(window, GLFW_KEY_S))
 		update_state(elapsed, -1);
-
 	if(!updated && trigged){
 		if(acc > 0){
 			angle_game  += elapsed * last_state*acc*GAME_STATE1_ANGLE;

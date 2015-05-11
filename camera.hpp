@@ -32,7 +32,7 @@ class Camera{
 		pair<btVector3, btVector3> mouse_update(GLFWwindow* window);
 
 		void lookat(btVector3 dir, btVector3 right);
-		void move(btVector3 p1, btVector3 p2);
+		void move(GLFWwindow* window, btVector3 p1, btVector3 p2);
 		
 		void free_camera(GLFWwindow* window, float elapsed);
 		void game_camera(GLFWwindow* window, float elapsed);
