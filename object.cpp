@@ -320,8 +320,8 @@ float Object::scale(){
 	return s;
 }
 
-bool Object::load_obj(bool has_texture){
-	this->has_texture = has_texture;
+bool Object::load_obj(){
+	this->has_texture = true;
 	model = loader->get_model(path, s);
 	
 	return true;
