@@ -37,7 +37,7 @@ void load_objects(){
 	world->addObject(colorCube);
 
 	for(int i=0; i<10; i++){
-		sphere = new Rigidbody("objects/sphere", 5, btVector3(72, 30+10*i, 0));
+		sphere = new Rigidbody("objects/sphere", 5, btVector3(170, 50+5*i, 75));
 		sphere->attach_loader(loader);
 		sphere->set_scale(0.05);
 		sphere->load_obj();
@@ -55,14 +55,6 @@ void load_objects(){
 	dei_collider->set_scale(0.1);
 	dei_collider->load_obj();
 	world->addCollider(dei_collider);
-
-	/*for(int i=0; i<5; i++){
-		chair = new Rigidbody("objects/chair", 10, btVector3(i*10, 60, -10+i*10));
-		chair->attach_loader(loader);
-		chair->set_scale(0.1);
-		chair->load_obj(true);
-		world->addObject(chair);
-	}*/
 }
 
 void load_textures(){

@@ -9,7 +9,7 @@ btVector3 game3_pos(0, 		0,  0); // TODO
 int last_state, game_state = NO_GAME_STATE;
 
 double xpos, ypos, acc;
-double horizontal_ang = PI/2.5, vertical_ang = -PI;
+double horizontal_ang = PI, vertical_ang = -PI;
 bool ftick = true, updated, trigged = false;
 
 btVector3 obs_pos(149.09, 47, 0);
