@@ -3,10 +3,11 @@
 
 using namespace std;
 
-Rigidbody::Rigidbody(string path, btScalar mass, btVector3 pos)
+Rigidbody::Rigidbody(string path, btScalar mass, btVector3 pos, ColliderType collider)
 : Object(path){
 	this->path = path;
 	this->mass = mass;
+	this->collider_type = collider;
 	x = pos.getX();
 	y = pos.getY();
 	z = pos.getZ();
@@ -26,8 +27,11 @@ btCollisionShape* Rigidbody::get_mesh_object(){
 		
 		mesh->addTriangle(btVertex1, btVertex2, btVertex3);
 	}
-
-	btCollisionShape* shape  = new btConvexTriangleMeshShape(mesh);
+	btCollisionShape* shape;
+	if(collider_type == CONCAVE)
+		shape = new btBvhTriangleMeshShape(mesh, true);
+	else
+		shape = new btConvexTriangleMeshShape(mesh);
 	return shape;
 }
 

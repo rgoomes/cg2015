@@ -5,7 +5,7 @@
 #include <btBulletDynamicsCommon.h>
 #include "object.hpp"
 
-typedef enum{MESH, CONVEXHULL, SPHERE, CUBE} ColliderType;
+typedef enum{CONVEX, CONCAVE, CONVEXHULL, SPHERE, CUBE} ColliderType;
 
 class Object;
 
@@ -14,7 +14,7 @@ class Rigidbody : public Object{
 	public:
 		btRigidBody* get_rigidbody();
 		void load_obj();
-		Rigidbody(string path, btScalar mass, btVector3 pos);
+		Rigidbody(string path, btScalar mass, btVector3 pos, ColliderType collider=CONVEX);
 		void move(float _x, float _y, float _z);
 		void get_matrix(float m[16]);
 		void render_texture();
@@ -24,6 +24,7 @@ class Rigidbody : public Object{
 		btCollisionShape* get_mesh_object();
 		btTransform* get_transform();
 		btTransform trans;
+		ColliderType collider_type = CONVEX;
 	protected:
 		btScalar mass;
 };
