@@ -13,7 +13,7 @@ class Rigidbody : public Object{
 
 	public:
 		btRigidBody* get_rigidbody();
-		void load_obj(bool has_texture);
+		void load_obj();
 		Rigidbody(string path, btScalar mass, btVector3 pos);
 		void move(float _x, float _y, float _z);
 		void get_matrix(float m[16]);

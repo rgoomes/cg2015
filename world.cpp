@@ -19,6 +19,7 @@ void World::init(){
 	btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 1);
 	btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, -1, 0)));
 	btRigidBody::btRigidBodyConstructionInfo groundRigidBodyCI(0, groundMotionState, groundShape, btVector3(0, 0, 0));
+	groundRigidBodyCI.m_restitution = 1.0f;
 	btRigidBody* groundRigidBody = new btRigidBody(groundRigidBodyCI);
 	physicsWorld->addRigidBody(groundRigidBody);
 	
@@ -36,6 +37,7 @@ void World::addObject(Object* obj){
 	obj->attach_world(this);
 	if(obj->type() == "rigidbody")
 		physicsWorld->addRigidBody(((Rigidbody*)obj)->get_rigidbody());
+	printf("OK\n");
 }
 
 GLuint World::get_render_buffer(){
@@ -81,6 +83,7 @@ void World::update(float elapsed){
 
 	glBindFramebuffer(GL_FRAMEBUFFER, FramebufferName);
 	glViewport(0, 0, SHADOW_RES, SHADOW_RES);
+
 	
 	glDisable(GL_CULL_FACE);
 	glCullFace(GL_FRONT);
@@ -133,6 +136,10 @@ void World::update(float elapsed){
 	for(i=0; i<(int)objects.size();  i++){
 		objects[i]->render_glass();
 	}
+
+
+	printf("coords: %d %d\n", window_width/2, window_height/2);
+	//exit(0);
 }
 
 

@@ -29,7 +29,7 @@ class Object {
 		Object(string path, Loader* loader);
 		~Object();
 
-		bool load_obj(bool texture);
+		bool load_obj();
 		void set_scale(float s);
 		float scale();
 		void render();

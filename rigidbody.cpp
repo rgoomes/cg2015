@@ -32,8 +32,9 @@ btCollisionShape* Rigidbody::get_mesh_object(){
 }
 
 
-void Rigidbody::load_obj(bool has_texture){
-	Object::load_obj(has_texture);
+void Rigidbody::load_obj(){
+	has_texture = true;
+	Object::load_obj();
 
 	btCollisionShape* shape = get_mesh_object();
 	btQuaternion rot(0, 0, 0, 1);
