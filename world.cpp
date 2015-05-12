@@ -37,13 +37,18 @@ void World::tick(float elapsed){
 	//	paused = true;
 }
 
+void World::addCollider(Object* obj){
+	physicsWorld->addRigidBody(((Rigidbody*)obj)->get_rigidbody());
+	
+}
+
 void World::addObject(Object* obj){
 	obj->set_shadowmap(renderedTexture);
 	objects.push_back(obj);
 	obj->attach_world(this);
 	if(obj->type() == "rigidbody")
 		physicsWorld->addRigidBody(((Rigidbody*)obj)->get_rigidbody());
-	printf("OK\n");
+	
 }
 
 GLuint World::get_render_buffer(){

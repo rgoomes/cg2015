@@ -35,18 +35,18 @@ void load_objects(){
 	sphere->load_obj();
 	world->addObject(sphere);
 
-	/*dei = new Object("objects/dei");
+	dei = new Object("objects/dei");
 	dei->attach_loader(loader);
 	dei->set_scale(0.1);
 	dei->load_obj();
-	world->addObject(dei);*/
+	world->addObject(dei);
 
 	dei_collider = new Rigidbody("objects/dei_collider", 0, btVector3(0, 0, 0), CONCAVE);
 	dei_collider->attach_loader(loader);
 	dei_collider->set_scale(0.1);
 	dei_collider->load_obj();
-	world->addObject(dei_collider);
-
+	world->addCollider(dei_collider);
+	
 	/*for(int i=0; i<5; i++){
 		chair = new Rigidbody("objects/chair", 10, btVector3(i*10, 60, -10+i*10));
 		chair->attach_loader(loader);

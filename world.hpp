@@ -28,6 +28,7 @@ class Rigidbody;
 class World{
 	public:
 		void addObject(Object* obj);
+		void addCollider(Object* obj);
 		void update(float elapsed);
 		World(GLFWwindow* window);
 
