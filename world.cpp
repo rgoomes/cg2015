@@ -25,10 +25,16 @@ void World::init(){
 	
 }
 
+bool paused = true;
 
 void World::tick(float elapsed){
-	physicsWorld->stepSimulation(elapsed, 60);
+	if(!paused)
+		physicsWorld->stepSimulation(elapsed, 60);
 
+	if(glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
+		paused = !paused;
+	//else
+	//	paused = true;
 }
 
 void World::addObject(Object* obj){
@@ -137,9 +143,6 @@ void World::update(float elapsed){
 		objects[i]->render_glass();
 	}
 
-
-	printf("coords: %d %d\n", window_width/2, window_height/2);
-	//exit(0);
 }
 
 
