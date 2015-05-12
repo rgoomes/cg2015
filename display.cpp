@@ -29,21 +29,19 @@ void load_objects(){
 	world->addObject(colorCube);
 
 
-	for(int i=0; i<2; i++){
-		sphere = new Rigidbody("objects/sphere", 5, btVector3(20, 50+20*i, 20));
-		sphere->attach_loader(loader);
-		sphere->set_scale(0.1);
-		sphere->load_obj();
-		world->addObject(sphere);
-	}
+	sphere = new Rigidbody("objects/sphere", 5, btVector3(72, 30, 0));
+	sphere->attach_loader(loader);
+	sphere->set_scale(0.1);
+	sphere->load_obj();
+	world->addObject(sphere);
 
-	dei = new Object("objects/dei");
+	/*dei = new Object("objects/dei");
 	dei->attach_loader(loader);
 	dei->set_scale(0.1);
 	dei->load_obj();
-	world->addObject(dei);
+	world->addObject(dei);*/
 
-	dei_collider = new Rigidbody("objects/dei_collider", 0, btVector3(0, 0, 0));
+	dei_collider = new Rigidbody("objects/dei_collider", 0, btVector3(0, 0, 0), CONCAVE);
 	dei_collider->attach_loader(loader);
 	dei_collider->set_scale(0.1);
 	dei_collider->load_obj();

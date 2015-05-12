@@ -35,7 +35,7 @@ void opengl_init(){
  	glfwSetInputMode			(main_window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
  	
 	glfwMakeContextCurrent		(main_window);
-	glfwSetInputMode			(main_window, GLFW_STICKY_KEYS, GL_TRUE);
+	//glfwSetInputMode			(main_window, GLFW_STICKY_KEYS, GL_TRUE);
 	glfwSetCursorPos			(main_window, SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
 
 	glEnable					(GL_DEPTH_TEST);
