@@ -36,10 +36,10 @@ void load_objects(){
 	colorCube->move(0, 20, 0);
 	world->addObject(colorCube);
 
-	for(int i=0; i<3; i++){
+	for(int i=0; i<10; i++){
 		sphere = new Rigidbody("objects/sphere", 5, btVector3(72, 30+10*i, 0));
 		sphere->attach_loader(loader);
-		sphere->set_scale(0.04);
+		sphere->set_scale(0.05);
 		sphere->load_obj();
 		world->addObject(sphere);
 	}

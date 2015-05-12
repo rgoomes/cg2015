@@ -28,15 +28,16 @@ void World::init(){
 }
 
 bool paused = true;
+int last_pause_state = GLFW_RELEASE;
 
 void World::tick(float elapsed){
 	if(!paused)
 		physicsWorld->stepSimulation(elapsed, 60);
 
-	if(glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
+	int cur_state = glfwGetKey(window, GLFW_KEY_P);
+	if(cur_state == GLFW_PRESS && cur_state != last_pause_state)
 		paused = !paused;
-	//else
-	//	paused = true;
+	last_pause_state = cur_state;
 }
 
 void World::addCollider(Object* obj){
