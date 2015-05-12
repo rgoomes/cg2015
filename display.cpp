@@ -31,7 +31,7 @@ void load_objects(){
 
 	sphere = new Rigidbody("objects/sphere", 5, btVector3(72, 30, 0));
 	sphere->attach_loader(loader);
-	sphere->set_scale(0.1);
+	sphere->set_scale(0.04);
 	sphere->load_obj();
 	world->addObject(sphere);
 
@@ -46,7 +46,7 @@ void load_objects(){
 	dei_collider->set_scale(0.1);
 	dei_collider->load_obj();
 	world->addCollider(dei_collider);
-	
+
 	/*for(int i=0; i<5; i++){
 		chair = new Rigidbody("objects/chair", 10, btVector3(i*10, 60, -10+i*10));
 		chair->attach_loader(loader);
