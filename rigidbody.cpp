@@ -14,24 +14,47 @@ Rigidbody::Rigidbody(string path, btScalar mass, btVector3 pos, ColliderType col
 }
 
 btCollisionShape* Rigidbody::get_mesh_object(){
-	btTriangleMesh *mesh = new btTriangleMesh();
-	int v;
-
-	for (int i=0; i < (int)model->all_faces.size(); i++){
-		v = model->all_faces[i].v_index[0]-1;
-		btVector3 btVertex3(model->vertices[v].x, model->vertices[v].y, model->vertices[v].z);
-		v = model->all_faces[i].v_index[1]-1;
-		btVector3 btVertex2(model->vertices[v].x, model->vertices[v].y, model->vertices[v].z);
-		v = model->all_faces[i].v_index[2]-1;
-		btVector3 btVertex1(model->vertices[v].x, model->vertices[v].y, model->vertices[v].z);
-		
-		mesh->addTriangle(btVertex1, btVertex2, btVertex3);
-	}
 	btCollisionShape* shape;
-	if(collider_type == CONCAVE)
+
+	if(collider_type == CONCAVE){
+		btTriangleMesh *mesh = new btTriangleMesh();
+		int v;
+
+		for (int i=0; i < (int)model->all_faces.size(); i++){
+			v = model->all_faces[i].v_index[0]-1;
+			btVector3 btVertex3(model->vertices[v].x, model->vertices[v].y, model->vertices[v].z);
+			v = model->all_faces[i].v_index[1]-1;
+			btVector3 btVertex2(model->vertices[v].x, model->vertices[v].y, model->vertices[v].z);
+			v = model->all_faces[i].v_index[2]-1;
+			btVector3 btVertex1(model->vertices[v].x, model->vertices[v].y, model->vertices[v].z);
+			
+			mesh->addTriangle(btVertex1, btVertex2, btVertex3);
+		}
 		shape = new btBvhTriangleMeshShape(mesh, true);
-	else
-		shape = new btConvexTriangleMeshShape(mesh);
+		
+
+
+		
+	}else{
+		btConvexHullShape* chs = new btConvexHullShape();
+
+		int v;
+		for (int i=0; i < (int)model->all_faces.size(); i++){
+			v = model->all_faces[i].v_index[0]-1;
+			btVector3 btVertex3(model->vertices[v].x, model->vertices[v].y, model->vertices[v].z);
+			chs->addPoint(btVertex3);
+			v = model->all_faces[i].v_index[1]-1;
+			btVector3 btVertex2(model->vertices[v].x, model->vertices[v].y, model->vertices[v].z);
+			chs->addPoint(btVertex2);
+			v = model->all_faces[i].v_index[2]-1;
+			btVector3 btVertex1(model->vertices[v].x, model->vertices[v].y, model->vertices[v].z);
+			chs->addPoint(btVertex1);
+			
+		}
+		shape = chs;
+
+	}
+
 	return shape;
 }
 

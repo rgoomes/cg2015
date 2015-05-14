@@ -28,7 +28,7 @@ void load_objects(){
 	colorCube->move(0, 20, 0);
 	world->addObject(colorCube);
 
-	for(int i=0; i<10; i++){
+	for(int i=0; i<5; i++){
 		sphere = new Rigidbody("objects/sphere", 5, btVector3(72, 30+10*i, 0));
 		sphere->attach_loader(loader);
 		sphere->set_scale(0.04);
@@ -36,11 +36,11 @@ void load_objects(){
 		world->addObject(sphere);
 	}
 
-	/*dei = new Object("objects/dei");
+	dei = new Object("objects/dei");
 	dei->attach_loader(loader);
 	dei->set_scale(0.1);
 	dei->load_obj();
-	world->addObject(dei);*/
+	world->addObject(dei);
 
 	dei_collider = new Rigidbody("objects/dei_collider", 0, btVector3(0, 0, 0), CONCAVE);
 	dei_collider->attach_loader(loader);
