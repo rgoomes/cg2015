@@ -6,6 +6,7 @@ Rigidbody *sphere;
 Rigidbody *chair;
 Object *dei;
 Rigidbody *dei_collider;
+Object *box;
 
 float mvp[4][4], a=0;
 GLFWwindow* window;
@@ -21,6 +22,13 @@ void set_environment(GLFWwindow* _window, World* _world, Loader* _loader){
 void load_objects(){
 	int w, h;
 	glfwGetWindowSize(window, &w, &h);
+
+	box = new Object("objects/box");
+	box->attach_loader(loader);
+	box->set_scale(0.1);
+	box->load_obj();
+	box->move(10, 2.5, 0);
+	world->addObject(box);
 	
 	colorCube = new Object("objects/cube");
 	colorCube->attach_loader(loader);
@@ -28,10 +36,11 @@ void load_objects(){
 	colorCube->move(0, 20, 0);
 	world->addObject(colorCube);
 
-	for(int i=0; i<5; i++){
-		sphere = new Rigidbody("objects/sphere", 5, btVector3(72, 30+10*i, 0));
+
+	for(int i=0; i<10; i++){
+		sphere = new Rigidbody("objects/sphere", 5, btVector3(170, 50+5*i, 75));
 		sphere->attach_loader(loader);
-		sphere->set_scale(0.04);
+		sphere->set_scale(0.05);
 		sphere->load_obj();
 		world->addObject(sphere);
 	}
@@ -47,20 +56,6 @@ void load_objects(){
 	dei_collider->set_scale(0.1);
 	dei_collider->load_obj();
 	world->addCollider(dei_collider);
-
-	/*for(int i=0; i<5; i++){
-		chair = new Rigidbody("objects/chair", 10, btVector3(i*10, 60, -10+i*10));
-		chair->attach_loader(loader);
-		chair->set_scale(0.1);
-		chair->load_obj(true);
-		world->addObject(chair);
-	}*/
-
-
-	/*dei = new Object("objects/dei", loader);
-	dei->set_scale(0.1);
-	dei->load_obj(true);
-	world->addObject(dei);*/
 }
 
 void load_textures(){
