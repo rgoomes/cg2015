@@ -9,6 +9,7 @@ varying vec4 ShadowCoord;
 varying vec3 vertPos;
 varying vec3 vertexTangent_modelspace;
 varying vec3 vertexBitangent_modelspace;
+varying vec3 EyeDirection_cameraspace;
 
 // Values that stay constant for the whole mesh.
 uniform sampler2D myTextureSampler;
@@ -60,19 +61,20 @@ void main(){
 	vec3 TextureNormal_tangentspace = normalize(texture2D( bumpSampler, vec2(UV.x,-UV.y) ).rgb*2.0 - 1.0);
 	//vec3 n = normalize(Normal_cameraspace);
 	vec3 n;
-	if(has_bump != 0)
-		n = normalize(TextureNormal_tangentspace);
-	else
+	//if(has_bump != 0)
+	//	n = normalize(TextureNormal_tangentspace);
+	//else
 		n = normalize(Normal_cameraspace);
 	vec3 l = normalize(LightDirection_cameraspace);
 	
 	float visibility=1.0;
 	float cosTheta = clamp( dot( n,-l ), 0,1 );
 
+	vec3 E = normalize(EyeDirection_cameraspace);
 	float specular = 0.0;
 	//if(dot(n, -l) > 0.0){
-		vec3 viewDir = normalize(-vertPos);
-		specular = pow(max(0.0, dot(reflect(l, n), viewDir)), Ns);
+		
+		specular = pow(max(0.0, dot(reflect(l, n), E)), 5); // NOT VIEWDIR, IT SHOULD BE EYE DIRECTION CAMERA SPACE
 	//}
 
 	//float bias = 0.005;
@@ -90,13 +92,16 @@ void main(){
 	if(ShadowCoord.x < 0 || ShadowCoord.x > 1 || ShadowCoord.y < 0 || ShadowCoord.y > 1)
 		visibility = 1;
 
+
+	//float cosAlpha = clamp( dot( E,R ), 0,1 );
+
 	gl_FragColor.rgb = 
 		// Ambient : simulates indirect lighting
-		MaterialAmbientColor +
+			MaterialAmbientColor +
 		// Diffuse : "color" of the object
 		visibility * MaterialDiffuseColor * LightColor * cosTheta + 
 		// Specular: causes intel bug
-		visibility*visibility * specular * MaterialSpecColor;
+		visibility * specular * MaterialSpecColor;
 
 	gl_FragColor.a = Tf;
 	

@@ -6,6 +6,7 @@ attribute vec2 vertexUV;
 attribute vec3 vertexNormal_modelspace;
 varying vec3 vertexTangent_modelspace;
 varying vec3 vertexBitangent_modelspace;
+varying vec3 EyeDirection_cameraspace;
 
 // Output data ; will be interpolated for each fragment.
 varying vec2 UV;
@@ -28,6 +29,7 @@ void main(){
 	
 	vertPos = normalize(V * M * vec4(vertexPosition_modelspace+vec3(0,0,0), 1.0)).xyz;
 
+	EyeDirection_cameraspace = vec3(0,0,0) - ( V * vec4(vertexPosition_modelspace,1)).xyz;
 	LightDirection_cameraspace = (V * vec4(-LightInvDirection_worldspace, 0)).xyz;
 	Normal_cameraspace = (V * M * vec4(vertexNormal_modelspace, 0)).xyz;
 
