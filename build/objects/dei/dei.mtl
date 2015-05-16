@@ -66,10 +66,17 @@ Ka 0.00 0.00 0.00
 Tf 1.00 1.00 1.00
 map_Kd legs.dds
 Ni 1.00
-newmtl lambert16SG
+newmtl lambert18SG
 illum 4
 Kd 0.00 0.00 0.00
 Ka 0.00 0.00 0.00
 Tf 1.00 1.00 1.00
 map_Kd green-grass-texture.dds
+Ni 1.00
+newmtl lambert19SG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd rock.dds
 Ni 1.00
