@@ -22,6 +22,7 @@
 using namespace std;
 
 class Camera{
+	int camera_state;
 
 	public:
 		Camera(int w, int h);

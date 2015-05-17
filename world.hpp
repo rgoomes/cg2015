@@ -11,13 +11,6 @@
 #include "skybox.hpp"
 #include "camera.hpp"
 
-#define WORLD_MIN_X -20000 
-#define WORLD_MAX_X 23000
-#define WORLD_MIN_Y -1000
-#define WORLD_MAX_Y 40000
-#define WORLD_MIN_Z -14500
-#define WORLD_MAX_Z 14500
-
 #define SHADOW_RES 1024
 
 using namespace std;

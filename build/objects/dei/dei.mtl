@@ -80,3 +80,17 @@ Ka 0.00 0.00 0.00
 Tf 1.00 1.00 1.00
 map_Kd rock.dds
 Ni 1.00
+newmtl lambert20SG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd marble.dds
+Ni 1.00
+newmtl lambert21SG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd dirty.dds
+Ni 1.00
