@@ -11,6 +11,7 @@
 
 #define ACC_DROP 0.03
 #define ACC_DEFAULT 1
+#define POINT_TO_POINT -1
 #define NO_GAME_STATE 0
 
 #define GAME_STATE1 			1
@@ -33,7 +34,7 @@ class Camera{
 		pair<btVector3, btVector3> mouse_update(GLFWwindow* window);
 
 		void lookat(btVector3 dir, btVector3 right);
-		void move(GLFWwindow* window, btVector3 p1, btVector3 p2);
+		void move(GLFWwindow* window, float elapsed, btVector3 dest);
 		
 		void free_camera(GLFWwindow* window, float elapsed);
 		void game_camera(GLFWwindow* window, float elapsed);

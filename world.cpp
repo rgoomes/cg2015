@@ -15,16 +15,6 @@ btDynamicsWorld* World::getDynamicWorld(){
 void World::init(){
 	physicsWorld = getDynamicWorld();
 	physicsWorld->setGravity(btVector3(0, -100, 0));
-
-	/*
-	btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 1);
-	btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, -1, 0)));
-	btRigidBody::btRigidBodyConstructionInfo groundRigidBodyCI(0, groundMotionState, groundShape, btVector3(0, 0, 0));
-	groundRigidBodyCI.m_restitution = 0.8f;
-	groundRigidBodyCI.m_friction = 0.5f;
-	btRigidBody* groundRigidBody = new btRigidBody(groundRigidBodyCI);
-	physicsWorld->addRigidBody(groundRigidBody);
-	*/
 }
 
 bool paused = true;
