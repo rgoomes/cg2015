@@ -6,7 +6,6 @@ attribute vec2 vertexUV;
 attribute vec3 vertexNormal_modelspace;
 varying vec3 vertexTangent_modelspace;
 varying vec3 vertexBitangent_modelspace;
-varying vec3 EyeDirection_cameraspace;
 
 // Output data ; will be interpolated for each fragment.
 varying vec2 UV;
@@ -15,6 +14,8 @@ varying vec4 ShadowCoord;
 varying vec3 LightDirection_cameraspace;
 varying vec3 LightDirection_tangentspace;
 varying vec3 Normal_cameraspace;
+varying vec3 EyeDirection_cameraspace;
+varying vec3 EyeDirection_tangentspace;
 
 // Values that stay constant for the whole mesh.
 uniform mat4 MVP;
@@ -50,7 +51,8 @@ void main(){
 		vertexNormal_cameraspace	
 	)); // You can use dot products instead of building this matrix and transposing it. See References for details.
 
-	LightDirection_tangentspace = TBN * LightDirection_cameraspace;
+	LightDirection_tangentspace =  TBN * LightDirection_cameraspace;
+	EyeDirection_tangentspace =  TBN * EyeDirection_cameraspace;
 
 }
 

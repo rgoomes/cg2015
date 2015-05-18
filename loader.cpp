@@ -6,7 +6,12 @@ Loader::Loader(){
 
 GLuint Loader::get_texture(string path){
 	if(textures.find(path) == textures.end()){
-		return textures[path] = loadDDS(path.c_str());
+		if(path.find(".bmp") != string::npos){
+			return textures[path] = loadBMP(path.c_str());
+			printf("LOAD BMP\n");
+		}
+		else
+			return textures[path] = loadDDS(path.c_str());
 	}else{
 		return textures[path];
 	}
@@ -156,6 +161,8 @@ Group Loader::load_group(string group_name){
 	g.vertexposition_modelspace_id = glGetAttribLocation(g.program_id, "vertexPosition_modelspace");
 	g.vertexUV_id = glGetAttribLocation(g.program_id, "vertexUV");
 	g.normal_id = glGetAttribLocation(g.program_id, "vertexNormal_modelspace");
+	g.tangent_id = glGetAttribLocation(g.program_id, "vertexTangent_modelspace");
+	g.bitangent_id = glGetAttribLocation(g.program_id, "vertexBitangent_modelspace");
 
 	g.size = out_vertices.size();
 	texture_path = path + "/" + group_name + ".dds";

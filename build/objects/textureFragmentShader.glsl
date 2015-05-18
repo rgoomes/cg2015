@@ -10,11 +10,12 @@ varying vec3 vertPos;
 varying vec3 vertexTangent_modelspace;
 varying vec3 vertexBitangent_modelspace;
 varying vec3 EyeDirection_cameraspace;
+varying vec3 EyeDirection_tangentspace;
 
 // Values that stay constant for the whole mesh.
 uniform sampler2D myTextureSampler;
-uniform sampler2D bumpSampler;
 uniform sampler2DShadow shadowMap;
+uniform sampler2D bumpSampler;
 uniform mat4 V;
 uniform int has_texture;
 uniform int has_bump;
@@ -62,19 +63,21 @@ void main(){
 	//vec3 n = normalize(Normal_cameraspace);
 	vec3 n;
 	vec3 l;
+	vec3 E;
 	if(has_bump != 0){
 		n = normalize(TextureNormal_tangentspace);
-		//l = normalize(LightDirection_tangentspace);
+		l = normalize(LightDirection_tangentspace);
+		E = normalize(EyeDirection_tangentspace);
 	}else{
-	}
 		n = normalize(Normal_cameraspace);
-	l = normalize(LightDirection_cameraspace);
+		l = normalize(LightDirection_cameraspace);
+		E = normalize(EyeDirection_cameraspace);
+	}
 
 	
 	float visibility=1.0;
 	float cosTheta = clamp( dot( n,-l ), 0,1 );
 
-	vec3 E = normalize(EyeDirection_cameraspace);
 	float specular = 0.0;
 	//if(dot(n, -l) > 0.0){
 		
@@ -95,17 +98,17 @@ void main(){
 	}
 	if(ShadowCoord.x < 0 || ShadowCoord.x > 1 || ShadowCoord.y < 0 || ShadowCoord.y > 1)
 		visibility = 1;
-
-
+	
 	//float cosAlpha = clamp( dot( E,R ), 0,1 );
 
 	gl_FragColor.rgb = 
 		// Ambient : simulates indirect lighting
-			MaterialAmbientColor +
+		MaterialAmbientColor +
 		// Diffuse : "color" of the object
 		visibility * MaterialDiffuseColor * LightColor * cosTheta + 
 		// Specular: causes intel bug
 		visibility * specular * MaterialSpecColor;
+
 
 	gl_FragColor.a = Tf;
 	

@@ -56,6 +56,12 @@ void load_objects(){
 	dei_collider->set_scale(0.1);
 	dei_collider->load_obj();
 	world->addCollider(dei_collider);
+
+	Object* cylinder = new Object("objects/cylinder");
+	cylinder->set_scale(10);
+	cylinder->attach_loader(loader);
+	cylinder->load_obj();
+	world->addObject(cylinder);
 }
 
 void load_textures(){

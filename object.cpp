@@ -89,9 +89,13 @@ void Object::set_material(Group& g, Material& m){
 	else
 		glUniform1i(g.has_texture_id, 1);
 
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, shadowmap);
+	glUniform1i(g.shadowmap_id, 1);
+
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, m.bump);
-	glUniform1i(g.bump_id, 0);
+	glUniform1i(g.bump_id, 2);
 	if(!g.material.bump)
 		glUniform1i(g.has_bump_id, 0);
 	else
@@ -128,10 +132,6 @@ void Object::render_texture(){
 		
 		set_material(g, g.material);
 
-		glActiveTexture(GL_TEXTURE1);
-		glBindTexture(GL_TEXTURE_2D, shadowmap);
-		glUniform1i(g.shadowmap_id, 1);
-
 
 		// 1rst attribute buffer : vertices
 		glEnableVertexAttribArray(g.vertexposition_modelspace_id);
@@ -162,6 +162,30 @@ void Object::render_texture(){
 		glBindBuffer(GL_ARRAY_BUFFER, g.normalbuffer);
 		glVertexAttribPointer(
 			g.normal_id,				  // The attribute we want to configure
+			3,                            // size
+			GL_FLOAT,                     // type
+			GL_FALSE,                     // normalized?
+			0,                            // stride
+			(void*)0                      // array buffer offset
+		);
+
+		// 4th attribute buffer : tangents
+		glEnableVertexAttribArray(g.tangent_id);
+		glBindBuffer(GL_ARRAY_BUFFER, g.tangentbuffer);
+		glVertexAttribPointer(
+			g.tangent_id,				  // The attribute we want to configure
+			3,                            // size
+			GL_FLOAT,                     // type
+			GL_FALSE,                     // normalized?
+			0,                            // stride
+			(void*)0                      // array buffer offset
+		);
+
+		// 5th attribute buffer : bitangents
+		glEnableVertexAttribArray(g.tangent_id);
+		glBindBuffer(GL_ARRAY_BUFFER, g.tangentbuffer);
+		glVertexAttribPointer(
+			g.tangent_id,				  // The attribute we want to configure
 			3,                            // size
 			GL_FLOAT,                     // type
 			GL_FALSE,                     // normalized?

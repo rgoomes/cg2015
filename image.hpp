@@ -11,5 +11,6 @@
 #define FOURCC_DXT5 0x35545844 // Equivalent to "DXT5" in ASCII
 
 GLuint loadDDS(const char * imagepath);
+GLuint loadBMP(const char * imagepath);
 
 #endif
