@@ -6,7 +6,7 @@ Rigidbody *sphere;
 Rigidbody *chair;
 Object *dei;
 Rigidbody *dei_collider;
-Object *box;
+Rigidbody *box;
 
 float mvp[4][4], a=0;
 GLFWwindow* window;
@@ -23,19 +23,19 @@ void load_objects(){
 	int w, h;
 	glfwGetWindowSize(window, &w, &h);
 
-	box = new Object("objects/box");
+	box = new Rigidbody("objects/box", 0, btVector3(202, 2.6, -58), CONCAVE);
 	box->attach_loader(loader);
-	box->set_scale(0.1);
+	box->set_scale(0.15);
 	box->load_obj();
-	box->move(10, 2.5, 0);
 	world->addObject(box);
 	
+	/*
 	colorCube = new Object("objects/cube");
 	colorCube->attach_loader(loader);
 	colorCube->load_obj();
 	colorCube->move(0, 20, 0);
 	world->addObject(colorCube);
-
+	*/
 
 	for(int i=0; i<10; i++){
 		sphere = new Rigidbody("objects/sphere", 5, btVector3(170, 50+5*i, 75));

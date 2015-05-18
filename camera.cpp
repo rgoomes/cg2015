@@ -1,18 +1,20 @@
 #include <stdio.h>
+#include <iostream>
 #include "camera.hpp"
 
 #define PI 3.141592653
 
+btVector3 no_game(-13.7, 10.6, -142);
 btVector3 game1_pos(149.09, 7.5,  0);
 btVector3 game2_pos(0, 0, 0); // TODO
 btVector3 game3_pos(0, 0, 0); // TODO
 int last_state;
 
 double xpos, ypos, acc;
-double horizontal_ang = PI, vertical_ang = -PI;
+double horizontal_ang = -PI/1.25, vertical_ang = -PI;
 bool ftick = true, updated, trigged = false;
 
-btVector3 obs_pos(149.09, 47, 0);
+btVector3 obs_pos = no_game;
 double angle_game  = GAME_STATE1_DEF_ANGLE;
 double height_game = GAME_STATE1_DEF_HEIGHT;
 
@@ -25,9 +27,18 @@ void update_state(float elapsed, int key_state){
 	trigged = updated = true;
 }
 
-// TODO: MOVE FROM POINT1 TO POINT2 SMOOTHLY
-void Camera::move(GLFWwindow* window, btVector3 p1, btVector3 p2){
+void Camera::move(GLFWwindow* window, float elapsed, btVector3 dest){
 	pair<btVector3, btVector3> p = this->mouse_update(window);
+
+	if((dest - obs_pos).norm() < 0.5)
+		this->camera_state = NO_GAME_STATE;
+	else{
+		btVector3 dif = (dest - obs_pos).normalize();
+		float t = (dest - obs_pos).norm() / 10.0 + 5;
+		obs_pos += dif * elapsed * t*t;
+	}
+
+	this->lookat(p.first, p.second);
 }
 
 pair<btVector3, btVector3> Camera::mouse_update(GLFWwindow* window){
@@ -97,6 +108,11 @@ void Camera::free_camera(GLFWwindow* window, float elapsed){
 	if(glfwGetKey(window, GLFW_KEY_LEFT)  || glfwGetKey(window, GLFW_KEY_A))
 		obs_pos += p.second * elapsed * speed;
 
+	if(glfwGetKey(window, GLFW_KEY_F))
+		this->camera_state = POINT_TO_POINT;
+	else if(glfwGetKey(window, GLFW_KEY_G))
+		this->camera_state = GAME_STATE1;
+
 	this->lookat(p.first, p.second);
 }
 
@@ -106,6 +122,8 @@ void Camera::update(GLFWwindow* window, float elapsed){
 		this->free_camera(window, elapsed);
 	else if(this->camera_state == GAME_STATE1)
 		this->game_camera(window, elapsed);
+	else if(this->camera_state == POINT_TO_POINT)
+		this->move(window, elapsed, btVector3(0, 30, 0));
 }
 
 Camera::Camera(int w, int h){
