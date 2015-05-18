@@ -61,11 +61,15 @@ void main(){
 	vec3 TextureNormal_tangentspace = normalize(texture2D( bumpSampler, vec2(UV.x,-UV.y) ).rgb*2.0 - 1.0);
 	//vec3 n = normalize(Normal_cameraspace);
 	vec3 n;
-	//if(has_bump != 0)
-	//	n = normalize(TextureNormal_tangentspace);
-	//else
+	vec3 l;
+	if(has_bump != 0){
+		n = normalize(TextureNormal_tangentspace);
+		//l = normalize(LightDirection_tangentspace);
+	}else{
+	}
 		n = normalize(Normal_cameraspace);
-	vec3 l = normalize(LightDirection_cameraspace);
+	l = normalize(LightDirection_cameraspace);
+
 	
 	float visibility=1.0;
 	float cosTheta = clamp( dot( n,-l ), 0,1 );
@@ -105,5 +109,5 @@ void main(){
 
 	gl_FragColor.a = Tf;
 	
-
+	
 }
