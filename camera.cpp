@@ -3,10 +3,10 @@
 
 #define PI 3.141592653
 
-btVector3 game1_pos(149.09, 0,  0);
-btVector3 game2_pos(0, 		0,  0); // TODO
-btVector3 game3_pos(0, 		0,  0); // TODO
-int last_state, game_state = NO_GAME_STATE;
+btVector3 game1_pos(149.09, 7.5,  0);
+btVector3 game2_pos(0, 0, 0); // TODO
+btVector3 game3_pos(0, 0, 0); // TODO
+int last_state;
 
 double xpos, ypos, acc;
 double horizontal_ang = PI, vertical_ang = -PI;
@@ -102,13 +102,15 @@ void Camera::free_camera(GLFWwindow* window, float elapsed){
 
 void Camera::update(GLFWwindow* window, float elapsed){
 
-	if(game_state == NO_GAME_STATE)
+	if(this->camera_state == NO_GAME_STATE)
 		this->free_camera(window, elapsed);
-	else if(game_state == GAME_STATE1)
+	else if(this->camera_state == GAME_STATE1)
 		this->game_camera(window, elapsed);
 }
 
 Camera::Camera(int w, int h){
+	this->camera_state = NO_GAME_STATE;
+
 	this->w = w;
 	this->h = h;
 }
