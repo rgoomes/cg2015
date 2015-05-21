@@ -59,6 +59,7 @@ void load_objects(){
 
 	Object* cylinder = new Object("objects/cylinder");
 	cylinder->set_scale(10);
+	cylinder->move(30, 0, 0);
 	cylinder->attach_loader(loader);
 	cylinder->load_obj();
 	world->addObject(cylinder);

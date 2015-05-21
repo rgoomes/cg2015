@@ -51,7 +51,7 @@ void main(){
 		vertexNormal_cameraspace
 	)); // You can use dot products instead of building this matrix and transposing it. See References for details.
 
-	LightDirection_tangentspace = vec3(1,1,1);//TBN * LightDirection_cameraspace;
+	LightDirection_tangentspace = LightDirection_cameraspace;
 	EyeDirection_tangentspace = vec3(1,1,1);//TBN * EyeDirection_cameraspace;
 
 }

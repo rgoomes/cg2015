@@ -15,10 +15,10 @@ uniform sampler2D myTextureSampler;
 uniform sampler2DShadow shadowMap;
 uniform sampler2D bumpSampler;
 uniform mat4 V;
+uniform mat4 M;
 uniform int has_texture;
 uniform int has_bump;
 uniform float Ns, Tf;
-uniform mat4 MVP;
 
 vec2 poissonDisk[16] = vec2[]( 
    vec2( -0.94201624, -0.39906216 ), 
@@ -58,7 +58,8 @@ void main(){
 	vec3 MaterialAmbientColor = 0.4 * MaterialDiffuseColor;
 	vec3 MaterialSpecColor = vec3(0.7, 0.7, 0.7);
 
-	vec3 TextureNormal_tangentspace = mat3(MVP) * normalize(texture2D( bumpSampler, vec2(UV.x,-UV.y) ).rgb*2.0 - 1.0);
+	vec3 TextureNormal_tangentspace = mat3(V * M) * normalize(texture2D( bumpSampler, vec2(UV.x,-UV.y) ).rgb*2.0 - 1.0);
+	TextureNormal_tangentspace = normalize(TextureNormal_tangentspace);
 	//vec3 n = normalize(Normal_cameraspace);
 	vec3 n;
 	vec3 l;
@@ -66,12 +67,12 @@ void main(){
 	
 	if(has_bump != 0){
 		n = normalize(TextureNormal_tangentspace);
+		l = normalize(LightDirection_tangentspace);
 	}else{
 		n = normalize(Normal_cameraspace);
-	//l = normalize(LightDirection_tangentspace);
+		l = normalize(LightDirection_cameraspace);
 	//E = normalize(EyeDirection_tangentspace);
 	}
-	l = normalize(LightDirection_cameraspace);
 	E = normalize(EyeDirection_cameraspace);
 
 	
