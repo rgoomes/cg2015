@@ -28,7 +28,7 @@ void load_objects(){
 	box->set_scale(0.15);
 	box->load_obj();
 	world->addObject(box);
-	
+
 	/*
 	colorCube = new Object("objects/cube");
 	colorCube->attach_loader(loader);

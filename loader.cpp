@@ -40,6 +40,8 @@ Model* Loader::load_model(string path){
 	uvs.clear();
 	out_vertices.clear();
 	out_normals.clear();
+	out_tangents.clear();
+	out_bitangents.clear();
 	out_uvs.clear();
 	faces.clear();
 	all_faces.clear();
@@ -132,6 +134,8 @@ Group Loader::load_group(string group_name){
 	out_vertices.clear();
 	out_normals.clear();
 	out_uvs.clear();
+	out_bitangents.clear();
+	out_tangents.clear();
 	for(uint64_t i = 0; i < this->faces.size(); i++){
 		out_vertices.push_back(vertices	[faces[i].v_index[0] - 1]);
 		out_normals.push_back(normals 	[faces[i].n_index[0] - 1]);
@@ -142,7 +146,6 @@ Group Loader::load_group(string group_name){
 		out_vertices.push_back(vertices	[faces[i].v_index[2] - 1]);
 		out_normals.push_back(normals 	[faces[i].n_index[2] - 1]);
 		out_uvs.push_back(uvs 			[faces[i].t_index[2] - 1]);
-		Point tangent, bitangent;
 		calcTangentSpace(out_tangents, out_bitangents, out_vertices, out_uvs);
 	}
 	
@@ -197,8 +200,8 @@ Group Loader::load_group(string group_name){
 		glGenBuffers(1, &g.bitangentbuffer);
 		glBindBuffer(GL_ARRAY_BUFFER, g.bitangentbuffer);
 		glBufferData(GL_ARRAY_BUFFER, out_bitangents.size()*sizeof(Point), out_bitangents.data(), GL_DYNAMIC_DRAW);		
-	}	
-
+	}
+	
 	all_faces.insert(all_faces.end(),faces.begin(),faces.end());
 
 	faces.clear();
@@ -276,7 +279,7 @@ void Loader::calcTangentSpace(
 	std::vector<Point> & vertices,
 	std::vector<Point2> & uvs
 ){
-	int i = vertices.size();
+	int i = vertices.size() - 1;
 
 	// vertices
 	glm::vec3 v0 = glm::vec3(vertices[i-2].x, vertices[i-2].y, vertices[i-2].z);
@@ -287,18 +290,20 @@ void Loader::calcTangentSpace(
 	glm::vec2 uv0 = glm::vec2(uvs[i-2].x, uvs[i-2].y);
 	glm::vec2 uv1 = glm::vec2(uvs[i-1].x, uvs[i-1].y);
 	glm::vec2 uv2 = glm::vec2(uvs[ i ].x, uvs[ i ].y);
+	//printf("%f\n", uv2.y);
 
-	// Edges of the triangle : postion delta
+	// Edges of the triangle : position delta
 	glm::vec3 deltaPos1 = v1-v0;
 	glm::vec3 deltaPos2 = v2-v0;
-
+	
 	// UV delta
 	glm::vec2 deltaUV1 = uv1-uv0;
 	glm::vec2 deltaUV2 = uv2-uv0;
 
+
 	float r = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV1.y * deltaUV2.x);
-	glm::vec3 tg = (deltaPos1 * deltaUV2.y - deltaPos2 * deltaUV1.y)*r;
-	glm::vec3 btg = (deltaPos2 * deltaUV1.x - deltaPos1 * deltaUV2.x)*r;
+	glm::vec3 tg = (deltaPos1    - deltaPos2 )*r;
+	glm::vec3 btg = (deltaPos2   - deltaPos1 )*r;
 
 	Point tangent = {tg.x, tg.y, tg.z};
 	Point bitangent = {btg.x, btg.y, btg.z};
@@ -306,6 +311,7 @@ void Loader::calcTangentSpace(
 	tangents.push_back(tangent);
 	tangents.push_back(tangent);
 	tangents.push_back(tangent);
+	//printf("%f %f %f\n", tangent.x, tangent.y, tangent.z);
 
 	bitangents.push_back(bitangent);
 	bitangents.push_back(bitangent);

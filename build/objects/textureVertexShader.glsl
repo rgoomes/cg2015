@@ -4,8 +4,8 @@
 attribute vec3 vertexPosition_modelspace;
 attribute vec2 vertexUV;
 attribute vec3 vertexNormal_modelspace;
-varying vec3 vertexTangent_modelspace;
-varying vec3 vertexBitangent_modelspace;
+attribute vec3 vertexTangent_modelspace;
+attribute vec3 vertexBitangent_modelspace;
 
 // Output data ; will be interpolated for each fragment.
 varying vec2 UV;
@@ -48,11 +48,11 @@ void main(){
 	mat3 TBN = transpose(mat3(
 		vertexTangent_cameraspace,
 		vertexBitangent_cameraspace,
-		vertexNormal_cameraspace	
+		vertexNormal_cameraspace
 	)); // You can use dot products instead of building this matrix and transposing it. See References for details.
 
-	LightDirection_tangentspace =  TBN * LightDirection_cameraspace;
-	EyeDirection_tangentspace =  TBN * EyeDirection_cameraspace;
+	LightDirection_tangentspace = vec3(1,1,1);//TBN * LightDirection_cameraspace;
+	EyeDirection_tangentspace = vec3(1,1,1);//TBN * EyeDirection_cameraspace;
 
 }
 

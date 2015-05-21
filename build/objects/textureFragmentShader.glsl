@@ -7,8 +7,6 @@ varying vec3 LightDirection_cameraspace;
 varying vec3 LightDirection_tangentspace;
 varying vec4 ShadowCoord;
 varying vec3 vertPos;
-varying vec3 vertexTangent_modelspace;
-varying vec3 vertexBitangent_modelspace;
 varying vec3 EyeDirection_cameraspace;
 varying vec3 EyeDirection_tangentspace;
 
@@ -20,6 +18,7 @@ uniform mat4 V;
 uniform int has_texture;
 uniform int has_bump;
 uniform float Ns, Tf;
+uniform mat4 MVP;
 
 vec2 poissonDisk[16] = vec2[]( 
    vec2( -0.94201624, -0.39906216 ), 
@@ -59,20 +58,21 @@ void main(){
 	vec3 MaterialAmbientColor = 0.4 * MaterialDiffuseColor;
 	vec3 MaterialSpecColor = vec3(0.7, 0.7, 0.7);
 
-	vec3 TextureNormal_tangentspace = normalize(texture2D( bumpSampler, vec2(UV.x,-UV.y) ).rgb*2.0 - 1.0);
+	vec3 TextureNormal_tangentspace = mat3(MVP) * normalize(texture2D( bumpSampler, vec2(UV.x,-UV.y) ).rgb*2.0 - 1.0);
 	//vec3 n = normalize(Normal_cameraspace);
 	vec3 n;
 	vec3 l;
 	vec3 E;
+	
 	if(has_bump != 0){
 		n = normalize(TextureNormal_tangentspace);
-		l = normalize(LightDirection_tangentspace);
-		E = normalize(EyeDirection_tangentspace);
 	}else{
 		n = normalize(Normal_cameraspace);
-		l = normalize(LightDirection_cameraspace);
-		E = normalize(EyeDirection_cameraspace);
+	//l = normalize(LightDirection_tangentspace);
+	//E = normalize(EyeDirection_tangentspace);
 	}
+	l = normalize(LightDirection_cameraspace);
+	E = normalize(EyeDirection_cameraspace);
 
 	
 	float visibility=1.0;
@@ -109,7 +109,7 @@ void main(){
 		// Specular: causes intel bug
 		visibility * specular * MaterialSpecColor;
 
-
+	
 	gl_FragColor.a = Tf;
 	
 	

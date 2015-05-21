@@ -168,7 +168,6 @@ void Object::render_texture(){
 			0,                            // stride
 			(void*)0                      // array buffer offset
 		);
-
 		// 4th attribute buffer : tangents
 		glEnableVertexAttribArray(g.tangent_id);
 		glBindBuffer(GL_ARRAY_BUFFER, g.tangentbuffer);
@@ -182,10 +181,10 @@ void Object::render_texture(){
 		);
 
 		// 5th attribute buffer : bitangents
-		glEnableVertexAttribArray(g.tangent_id);
-		glBindBuffer(GL_ARRAY_BUFFER, g.tangentbuffer);
+		glEnableVertexAttribArray(g.bitangent_id);
+		glBindBuffer(GL_ARRAY_BUFFER, g.bitangentbuffer);
 		glVertexAttribPointer(
-			g.tangent_id,				  // The attribute we want to configure
+			g.bitangent_id,				  // The attribute we want to configure
 			3,                            // size
 			GL_FLOAT,                     // type
 			GL_FALSE,                     // normalized?
