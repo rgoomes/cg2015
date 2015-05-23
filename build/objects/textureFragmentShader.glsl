@@ -52,7 +52,7 @@ void main(){
 	// Material properties
 	vec3 MaterialDiffuseColor;
 	if(has_texture != 0)
-		MaterialDiffuseColor = texture2D( myTextureSampler, vec2(UV.x, 1-UV.y) ).rgb;
+		MaterialDiffuseColor = texture2D( myTextureSampler, vec2(UV.x, 1-UV.y ) ).rgb;
 	else
 		MaterialDiffuseColor = vec3(0.6, 0.6, 0.6);
 	vec3 MaterialAmbientColor = 0.4 * MaterialDiffuseColor;
@@ -99,6 +99,9 @@ void main(){
 	}
 	if(ShadowCoord.x < 0 || ShadowCoord.x > 1 || ShadowCoord.y < 0 || ShadowCoord.y > 1)
 		visibility = 1;
+
+	if(cosTheta < 0)
+		visibility = 0;
 	
 	//float cosAlpha = clamp( dot( E,R ), 0,1 );
 
@@ -110,6 +113,11 @@ void main(){
 		// Specular: causes intel bug
 		visibility * specular * MaterialSpecColor;
 
+	
+	if(cosTheta < 0.0)
+		gl_FragColor.rgb = vec3(0, 0, 1);
+
+	
 	
 	gl_FragColor.a = Tf;
 	
