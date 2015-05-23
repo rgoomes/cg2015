@@ -38,7 +38,7 @@ endif()
 #########################################################
 # Include Files
 #########################################################
-set(CMAKE_CXX_FLAGS "-DGL_GLEXT_PROTOTYPES -Wall -std=c++11 -Wno-unused-result -Wno-unused-variable -Wno-unused-but-set-variable -O3 -g")
+set(CMAKE_CXX_FLAGS "-DGL_GLEXT_PROTOTYPES -Wall -std=c++11 -Wno-unused-result -Wno-unused-variable -Wno-unused-but-set-variable -Wno-strict-aliasing -O3 -g")
 file(GLOB src
     "*.h"
     "*.cpp"

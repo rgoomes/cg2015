@@ -121,13 +121,13 @@ void World::update(float elapsed){
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(45.0f, window_width / (float)window_height, 0.1f, 1500.0f);
+	gluPerspective(45.0f, window_width / (float)window_height, 0.1f, 10000.0f);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
 	camera->update(window, elapsed);
-	draw_skybox(500);
+	draw_skybox(1000);
 
 	/*GLfloat light_position[] = { 1.0, 15.0, -30.0, 1.0 };
 
