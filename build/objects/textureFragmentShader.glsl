@@ -58,7 +58,7 @@ void main(){
 	vec3 MaterialAmbientColor = 0.4 * MaterialDiffuseColor;
 	vec3 MaterialSpecColor = vec3(0.7, 0.7, 0.7);
 
-	vec3 TextureNormal_tangentspace = mat3(V * M) * normalize(texture2D( bumpSampler, vec2(UV.x,-UV.y) ).rgb*2.0 - 1.0);
+	vec3 TextureNormal_tangentspace = mat3(V * M) * normalize(texture2D( bumpSampler, vec2(-UV.x,UV.y) ).rgb*2.0 - 1.0);
 	TextureNormal_tangentspace = normalize(TextureNormal_tangentspace);
 	//vec3 n = normalize(Normal_cameraspace);
 	vec3 n;
@@ -69,15 +69,17 @@ void main(){
 		n = normalize(TextureNormal_tangentspace);
 		l = normalize(LightDirection_tangentspace);
 	}else{
-		n = normalize(Normal_cameraspace);
 		l = normalize(LightDirection_cameraspace);
+		n = normalize(Normal_cameraspace);
 	//E = normalize(EyeDirection_tangentspace);
 	}
+	vec3 n_c = normalize(Normal_cameraspace);
 	E = normalize(EyeDirection_cameraspace);
 
 	
 	float visibility=1.0;
 	float cosTheta = clamp( dot( n,-l ), 0,1 );
+	float cosTheta2 = clamp( dot( n_c,-l ), 0,1 );
 
 	float specular = 0.0;
 	//if(dot(n, -l) > 0.0){
@@ -87,7 +89,7 @@ void main(){
 
 	//float bias = 0.005;
 	// ...variable bias
-	float bias = 0.005*tan(acos(cosTheta)); bias = clamp(bias, 0,0.01);
+	float bias = 0.005*tan(acos(cosTheta2)); bias = clamp(bias, 0,0.01);
 	
 	// Sample the shadow map 4 times
 	for (int i=0;i<4;i++){

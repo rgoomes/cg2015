@@ -30,6 +30,7 @@ Kd 0.00 0.00 0.00
 Ka 0.00 0.00 0.00
 Tf 1.00 1.00 1.00
 map_Kd white.dds
+bump wall_normal2.bmp
 Ni 1.00
 newmtl lambert10SG
 illum 4
@@ -86,6 +87,7 @@ Kd 0.00 0.00 0.00
 Ka 0.00 0.00 0.00
 Tf 1.00 1.00 1.00
 map_Kd marble.dds
+bump normal.bmp
 Ni 1.00
 newmtl lambert21SG
 illum 4
@@ -100,6 +102,7 @@ Kd 0.00 0.00 0.00
 Ka 0.00 0.00 0.00
 Tf 1.00 1.00 1.00
 map_Kd paint.dds
+bump normal2.bmp
 Ni 1.00
 newmtl lambert23SG
 illum 4
