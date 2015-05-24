@@ -37,7 +37,7 @@ void load_objects(){
 	world->addObject(colorCube);
 	*/
 
-	for(int i=0; i<20; i++){
+	for(int i=0; i<30; i++){
 		sphere = new Rigidbody("objects/sphere", 5, btVector3(170, 50+5*i, 75));
 		sphere->attach_loader(loader);
 		sphere->set_scale(0.05);
