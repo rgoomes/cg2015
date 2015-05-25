@@ -24,7 +24,7 @@ void load_objects(){
 	int w, h;
 	glfwGetWindowSize(window, &w, &h);
 
-	box = new Rigidbody("objects/box", 0, btVector3(202, 2.6, -58), CONCAVE);
+	box = new Rigidbody("objects/box", 0, btVector3(0, 2.6, 0), CONCAVE);
 	box->attach_loader(loader);
 	box->set_scale(0.15);
 	box->load_obj();
@@ -108,15 +108,25 @@ void get_mvp(float mvp[4][4]){
 
 GLfloat light_position[] = { 1.0, 15.0, -30.0, 1.0 };
 
+int last_throw_state = GLFW_RELEASE;
+bool throwing = false;
+
+void request_throw(){	
+	if(throwing)
+		throw_ball();
+	
+	int cur_state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1) | glfwGetKey(window, GLFW_KEY_T);
+	if(cur_state == GLFW_PRESS && cur_state != last_throw_state)
+		throwing = true;
+	else
+		throwing = false;
+	last_throw_state = cur_state;
+}
+
 void display(float elapsed){
 	int w, h;
 	glfwGetWindowSize(window, &w, &h);
-	
 
-	if(glfwGetKey(window, GLFW_KEY_T))
-		throw_ball();
-	
-	world->update(elapsed);
-
-	
+	request_throw();
+	world->update(elapsed);	
 }
