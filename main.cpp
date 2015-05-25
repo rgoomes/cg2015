@@ -1,5 +1,6 @@
 
 #include "main.hpp"
+#include "display.hpp"
 
 using namespace std;
 

@@ -13,6 +13,7 @@ float mvp[4][4], a=0;
 GLFWwindow* window;
 World* world;
 Loader* loader;
+int ball_count = 0;
 
 void set_environment(GLFWwindow* _window, World* _world, Loader* _loader){
 	window = _window;
@@ -29,14 +30,6 @@ void load_objects(){
 	box->set_scale(0.15);
 	box->load_obj();
 	world->addObject(box);
-
-	for(int i=0; i<30; i++){
-		sphere = new Rigidbody("objects/sphere", 5, btVector3(170, 50+5*i, 75));
-		sphere->attach_loader(loader);
-		sphere->set_scale(0.05);
-		sphere->load_obj();
-		world->addObject(sphere);
-	}
 
 	dei = new Object("objects/dei");
 	dei->attach_loader(loader);
@@ -56,7 +49,6 @@ void load_objects(){
 	cylinder->set_scale(10);
 	cylinder->load_obj();
 	world->addObject(cylinder);
-
 
 	btVector3 obs_pos = world->camera->get_obs_pos();
 	sphere_aim = new Object("objects/sphere");
@@ -112,8 +104,10 @@ int last_throw_state = GLFW_RELEASE;
 bool throwing = false;
 
 void request_throw(){	
-	if(throwing)
+	if(throwing){
+		printf("\033[A\033[2KBall count: %d\n", ++ball_count);
 		throw_ball();
+	}
 	
 	int cur_state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1) | glfwGetKey(window, GLFW_KEY_T);
 	if(cur_state == GLFW_PRESS && cur_state != last_throw_state)

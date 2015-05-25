@@ -10,13 +10,13 @@
 #include <GLFW/glfw3.h>
 #include <btBulletDynamicsCommon.h>
 
-#include "display.hpp"
 #include "nvidia.hpp"
 #include "misc.hpp"
 #include "world.hpp"
+#include "loader.hpp"
 
 #ifdef __unix
-	#define CONSOLE_FPS 1
+	#define CONSOLE_FPS 0
 #endif
 
 #define DISPLAY_FPS 1
