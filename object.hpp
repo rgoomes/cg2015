@@ -21,6 +21,7 @@ class Object {
 
 	public:
 		string name, texture_path, obj_path;
+		bool is_static = false;
 
 		Object(string path);
 		Object(string path, Loader* loader);
@@ -37,6 +38,7 @@ class Object {
 		void attach_loader(Loader* loader);
 		void attach_world(World* world);
 		
+		float x, y, z, s;
 		void move(float _x, float _y, float _z);
 		virtual string type(){return "object";}
 
@@ -55,7 +57,6 @@ class Object {
 		GLuint shadowmap;
 		float depthMVP[4][4];
 		void get_depthbiasmvp(float dbmvp[4][4]);
-		float x, y, z, s;
 		string path;
 		bool has_texture;
 		void get_mvp(float mvp[4][4]);

@@ -39,6 +39,7 @@ class Camera{
 		void update(GLFWwindow* window, float elapsed);
 		pair<btVector3, btVector3> mouse_update(GLFWwindow* window);
 
+
 		void lookat(btVector3 dir, btVector3 right);
 		void move(GLFWwindow* window, float elapsed, btVector3 dest);
 		
@@ -46,6 +47,7 @@ class Camera{
 		void game_camera(GLFWwindow* window, float elapsed);
 		btVector3 get_obs_pos();
 		btVector3 get_direction();
+		btVector3 get_right();
 
 };
 

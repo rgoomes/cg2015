@@ -7,6 +7,7 @@ Rigidbody *chair;
 Object *dei;
 Rigidbody *dei_collider;
 Rigidbody *box;
+Object *sphere_aim;
 
 float mvp[4][4], a=0;
 GLFWwindow* window;
@@ -28,14 +29,6 @@ void load_objects(){
 	box->set_scale(0.15);
 	box->load_obj();
 	world->addObject(box);
-
-	/*
-	colorCube = new Object("objects/cube");
-	colorCube->attach_loader(loader);
-	colorCube->load_obj();
-	colorCube->move(0, 20, 0);
-	world->addObject(colorCube);
-	*/
 
 	for(int i=0; i<30; i++){
 		sphere = new Rigidbody("objects/sphere", 5, btVector3(170, 50+5*i, 75));
@@ -63,6 +56,17 @@ void load_objects(){
 	cylinder->attach_loader(loader);
 	cylinder->load_obj();
 	world->addObject(cylinder);
+
+
+	btVector3 obs_pos = world->camera->get_obs_pos();
+	sphere_aim = new Object("objects/sphere");
+	sphere_aim->move(obs_pos.getX(), obs_pos.getY(), obs_pos.getZ());
+	sphere_aim->attach_loader(loader);
+	sphere_aim->set_scale(0.05);
+	sphere_aim->load_obj();
+	world->addObject(sphere_aim);
+
+	sphere_aim->is_static = true;
 }
 
 void load_textures(){
@@ -81,7 +85,10 @@ void add_lights(){
 
 void throw_ball(){
 	btVector3 obs_pos = world->camera->get_obs_pos();
-	sphere = new Rigidbody("objects/sphere", 5, btVector3(obs_pos.getX(), obs_pos.getY(), obs_pos.getZ()));
+	btVector3 n = world->camera->get_direction();
+
+	n.normalize();
+	sphere = new Rigidbody("objects/sphere", 5, btVector3(obs_pos.getX() + n.getX()*10 , obs_pos.getY() + n.getY()*10, obs_pos.getZ() + n.getZ()*10 ) );
 	sphere->attach_loader(loader);
 	sphere->set_scale(0.05);
 	sphere->load_obj();
@@ -89,6 +96,7 @@ void throw_ball(){
 
 	btRigidBody* r = sphere->get_rigidbody();
 	r->setLinearVelocity(world->camera->get_direction() * 100);
+
 }
 
 void get_mvp(float mvp[4][4]){
@@ -104,6 +112,7 @@ void display(float elapsed){
 	int w, h;
 	glfwGetWindowSize(window, &w, &h);
 	
+
 	if(glfwGetKey(window, GLFW_KEY_T))
 		throw_ball();
 	

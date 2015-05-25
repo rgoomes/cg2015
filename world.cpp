@@ -135,6 +135,17 @@ void World::update(float elapsed){
 	glLightfv(GL_LIGHT0, GL_POSITION, light_position);*/
 
 	for(i=0; i<(int)objects.size();  i++){
+		if(objects[i]->is_static){
+			btVector3 obs_pos = camera->get_obs_pos();
+			btVector3 n = camera->get_direction();
+			btVector3 r = camera->get_right();
+			r.normalize();
+			n.normalize();
+
+			n -= r / 5;
+			objects[i]->move(obs_pos.getX() + n.getX()*10 , obs_pos.getY() + n.getY()*10, obs_pos.getZ() + n.getZ()*10);
+		}
+
 		objects[i]->render_texture();
 	}
 	for(i=0; i<(int)objects.size();  i++){

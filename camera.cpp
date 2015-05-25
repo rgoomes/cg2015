@@ -59,6 +59,10 @@ btVector3 Camera::get_direction(){
 	return btVector3(cos(vertical_ang)*sin(horizontal_ang), sin(vertical_ang), cos(vertical_ang)*cos(horizontal_ang));
 }
 
+btVector3 Camera::get_right(){
+	return btVector3(sin(horizontal_ang - PI/2.0f), 0, cos(horizontal_ang - PI/2.0f));
+}
+
 void Camera::lookat(btVector3 dir, btVector3 right){
 	btVector3 tmp = obs_pos+dir;
 	btVector3 up = -dir.cross(right);
