@@ -50,10 +50,10 @@ void load_objects(){
 	dei_collider->load_obj();
 	world->addCollider(dei_collider);
 
-	Object* cylinder = new Object("objects/cylinder");
-	cylinder->set_scale(10);
-	cylinder->move(30, 0, 0);
+
+	Rigidbody* cylinder = new Rigidbody("objects/cylinder", 5, btVector3(30,0,0));
 	cylinder->attach_loader(loader);
+	cylinder->set_scale(10);
 	cylinder->load_obj();
 	world->addObject(cylinder);
 
