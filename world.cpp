@@ -14,7 +14,7 @@ btDynamicsWorld* World::getDynamicWorld(){
 
 void World::init(){
 	physicsWorld = getDynamicWorld();
-	physicsWorld->setGravity(btVector3(0, -100, 0));
+	physicsWorld->setGravity(btVector3(0, -10, 0));
 }
 
 bool paused = true;

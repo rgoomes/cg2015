@@ -3,7 +3,7 @@
 
 using namespace std;
 
-Rigidbody::Rigidbody(string path, btScalar mass, btVector3 pos, ColliderType collider)
+Rigidbody::Rigidbody(string path, btScalar mass, btVector3 pos, ColliderType collider, double w, double h, double d)
 : Object(path){
 	this->path = path;
 	this->mass = mass;
@@ -11,9 +11,13 @@ Rigidbody::Rigidbody(string path, btScalar mass, btVector3 pos, ColliderType col
 	x = pos.getX();
 	y = pos.getY();
 	z = pos.getZ();
+
+	this->w = w;
+	this->h = h;
+	this->d = d;
 }
 
-btCollisionShape* Rigidbody::get_mesh_object(){
+btCollisionShape* Rigidbody::get_mesh_object(double w, double h, double d){
 	btCollisionShape* shape;
 
 	if(collider_type == CONCAVE){
@@ -32,10 +36,7 @@ btCollisionShape* Rigidbody::get_mesh_object(){
 		}
 		shape = new btBvhTriangleMeshShape(mesh, true);
 		
-
-
-		
-	}else{
+	}else if(collider_type == CONVEX){
 		btConvexHullShape* chs = new btConvexHullShape();
 
 		int v;
@@ -53,6 +54,9 @@ btCollisionShape* Rigidbody::get_mesh_object(){
 		}
 		shape = chs;
 
+	}else{
+		btBoxShape* box = new btBoxShape( btVector3(w, h, d) );
+		shape = box;
 	}
 
 	return shape;
@@ -63,16 +67,17 @@ void Rigidbody::load_obj(){
 	has_texture = true;
 	Object::load_obj();
 
-	btCollisionShape* shape = get_mesh_object();
+	btCollisionShape* shape = get_mesh_object(w, h, d);
 	btQuaternion rot(0, 0, 0, 1);
 	//rot.setRotation(btVector3(0, 0, 1), 1.2);
 	btDefaultMotionState* motion_state = new btDefaultMotionState(btTransform(rot, btVector3(x, y, z)));
 	btVector3 inertia(0, 0, 0);
 	shape->calculateLocalInertia(mass, inertia);
 	btRigidBody::btRigidBodyConstructionInfo rigidBodyCI(mass, motion_state, shape, inertia); // mass, motionState, shape, inertia
-	rigidBodyCI.m_restitution = 0.9f;
-	rigidBodyCI.m_friction = 0.2f;
-	rigidBodyCI.m_angularDamping = 0.1f;
+	rigidBodyCI.m_restitution = 0.1f;
+	rigidBodyCI.m_friction = 0.95f;
+	//rigidBodyCI.m_angularDamping = 0.9f;
+	//rigidBodyCI.m_linearDamping = 0.9f;
 
 	rigidbody = new btRigidBody(rigidBodyCI);
 }

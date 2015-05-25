@@ -173,7 +173,7 @@ Camera::Camera(int w, int h){
 	horizontal_ang = PI*1.6;
 	vertical_ang = -PI;
 
-	this->camera_state = NO_GAME_STATE;
+	this->camera_state = FREE_CAMERA;
 
 	this->w = w;
 	this->h = h;

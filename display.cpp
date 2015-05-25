@@ -26,9 +26,9 @@ void load_objects(){
 	int w, h;
 	glfwGetWindowSize(window, &w, &h);
 
-	for(int j=0; j<2; j++){
-		for(int i=0; i<2; i++){
-			brick = new Rigidbody("objects/brick", 5, btVector3(-5+2.5*j, 0.75+1.35*i, 25));
+	for(int j=0; j<10; j++){
+		for(int i=0; i<20; i++){
+			brick = new Rigidbody("objects/brick", 30, btVector3(-5+2.5*j + (i%2)*1.25, 0.75+1.35*i , 25), CUBE, 1, 0.66, 1);
 			brick->attach_loader(loader);
 			brick->set_scale(0.1);
 			brick->load_obj();
