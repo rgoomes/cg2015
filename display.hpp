@@ -11,9 +11,8 @@
 #endif
 
 #include "misc.hpp"
-#include "object.hpp"
-#include "rigidbody.hpp"
 #include "world.hpp"
+#include "rigidbody.hpp"
 #include "loader.hpp"
 
 class World;

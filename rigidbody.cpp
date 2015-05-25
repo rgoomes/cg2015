@@ -98,3 +98,4 @@ btTransform* Rigidbody::get_transform(){
 	rigidbody->getMotionState()->getWorldTransform(trans);
 	return &trans;
 }
+

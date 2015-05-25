@@ -22,11 +22,17 @@
 
 using namespace std;
 
+
 class Camera{
 	int camera_state;
 
 	public:
 		Camera(int w, int h);
+		btVector3 no_game;
+		btVector3 game1_pos;
+		btVector3 game2_pos; // TODO
+		btVector3 game3_pos; // TODO
+		btVector3 obs_pos = no_game;
 
 	public:
 		int w, h;
@@ -38,7 +44,10 @@ class Camera{
 		
 		void free_camera(GLFWwindow* window, float elapsed);
 		void game_camera(GLFWwindow* window, float elapsed);
+		btVector3 get_obs_pos();
+		btVector3 get_direction();
 
 };
+
 
 #endif

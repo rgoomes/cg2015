@@ -79,6 +79,18 @@ void add_lights(){
 
 }
 
+void throw_ball(){
+	btVector3 obs_pos = world->camera->get_obs_pos();
+	sphere = new Rigidbody("objects/sphere", 5, btVector3(obs_pos.getX(), obs_pos.getY(), obs_pos.getZ()));
+	sphere->attach_loader(loader);
+	sphere->set_scale(0.05);
+	sphere->load_obj();
+	world->addObject(sphere);
+
+	btRigidBody* r = sphere->get_rigidbody();
+	r->setLinearVelocity(world->camera->get_direction() * 100);
+}
+
 void get_mvp(float mvp[4][4]){
 	float m1[4][4], m2[4][4], t[4][4];
 	glGetFloatv(GL_MODELVIEW_MATRIX, m1[0]);
@@ -91,7 +103,9 @@ GLfloat light_position[] = { 1.0, 15.0, -30.0, 1.0 };
 void display(float elapsed){
 	int w, h;
 	glfwGetWindowSize(window, &w, &h);
-
+	
+	if(glfwGetKey(window, GLFW_KEY_T))
+		throw_ball();
 	
 	world->update(elapsed);
 

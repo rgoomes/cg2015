@@ -4,17 +4,12 @@
 
 #define PI 3.141592653
 
-btVector3 no_game(-13.7, 10.6, -142);
-btVector3 game1_pos(149.09, 7.5,  0);
-btVector3 game2_pos(0, 0, 0); // TODO
-btVector3 game3_pos(0, 0, 0); // TODO
 int last_state;
 
 double xpos, ypos, acc;
 double horizontal_ang = -PI/1.25, vertical_ang = -PI;
 bool ftick = true, updated, trigged = false;
 
-btVector3 obs_pos = no_game;
 double angle_game  = GAME_STATE1_DEF_ANGLE;
 double height_game = GAME_STATE1_DEF_HEIGHT;
 
@@ -58,6 +53,10 @@ pair<btVector3, btVector3> Camera::mouse_update(GLFWwindow* window){
 	btVector3 right(sin(horizontal_ang - PI/2.0f), 0, cos(horizontal_ang - PI/2.0f));
 
 	return make_pair(dir, right);
+}
+
+btVector3 Camera::get_direction(){
+	return btVector3(cos(vertical_ang)*sin(horizontal_ang), sin(vertical_ang), cos(vertical_ang)*cos(horizontal_ang));
 }
 
 void Camera::lookat(btVector3 dir, btVector3 right){
@@ -127,8 +126,18 @@ void Camera::update(GLFWwindow* window, float elapsed){
 }
 
 Camera::Camera(int w, int h){
+	no_game = btVector3(-13.7, 10.6, -142);
+	game1_pos = btVector3(149.09, 7.5,  0);
+	game2_pos = btVector3(0, 0, 0); // TODO
+	game3_pos = btVector3(0, 0, 0); // TODO
+	obs_pos = no_game;
+
 	this->camera_state = NO_GAME_STATE;
 
 	this->w = w;
 	this->h = h;
+}
+
+btVector3 Camera::get_obs_pos() {
+	return obs_pos;
 }

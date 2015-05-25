@@ -10,15 +10,12 @@
 #include <GL/gl.h>
 #include <GLFW/glfw3.h>
 
-#include "types.hpp"
 #include "shaders.hpp"
 #include "image.hpp"
-#include "misc.hpp"
 #include "loader.hpp"
 #include "world.hpp"
 
 using namespace std;
-
 
 class Object {
 

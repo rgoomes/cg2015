@@ -7,9 +7,9 @@
 #include <GL/glu.h>
 #include <btBulletDynamicsCommon.h>
 
+#include "camera.hpp"
 #include "misc.hpp"
 #include "skybox.hpp"
-#include "camera.hpp"
 
 #define SHADOW_RES 1024
 
@@ -24,9 +24,9 @@ class World{
 		void addCollider(Object* obj);
 		void update(float elapsed);
 		World(GLFWwindow* window);
+		Camera* camera;
 
 	private:
-		Camera* camera;
 		btDynamicsWorld* physicsWorld;
 		vector<Object*> objects;
 		GLFWwindow* window;
