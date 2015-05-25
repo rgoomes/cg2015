@@ -54,11 +54,13 @@ void load_objects(){
 	dei_collider->load_obj();
 	world->addCollider(dei_collider);
 
+	/*
 	Rigidbody* cylinder = new Rigidbody("objects/cylinder", 5, btVector3(30,0,0));
 	cylinder->attach_loader(loader);
 	cylinder->set_scale(10);
 	cylinder->load_obj();
 	world->addObject(cylinder);
+	*/
 
 	btVector3 obs_pos = world->camera->get_obs_pos();
 	sphere_aim = new Object("objects/sphere");
@@ -107,8 +109,6 @@ void get_mvp(float mvp[4][4]){
 	glGetFloatv(GL_PROJECTION_MATRIX, m2[0]);
 	mult_matrix(mvp, m1, m2);
 }
-
-GLfloat light_position[] = { 1.0, 15.0, -30.0, 1.0 };
 
 int last_throw_state = GLFW_RELEASE;
 bool throwing = false;

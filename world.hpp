@@ -10,6 +10,7 @@
 #include "camera.hpp"
 #include "misc.hpp"
 #include "skybox.hpp"
+#include "timer.hpp"
 
 #define SHADOW_RES 1024
 
@@ -25,6 +26,7 @@ class World{
 		void update(float elapsed);
 		World(GLFWwindow* window);
 		Camera* camera;
+		Timer* timer;
 
 	private:
 		btDynamicsWorld* physicsWorld;

@@ -56,6 +56,7 @@ class Camera{
 		btVector3 get_obs_pos();
 		btVector3 get_direction();
 		btVector3 get_right();
+		int get_game_state();
 
 };
 
