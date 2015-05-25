@@ -8,6 +8,7 @@ Object *dei;
 Rigidbody *dei_collider;
 Rigidbody *box;
 Object *sphere_aim;
+Rigidbody *brick;
 
 float mvp[4][4], a=0;
 GLFWwindow* window;
@@ -24,6 +25,16 @@ void set_environment(GLFWwindow* _window, World* _world, Loader* _loader){
 void load_objects(){
 	int w, h;
 	glfwGetWindowSize(window, &w, &h);
+
+	for(int j=0; j<2; j++){
+		for(int i=0; i<2; i++){
+			brick = new Rigidbody("objects/brick", 5, btVector3(-5+2.5*j, 0.75+1.35*i, 25));
+			brick->attach_loader(loader);
+			brick->set_scale(0.1);
+			brick->load_obj();
+			world->addObject(brick);
+		}
+	}
 
 	box = new Rigidbody("objects/box", 0, btVector3(0, 2.6, 0), CONCAVE);
 	box->attach_loader(loader);
@@ -42,7 +53,6 @@ void load_objects(){
 	dei_collider->set_scale(0.1);
 	dei_collider->load_obj();
 	world->addCollider(dei_collider);
-
 
 	Rigidbody* cylinder = new Rigidbody("objects/cylinder", 5, btVector3(30,0,0));
 	cylinder->attach_loader(loader);
