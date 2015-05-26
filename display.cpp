@@ -36,9 +36,15 @@ void load_objects(){
 		}
 	}
 
-	box = new Rigidbody("objects/box", 0, btVector3(20, 2.6, 30), CONCAVE);
+	box = new Rigidbody("objects/box", 0, btVector3(0, 2.0, 30), CONCAVE);
 	box->attach_loader(loader);
-	box->set_scale(0.15);
+	box->set_scale(0.2);
+	box->load_obj();
+	world->addObject(box);
+
+	box = new Rigidbody("objects/box", 0, btVector3(203, 2.7, -58), CONCAVE);
+	box->attach_loader(loader);
+	box->set_scale(0.2);
 	box->load_obj();
 	box->rotate(btVector3(0, 1, 0), 90);
 	world->addObject(box);
@@ -95,7 +101,7 @@ void throw_ball(){
 	btVector3 n = world->camera->get_direction();
 
 	n.normalize();
-	sphere = new Rigidbody("objects/sphere", 5, btVector3(obs_pos.getX() + n.getX()*10 , obs_pos.getY() + n.getY()*10, obs_pos.getZ() + n.getZ()*10 ) );
+	sphere = new Rigidbody("objects/sphere", 5, btVector3(obs_pos.getX() + n.getX()*10 , obs_pos.getY() + n.getY()*10, obs_pos.getZ() + n.getZ()*10 ), CONVEX, 0,0,0, 0.80);
 	sphere->attach_loader(loader);
 	sphere->set_scale(0.05);
 	sphere->load_obj();

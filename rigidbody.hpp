@@ -14,7 +14,7 @@ class Rigidbody : public Object{
 	public:
 		btRigidBody* get_rigidbody();
 		void load_obj();
-		Rigidbody(string path, btScalar mass, btVector3 pos, ColliderType collider=CONVEX, double w=0, double h=0, double d=0);
+		Rigidbody(string path, btScalar mass, btVector3 pos, ColliderType collider=CONVEX, double w=0, double h=0, double d=0, double restitution=0.50f, double friction=0.95f);
 		void move(float _x, float _y, float _z);
 		void get_matrix(float m[16]);
 		void render_texture();
@@ -27,6 +27,8 @@ class Rigidbody : public Object{
 		btTransform trans;
 		ColliderType collider_type = CONVEX;
 		double w, h, d;
+		double restitution;
+		double friction;
 	protected:
 		btScalar mass;
 };

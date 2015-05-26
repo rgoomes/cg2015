@@ -24,8 +24,10 @@
 
 #define GAME_STATE2 			3
 
-using namespace std;
+#define CAMERA_MIN_Y 			10
+#define CAMERA_MAX_Y			100
 
+using namespace std;
 
 class Camera{
 	int camera_state;
@@ -45,7 +47,6 @@ class Camera{
 		void update(GLFWwindow* window, float elapsed);
 		pair<btVector3, btVector3> mouse_update(GLFWwindow* window);
 
-
 		void lookat(btVector3 dir, btVector3 right);
 		void move(GLFWwindow* window, float elapsed, btVector3 dest);
 		
@@ -53,6 +54,8 @@ class Camera{
 		void free_camera(GLFWwindow* window, float elapsed);
 		void game_camera1(GLFWwindow* window, float elapsed);
 		void game_camera2(GLFWwindow* window, float elapsed);
+		void change_state(btVector3 dest);
+
 		btVector3 get_obs_pos();
 		btVector3 get_direction();
 		btVector3 get_right();
