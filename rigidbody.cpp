@@ -74,7 +74,7 @@ void Rigidbody::load_obj(){
 	btVector3 inertia(0, 0, 0);
 	shape->calculateLocalInertia(mass, inertia);
 	btRigidBody::btRigidBodyConstructionInfo rigidBodyCI(mass, motion_state, shape, inertia); // mass, motionState, shape, inertia
-	rigidBodyCI.m_restitution = 0.1f;
+	rigidBodyCI.m_restitution = 0.50f;
 	rigidBodyCI.m_friction = 0.95f;
 	//rigidBodyCI.m_angularDamping = 0.9f;
 	//rigidBodyCI.m_linearDamping = 0.9f;

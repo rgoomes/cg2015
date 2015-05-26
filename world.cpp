@@ -14,7 +14,7 @@ btDynamicsWorld* World::getDynamicWorld(){
 
 void World::init(){
 	physicsWorld = getDynamicWorld();
-	physicsWorld->setGravity(btVector3(0, -10, 0));
+	physicsWorld->setGravity(btVector3(0, -20, 0));
 }
 
 bool paused = true;
@@ -80,10 +80,35 @@ GLuint World::get_render_buffer(){
 	return depthTexture;
 }
 
+void enable2d(){
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+	glOrtho(0,1,0,1,0,1);
+
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+}
+
+void disable2d(){
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
+}
+
 void World::update(float elapsed){
 	int i;
 
 	tick(elapsed);
+
+	if(timer->ticking()){
+		enable2d();
+		timer->elapsed();
+		disable2d();
+	} else if(camera->get_game_state() == GAME_STATE1)
+		timer->start();
 
 	glBindFramebuffer(GL_FRAMEBUFFER, FramebufferName);
 	glViewport(0, 0, SHADOW_RES, SHADOW_RES);
@@ -165,4 +190,6 @@ World::World(GLFWwindow* window){
 	renderedTexture = get_render_buffer();
 
 	camera = new Camera(window_width, window_height);
+
+	timer = new Timer();
 }

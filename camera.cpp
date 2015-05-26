@@ -182,3 +182,7 @@ Camera::Camera(int w, int h){
 btVector3 Camera::get_obs_pos() {
 	return obs_pos;
 }
+
+int Camera::get_game_state() {
+	return this->camera_state;
+}

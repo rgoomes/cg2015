@@ -27,7 +27,7 @@ void load_objects(){
 	glfwGetWindowSize(window, &w, &h);
 
 	for(int j=0; j<10; j++){
-		for(int i=0; i<20; i++){
+		for(int i=0; i<15; i++){
 			brick = new Rigidbody("objects/brick", 30, btVector3(-5+2.5*j + (i%2)*1.25, 0.75+1.35*i , 25 * (j%2) * 0.03 ), CUBE, 1, 0.66, 1);
 			brick->attach_loader(loader);
 			brick->set_scale(0.1);
@@ -54,11 +54,13 @@ void load_objects(){
 	dei_collider->load_obj();
 	world->addCollider(dei_collider);
 
+	/*
 	Rigidbody* cylinder = new Rigidbody("objects/cylinder", 5, btVector3(30,0,0));
 	cylinder->attach_loader(loader);
 	cylinder->set_scale(10);
 	cylinder->load_obj();
 	world->addObject(cylinder);
+	*/
 
 	btVector3 obs_pos = world->camera->get_obs_pos();
 	sphere_aim = new Object("objects/sphere");
@@ -107,8 +109,6 @@ void get_mvp(float mvp[4][4]){
 	glGetFloatv(GL_PROJECTION_MATRIX, m2[0]);
 	mult_matrix(mvp, m1, m2);
 }
-
-GLfloat light_position[] = { 1.0, 15.0, -30.0, 1.0 };
 
 int last_throw_state = GLFW_RELEASE;
 bool throwing = false;
