@@ -38,7 +38,13 @@ void load_objects(){
 
 	box = new Rigidbody("objects/box", 0, btVector3(0, 2.6, 0), CONCAVE);
 	box->attach_loader(loader);
-	box->set_scale(0.15);
+	box->set_scale(0.2);
+	box->load_obj();
+	world->addObject(box);
+
+	box = new Rigidbody("objects/box", 0, btVector3(203, 2.7, -58), CONCAVE);
+	box->attach_loader(loader);
+	box->set_scale(0.2);
 	box->load_obj();
 	world->addObject(box);
 

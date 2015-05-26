@@ -91,12 +91,8 @@ void Camera::game_camera1(GLFWwindow* window, float elapsed){
 		}
 	}
 
-	if(glfwGetKey(window, GLFW_KEY_G)){
-		last_camera_state = this->camera_state;
-
-		this->camera_state = POINT_TO_POINT;
-		this->destination  = btVector3(0, 20.6, -100);
-	}
+	if(glfwGetKey(window, GLFW_KEY_G))
+		this->change_state(btVector3(0, 20.6, -100));
 
 	obs_pos.setX(game1_pos.getX() - sin(angle_game*PI/180)*95);
 	obs_pos.setY(game1_pos.getY() + height_game);
@@ -123,25 +119,24 @@ void Camera::free_camera(GLFWwindow* window, float elapsed){
 	if(glfwGetKey(window, GLFW_KEY_LEFT)  || glfwGetKey(window, GLFW_KEY_A))
 		obs_pos += p.second * elapsed * speed;
 
-	if(glfwGetKey(window, GLFW_KEY_G)){
-		last_camera_state = this->camera_state;
-
-		this->camera_state = POINT_TO_POINT;
-		this->destination  = btVector3(-13.7, 10.6, 140);
-	}
+	if(glfwGetKey(window, GLFW_KEY_G))
+		this->change_state(btVector3(-13.7, 10.6, 140));
 
 	this->lookat(p.first, p.second);
+}
+
+void Camera::change_state(btVector3 dest){
+	last_camera_state = this->camera_state;
+
+	this->destination  = dest;
+	this->camera_state = POINT_TO_POINT;
 }
 
 void Camera::start(GLFWwindow* window, float elapsed){
 	pair<btVector3, btVector3> p = this->mouse_update(window);
 
-	if(glfwGetKey(window, GLFW_KEY_G)){
-		last_camera_state = this->camera_state;
-
-		this->camera_state = POINT_TO_POINT;
-		this->destination  = btVector3(196.589996, 54.5, 82.272415);
-	}
+	if(glfwGetKey(window, GLFW_KEY_G))
+		this->change_state(btVector3(196.589996, 54.5, 82.272415));
 
 	this->lookat(p.first, p.second);
 }
