@@ -19,6 +19,7 @@ class Rigidbody : public Object{
 		void get_matrix(float m[16]);
 		void render_texture();
 		virtual string type(){return "rigidbody";}
+		void rotate(btVector3 up, float degree);
 	private:
 		btRigidBody* rigidbody;
 		btCollisionShape* get_mesh_object(double w=0, double h=0, double d=0);

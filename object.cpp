@@ -67,6 +67,14 @@ void Object::move(float _x, float _y, float _z){
 	z = _z;
 }
 
+void Object::rotate(btVector3 up, float degree){
+	btQuaternion q;
+	q.setRotation(up, degree / 180.0 * PI);
+	btTransform *trans = get_transform();
+	trans->setRotation(q);
+	this->trans = *trans;
+}
+
 void Object::get_depthbiasmvp(float dbmvp[4][4]){
 	
 	float bias[4][4] = {{0.5, 0.0, 0.0, 0.0}, 

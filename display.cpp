@@ -28,7 +28,7 @@ void load_objects(){
 
 	for(int j=0; j<10; j++){
 		for(int i=0; i<15; i++){
-			brick = new Rigidbody("objects/brick", 30, btVector3(-5+2.5*j + (i%2)*1.25, 0.75+1.35*i , 25 * (j%2) * 0.03 ), CUBE, 1, 0.66, 1);
+			brick = new Rigidbody("objects/brick", 30, btVector3(-5+2.5*j + (i%2)*1.25, 0.75+1.35*i , 25 * 0.03 ), CUBE, 1, 0.68, 1);
 			brick->attach_loader(loader);
 			brick->set_scale(0.1);
 			brick->load_obj();
@@ -36,11 +36,13 @@ void load_objects(){
 		}
 	}
 
-	box = new Rigidbody("objects/box", 0, btVector3(0, 2.6, 30), CONCAVE);
+	box = new Rigidbody("objects/box", 0, btVector3(20, 2.6, 30), CONCAVE);
 	box->attach_loader(loader);
 	box->set_scale(0.15);
 	box->load_obj();
+	box->rotate(btVector3(0, 1, 0), 90);
 	world->addObject(box);
+
 
 	dei = new Object("objects/dei");
 	dei->attach_loader(loader);
@@ -68,9 +70,10 @@ void load_objects(){
 	sphere_aim->attach_loader(loader);
 	sphere_aim->set_scale(0.05);
 	sphere_aim->load_obj();
+	sphere_aim->is_static = true;
 	world->addObject(sphere_aim);
 
-	sphere_aim->is_static = true;
+
 }
 
 void load_textures(){

@@ -62,7 +62,6 @@ btCollisionShape* Rigidbody::get_mesh_object(double w, double h, double d){
 	return shape;
 }
 
-
 void Rigidbody::load_obj(){
 	has_texture = true;
 	Object::load_obj();
@@ -104,3 +103,8 @@ btTransform* Rigidbody::get_transform(){
 	return &trans;
 }
 
+
+void Rigidbody::rotate(btVector3 up, float degree){
+	Object::rotate(up, degree);
+	rigidbody->getMotionState()->setWorldTransform(trans);
+}
