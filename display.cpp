@@ -28,7 +28,7 @@ void load_objects(){
 
 	for(int j=0; j<10; j++){
 		for(int i=0; i<15; i++){
-			brick = new Rigidbody("objects/brick", 30, btVector3(-5+2.5*j + (i%2)*1.25, 0.75+1.35*i , 25 * 0.03 ), CUBE, 1, 0.68, 1);
+			brick = new Rigidbody("objects/brick", 30, btVector3(-5+2.42*j + (i%2)*1.25, 0.75+1.35*i , 25 * 0.03 ), CUBE, 1.211, 0.66, 0.5005);
 			brick->attach_loader(loader);
 			brick->set_scale(0.1);
 			brick->load_obj();
