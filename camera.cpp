@@ -119,6 +119,12 @@ void Camera::free_camera(GLFWwindow* window, float elapsed){
 	if(glfwGetKey(window, GLFW_KEY_LEFT)  || glfwGetKey(window, GLFW_KEY_A))
 		obs_pos += p.second * elapsed * speed;
 
+	double ypos = obs_pos.getY();
+	if(ypos > CAMERA_MAX_Y)
+		obs_pos.setY(CAMERA_MAX_Y);
+	else if(ypos < CAMERA_MIN_Y)
+		obs_pos.setY(CAMERA_MIN_Y);
+
 	if(glfwGetKey(window, GLFW_KEY_G))
 		this->change_state(btVector3(-13.7, 10.6, 140));
 

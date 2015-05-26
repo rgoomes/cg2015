@@ -24,8 +24,10 @@
 
 #define GAME_STATE2 			3
 
-using namespace std;
+#define CAMERA_MIN_Y 			10
+#define CAMERA_MAX_Y			100
 
+using namespace std;
 
 class Camera{
 	int camera_state;
