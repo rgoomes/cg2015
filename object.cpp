@@ -71,7 +71,7 @@ void Object::rotate(btVector3 up, float degree){
 	btTransform *trans = get_transform();
 	btQuaternion q2 = trans->getRotation(), q;
 	q.setRotation(up, degree / 180.0 * PI);
-	q = q2 + q;
+	q = q2 * q;
 	trans->setRotation(q);
 	this->trans = *trans;
 }

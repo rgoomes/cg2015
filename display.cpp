@@ -42,11 +42,13 @@ void load_objects(){
 	box->load_obj();
 	world->addObject(box);
 
-	box = new Rigidbody("objects/box", 0, btVector3(203, 2.7, -58), CONCAVE);
+	box = new Rigidbody("objects/box", 0, btVector3(203, 2.7, -56), CONCAVE);
 	box->attach_loader(loader);
 	box->set_scale(0.2);
 	box->load_obj();
-	box->rotate(btVector3(0, 1, 0), 90);
+	box->rotate(btVector3(0, 1, 0), 45);
+	box->rotate(btVector3(1, 0, 0), 5);
+	//box->rotate(btVector3(0, 0, 1), 0);
 	world->addObject(box);
 
 
