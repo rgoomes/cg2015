@@ -58,7 +58,7 @@ void main(){
 	vec3 MaterialAmbientColor = 0.4 * MaterialDiffuseColor;
 	vec3 MaterialSpecColor = vec3(0.7, 0.7, 0.7);
 
-	vec3 TextureNormal_tangentspace = mat3(V * M) * normalize(texture2D( bumpSampler, vec2(-UV.x,UV.y) ).rgb*2.0 - 1.0);
+	vec3 TextureNormal_tangentspace = mat3(V * M) * normalize(texture2D( bumpSampler, vec2(UV.x,UV.y) ).rgb*2.0 - 1.0);
 	TextureNormal_tangentspace = normalize(TextureNormal_tangentspace);
 	//vec3 n = normalize(Normal_cameraspace);
 	vec3 n;

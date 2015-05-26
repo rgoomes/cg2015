@@ -24,7 +24,7 @@
 
 #define GAME_STATE2 			3
 
-#define CAMERA_MIN_Y 			10
+#define CAMERA_MIN_Y 			0
 #define CAMERA_MAX_Y			100
 
 using namespace std;
