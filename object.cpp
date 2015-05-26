@@ -69,8 +69,9 @@ void Object::move(float _x, float _y, float _z){
 
 void Object::rotate(btVector3 up, float degree){
 	btTransform *trans = get_transform();
-	btQuaternion q = trans->getRotation();
+	btQuaternion q2 = trans->getRotation(), q;
 	q.setRotation(up, degree / 180.0 * PI);
+	q = q2 + q;
 	trans->setRotation(q);
 	this->trans = *trans;
 }
