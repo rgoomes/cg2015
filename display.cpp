@@ -138,10 +138,55 @@ void request_throw(){
 	last_throw_state = cur_state;
 }
 
+void enable2d(){
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+	glOrtho(0,1,0,1, 0,1);
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glPushMatrix();
+}
+
+void disable2d(){
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+	glMatrixMode(GL_MODELVIEW);
+	glPopMatrix();
+}
+
+void draw_menu(){
+	glColor4f(1, 0, 0, 1);
+	glBegin(GL_QUADS);
+		glVertex2i(0, 0);
+		glVertex2i(1, 0);
+		glVertex2i(1, 1);
+		glVertex2i(0, 1);
+	glEnd();
+}
+
 void display(float elapsed){
 	int w, h;
 	glfwGetWindowSize(window, &w, &h);
 
 	request_throw();
-	world->update(elapsed);	
+
+	if(world->timer->ticking()){
+		//enable2d();
+		// TODO: DISPLAY ELAPSED TIME
+		printf("\033[A\033[2KElapsed: %dsec\n", (int)world->timer->elapsed());
+		//disable2d();
+	} else if(world->camera->get_game_state() == GAME_STATE1)
+		world->timer->start();
+
+
+	world->update(elapsed);
+
+	if(world->camera->get_game_state() == NO_GAME_STATE){
+		//enable2d();
+		// TODO::NOT WORKING
+		//draw_menu();
+		//disable2d();
+	}
 }
