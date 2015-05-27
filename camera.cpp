@@ -139,12 +139,15 @@ void Camera::change_state(btVector3 dest){
 }
 
 void Camera::start(GLFWwindow* window, float elapsed){
-	pair<btVector3, btVector3> p = this->mouse_update(window);
+	btVector3 dir(cos(vertical_ang)*sin(horizontal_ang), sin(vertical_ang), cos(vertical_ang)*cos(horizontal_ang));
+	btVector3 right(sin(horizontal_ang - PI/2.0f), 0, cos(horizontal_ang - PI/2.0f));
 
-	if(glfwGetKey(window, GLFW_KEY_G))
+	if(glfwGetKey(window, GLFW_KEY_G)){
+		glfwSetCursorPos(window, this->w/2, this->h/2);
 		this->change_state(btVector3(196.589996, 54.5, 82.272415));
+	}
 
-	this->lookat(p.first, p.second);
+	this->lookat(dir, right);
 }
 
 void Camera::update(GLFWwindow* window, float elapsed){
@@ -174,7 +177,7 @@ Camera::Camera(int w, int h){
 	horizontal_ang = PI*1.6;
 	vertical_ang = -PI;
 
-	this->camera_state = FREE_CAMERA;
+	this->camera_state = NO_GAME_STATE;
 
 	this->w = w;
 	this->h = h;
