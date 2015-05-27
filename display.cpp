@@ -84,11 +84,6 @@ void load_objects(){
 
 }
 
-void load_textures(){
-	load_skybox();
-
-}
-
 void add_lights(){
 	glShadeModel(GL_SMOOTH);
 	glEnable(GL_LIGHTING);
@@ -180,13 +175,16 @@ void display(float elapsed){
 	} else if(world->camera->get_game_state() == GAME_STATE1)
 		world->timer->start();
 
-
 	world->update(elapsed);
 
-	if(world->camera->get_game_state() == NO_GAME_STATE){
+	if(world->camera->get_game_state() != NO_GAME_STATE)
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+	else {
 		//enable2d();
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 		// TODO::NOT WORKING
 		//draw_menu();
 		//disable2d();
 	}
+		
 }

@@ -84,7 +84,7 @@ int main(int argc, char **argv){
 	set_environment(main_window, main_world, main_loader);
 
 	load_objects();
-	load_textures();
+	load_skybox();
 	add_lights();
 
 	last_tick = glfwGetTime();
