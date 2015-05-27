@@ -54,7 +54,7 @@ class Camera{
 		void free_camera(GLFWwindow* window, float elapsed);
 		void game_camera1(GLFWwindow* window, float elapsed);
 		void game_camera2(GLFWwindow* window, float elapsed);
-		void change_state(btVector3 dest);
+		void change_state(GLFWwindow* window, btVector3 dest);
 
 		btVector3 get_obs_pos();
 		btVector3 get_direction();

@@ -92,7 +92,7 @@ void Camera::game_camera1(GLFWwindow* window, float elapsed){
 	}
 
 	if(glfwGetKey(window, GLFW_KEY_G))
-		this->change_state(btVector3(0, 20.6, -100));
+		this->change_state(window, btVector3(0, 20.6, -100));
 
 	obs_pos.setX(game1_pos.getX() - sin(angle_game*PI/180)*95);
 	obs_pos.setY(game1_pos.getY() + height_game);
@@ -126,26 +126,26 @@ void Camera::free_camera(GLFWwindow* window, float elapsed){
 		obs_pos.setY(CAMERA_MIN_Y);
 
 	if(glfwGetKey(window, GLFW_KEY_G))
-		this->change_state(btVector3(-13.7, 10.6, 140));
+		this->change_state(window, btVector3(-13.7, 10.6, 140));
 
 	this->lookat(p.first, p.second);
 }
 
-void Camera::change_state(btVector3 dest){
+void Camera::change_state(GLFWwindow* window, btVector3 dest){
 	last_camera_state = this->camera_state;
 
 	this->destination  = dest;
 	this->camera_state = POINT_TO_POINT;
+
+	glfwSetCursorPos(window, this->w/2, this->h/2);
 }
 
 void Camera::start(GLFWwindow* window, float elapsed){
 	btVector3 dir(cos(vertical_ang)*sin(horizontal_ang), sin(vertical_ang), cos(vertical_ang)*cos(horizontal_ang));
 	btVector3 right(sin(horizontal_ang - PI/2.0f), 0, cos(horizontal_ang - PI/2.0f));
 
-	if(glfwGetKey(window, GLFW_KEY_G)){
-		glfwSetCursorPos(window, this->w/2, this->h/2);
-		this->change_state(btVector3(196.589996, 54.5, 82.272415));
-	}
+	if(glfwGetKey(window, GLFW_KEY_G))
+		this->change_state(window, btVector3(196.589996, 54.5, 82.272415));
 
 	this->lookat(dir, right);
 }
@@ -174,7 +174,7 @@ Camera::Camera(int w, int h){
 	game3_pos = btVector3(0, 0, 0); // TODO
 	obs_pos = no_game;
 
-	horizontal_ang = PI*1.6;
+	horizontal_ang = PI*1.79;
 	vertical_ang = -PI;
 
 	this->camera_state = NO_GAME_STATE;

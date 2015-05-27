@@ -161,30 +161,28 @@ void draw_menu(){
 	glEnd();
 }
 
+void timer_update(){
+	if(world->timer->ticking()){
+		// TODO: DISPLAY ELAPSED TIME
+		printf("\033[A\033[2KElapsed: %dsec\n", (int)world->timer->elapsed());
+	} else if(world->camera->get_game_state() == GAME_STATE1)
+		world->timer->start();
+}
+
 void display(float elapsed){
 	int w, h;
 	glfwGetWindowSize(window, &w, &h);
 
-	request_throw();
-
-	if(world->timer->ticking()){
-		//enable2d();
-		// TODO: DISPLAY ELAPSED TIME
-		printf("\033[A\033[2KElapsed: %dsec\n", (int)world->timer->elapsed());
-		//disable2d();
-	} else if(world->camera->get_game_state() == GAME_STATE1)
-		world->timer->start();
-
+	timer_update();
 	world->update(elapsed);
 
-	if(world->camera->get_game_state() != NO_GAME_STATE)
+	if(world->camera->get_game_state() != NO_GAME_STATE){
+		request_throw();
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-	else {
-		//enable2d();
+	} else {
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-		// TODO::NOT WORKING
+		// TODO::DRAW MENU
 		//draw_menu();
-		//disable2d();
 	}
 		
 }
