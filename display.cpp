@@ -15,7 +15,15 @@ GLFWwindow* window;
 World* world;
 Loader* loader;
 int ball_count = 0;
-GLuint menu_button;
+
+GLuint menu[2];
+int btn_size_x, btn_size_y;
+
+#define BUTTON_WIDTH  305.0
+#define BUTTON_HEIGHT 100.0
+
+#define IMAGE_WIDTH  2560.0
+#define IMAGE_HEIGHT 1440.0
 
 void set_environment(GLFWwindow* _window, World* _world, Loader* _loader){
 	window = _window;
@@ -85,10 +93,11 @@ void load_objects(){
 
 }
 
-void load_texture(){
+void load_textures(){
 	load_skybox();
 
-	menu_button = loadDDS("objects/menu/button.dds");
+	menu[0] = loadDDS("objects/menu/play.dds");
+	menu[1] = loadDDS("objects/menu/exit.dds");
 }
 
 void add_lights(){
@@ -166,28 +175,66 @@ void disable2d(){
 	glPopMatrix();
 }
 
-void draw_menu(){
+void draw_button(int pos, int w, int h){
+	glBindTexture(GL_TEXTURE_2D, menu[pos]);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+
+	glBegin(GL_QUADS);
+		glTexCoord2f(0, 1); glVertex2f(0, 0);
+		glTexCoord2f(1, 1); glVertex2f(w, 0);
+		glTexCoord2f(1, 0); glVertex2f(w, h);
+		glTexCoord2f(0, 0); glVertex2f(0, h);
+	glEnd();
+}
+
+void draw_menu(int w, int h){
 	glUseProgram(0);
 	glPushMatrix();
 
 	glPushAttrib(GL_ENABLE_BIT);
 	glActiveTexture(GL_TEXTURE0);
 	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_BLEND);
 
-	glBindTexture(GL_TEXTURE_2D, menu_button);
+	double mouse_x, mouse_y;
+	glfwGetCursorPos(window, &mouse_x, &mouse_y);
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+	double play_size=1, exit_size=1;
+	double ypos = h/2.0+h/2.3, play_x = w/2.0+w/3.5, exit_x=w/2.0+w/2.4;
+	if(mouse_x > play_x-btn_size_x && mouse_x < play_x+btn_size_x && mouse_y > ypos-btn_size_y && mouse_y < ypos+btn_size_y){
+		if(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS)
+			world->camera->change_state(window, btVector3(196.589996, 54.5, 82.272415));
+		play_size=1.05;
+	}
+	if(mouse_x > exit_x-btn_size_x && mouse_x < exit_x+btn_size_x && mouse_y > ypos-btn_size_y && mouse_y < ypos+btn_size_y){
+		if(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS)
+			exit(0);
+		exit_size=1.05;
+	}
 
-	glBegin(GL_QUADS);
-		glTexCoord2f(0, 0); glVertex2f(0, 0);
-		glTexCoord2f(1, 0); glVertex2f(500, 0);
-		glTexCoord2f(1, 1); glVertex2f(500, 500);
-		glTexCoord2f(0, 1); glVertex2f(0, 500);
-	glEnd();
+	glPushMatrix();
+		glTranslatef(w/3.5, -h/2.3, 0);
+		glTranslatef((-(w*play_size-w))/2.0, (-(h*play_size-h))/2.0 , 0);
+		glScalef(play_size, play_size, 1);
+		draw_button(0, w,h);
+	glPopMatrix();
+
+	glPushMatrix();
+		glTranslatef(w/2.4, -h/2.3, 0);
+		glTranslatef((-(w*exit_size-w))/2.0, (-(h*exit_size-h))/2.0 , 0);
+		glScalef(exit_size, exit_size, 1);
+		draw_button(1, w,h);
+	glPopMatrix();
 
 	glPopAttrib();
 	glPopMatrix();
+}
+
+void init_sizes(int w, int h){
+	btn_size_x = w * BUTTON_WIDTH  / IMAGE_WIDTH  / 2.0;
+	btn_size_y = h * BUTTON_HEIGHT / IMAGE_HEIGHT / 2.0;
 }
 
 void timer_update(){
@@ -213,7 +260,7 @@ void display(float elapsed){
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
 		enable2d(w, h);
-		draw_menu();
+		draw_menu(w, h);
 		disable2d();
 	}
 }

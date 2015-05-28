@@ -2,6 +2,8 @@
 #include "main.hpp"
 #include "display.hpp"
 
+#define SCREEN_SIZE_CUT 1.5f
+
 using namespace std;
 
 int frame = 0;
@@ -20,8 +22,8 @@ void monitor_resolution(int *w, int *h){
 			maxHeight = modes[i].height;
 	}
 
-	*w = maxWidth;
-	*h = maxHeight;
+	*w = maxWidth  / SCREEN_SIZE_CUT;
+	*h = maxHeight / SCREEN_SIZE_CUT;
 }
 
 void opengl_init(){
@@ -32,7 +34,7 @@ void opengl_init(){
 	glfwWindowHint				(GLFW_CONTEXT_VERSION_MAJOR, 2);
 	glfwWindowHint				(GLFW_CONTEXT_VERSION_MINOR, 1);
 	glfwSwapInterval			(0);
-	main_window = glfwCreateWindow	(SCREEN_WIDTH/1.5, SCREEN_HEIGHT/1.5, "cg2015", NULL, NULL);
+	main_window = glfwCreateWindow	(SCREEN_WIDTH, SCREEN_HEIGHT, "cg2015", NULL, NULL);
  	glfwSetInputMode			(main_window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
  	
 	glfwMakeContextCurrent		(main_window);
@@ -84,8 +86,9 @@ int main(int argc, char **argv){
 	set_environment(main_window, main_world, main_loader);
 
 	load_objects();
-	load_skybox();
+	load_textures();
 	add_lights();
+	init_sizes(SCREEN_WIDTH, SCREEN_HEIGHT);
 
 	last_tick = glfwGetTime();
 	

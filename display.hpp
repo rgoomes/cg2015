@@ -25,5 +25,6 @@ void add_lights();
 void set_environment(GLFWwindow* _window, World* _world, Loader* _loader);
 void display(float elapsed);
 void get_render_buffer();
+void init_sizes(int w, int h);
 
 #endif
