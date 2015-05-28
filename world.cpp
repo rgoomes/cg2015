@@ -77,6 +77,8 @@ GLuint World::get_render_buffer(){
 	if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		printf("Error creating depth render buffer.\n");
 
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
 	return depthTexture;
 }
 
@@ -150,6 +152,8 @@ void World::update(float elapsed){
 	for(i=0; i<(int)objects.size();  i++){
 		objects[i]->render_glass();
 	}
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 }
 

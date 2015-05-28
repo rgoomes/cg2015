@@ -15,6 +15,7 @@ GLFWwindow* window;
 World* world;
 Loader* loader;
 int ball_count = 0;
+GLuint menu_button;
 
 void set_environment(GLFWwindow* _window, World* _world, Loader* _loader){
 	window = _window;
@@ -84,6 +85,12 @@ void load_objects(){
 
 }
 
+void load_texture(){
+	load_skybox();
+
+	menu_button = loadDDS("objects/menu/button.dds");
+}
+
 void add_lights(){
 	glShadeModel(GL_SMOOTH);
 	glEnable(GL_LIGHTING);
@@ -133,32 +140,54 @@ void request_throw(){
 	last_throw_state = cur_state;
 }
 
-void enable2d(){
+void enable2d(int w, int h){
+	glPushAttrib(GL_ENABLE_BIT);
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_CULL_FACE);
+	glDisable(GL_BLEND);
+	glDisable(GL_LIGHTING);
+
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
 	glLoadIdentity();
-	glOrtho(0,1,0,1, 0,1);
+	gluOrtho2D(0,w,0,h);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	glPushMatrix();
+	glUseProgram(0);
 }
 
 void disable2d(){
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
 	glMatrixMode(GL_MODELVIEW);
+	glPopAttrib();
 	glPopMatrix();
 }
 
 void draw_menu(){
-	glColor4f(1, 0, 0, 1);
+	glUseProgram(0);
+	glPushMatrix();
+
+	glPushAttrib(GL_ENABLE_BIT);
+	glActiveTexture(GL_TEXTURE0);
+	glEnable(GL_TEXTURE_2D);
+
+	glBindTexture(GL_TEXTURE_2D, menu_button);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+
 	glBegin(GL_QUADS);
-		glVertex2i(0, 0);
-		glVertex2i(1, 0);
-		glVertex2i(1, 1);
-		glVertex2i(0, 1);
+		glTexCoord2f(0, 0); glVertex2f(0, 0);
+		glTexCoord2f(1, 0); glVertex2f(500, 0);
+		glTexCoord2f(1, 1); glVertex2f(500, 500);
+		glTexCoord2f(0, 1); glVertex2f(0, 500);
 	glEnd();
+
+	glPopAttrib();
+	glPopMatrix();
 }
 
 void timer_update(){
@@ -174,6 +203,7 @@ void display(float elapsed){
 	glfwGetWindowSize(window, &w, &h);
 
 	timer_update();
+	
 	world->update(elapsed);
 
 	if(world->camera->get_game_state() != NO_GAME_STATE){
@@ -181,8 +211,9 @@ void display(float elapsed){
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 	} else {
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-		// TODO::DRAW MENU
-		//draw_menu();
+
+		enable2d(w, h);
+		draw_menu();
+		disable2d();
 	}
-		
 }

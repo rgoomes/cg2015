@@ -92,7 +92,8 @@ int main(int argc, char **argv){
 	do{
 
 		float elapsed_time = frame_rate();
-		
+
+		glColor4f(1, 1, 1, 1);
 		display(elapsed_time);
 
 		glfwSwapBuffers(main_window);
