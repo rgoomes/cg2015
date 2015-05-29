@@ -17,12 +17,14 @@ void World::init(){
 	physicsWorld->setGravity(btVector3(0, -20, 0));
 }
 
-bool paused = true;
+bool paused = false;
 int last_pause_state = GLFW_RELEASE;
 
 void World::tick(float elapsed){
 	if(!paused)
 		physicsWorld->stepSimulation(elapsed, 60);
+	else
+		this->timer->stop();
 
 	int cur_state = glfwGetKey(window, GLFW_KEY_P);
 	if(cur_state == GLFW_PRESS && cur_state != last_pause_state)

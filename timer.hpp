@@ -10,7 +10,7 @@ class Timer {
 
 	public:
 		bool started;
-		double start_time;
+		double start_time, stop_time=0;
 		
 		double elapsed();
 		void start();

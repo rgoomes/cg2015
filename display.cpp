@@ -242,7 +242,9 @@ void timer_update(int w, int h){
 		enable2d(w, h);
 		printf("\033[A\033[2KElapsed: %.2lfsec\n", world->timer->elapsed());
 		disable2d();
-	} else if(world->camera->get_game_state() == GAME_STATE1)
+	} else if(world->camera->get_game_state() == GAME_STATE1 || 
+			  world->camera->get_game_state() == GAME_STATE2)
+	
 		world->timer->start();
 }
 
