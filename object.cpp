@@ -127,6 +127,7 @@ void Object::render_texture(){
 		
 	glPopMatrix();
 
+	glEnable(GL_CULL_FACE);
 	for(int i=0; i<(int)this->model->groups.size(); i++){
 		Group& g = this->model->groups[i];
 		if(g.material.Tf < 1)
@@ -140,7 +141,6 @@ void Object::render_texture(){
 		glUniform3f(g.lightdir_id, -0.5, 0.8, 0.5);
 		
 		set_material(g, g.material);
-
 
 		// 1rst attribute buffer : vertices
 		glEnableVertexAttribArray(g.vertexposition_modelspace_id);

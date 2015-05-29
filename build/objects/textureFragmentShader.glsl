@@ -9,6 +9,8 @@ varying vec4 ShadowCoord;
 varying vec3 vertPos;
 varying vec3 EyeDirection_cameraspace;
 varying vec3 EyeDirection_tangentspace;
+varying vec3 tangents;
+varying vec3 bitangents;
 
 // Values that stay constant for the whole mesh.
 uniform sampler2D myTextureSampler;
@@ -66,15 +68,15 @@ void main(){
 	vec3 E;
 	
 	if(has_bump != 0){
-		n = normalize(TextureNormal_tangentspace);
 		l = normalize(LightDirection_tangentspace);
+		n = normalize(TextureNormal_tangentspace);
+		E = normalize(EyeDirection_cameraspace);
 	}else{
 		l = normalize(LightDirection_cameraspace);
 		n = normalize(Normal_cameraspace);
-	//E = normalize(EyeDirection_tangentspace);
+		E = normalize(EyeDirection_tangentspace);
 	}
 	vec3 n_c = normalize(Normal_cameraspace);
-	E = normalize(EyeDirection_cameraspace);
 
 	
 	float visibility=1.0;
@@ -84,7 +86,7 @@ void main(){
 	float specular = 0.0;
 	//if(dot(n, -l) > 0.0){
 		
-		specular = pow(max(0.0, dot(reflect(l, n), E)), Ns); // NOT VIEWDIR, IT SHOULD BE EYE DIRECTION CAMERA SPACE
+		specular = pow(max(0.0, dot(reflect(l, n), E)), 5); // NOT VIEWDIR, IT SHOULD BE EYE DIRECTION CAMERA SPACE
 	//}
 
 	//float bias = 0.005;
@@ -119,7 +121,10 @@ void main(){
 	if(cosTheta < 0.0)
 		gl_FragColor.rgb = vec3(0, 0, 1);
 
-	
+	if(has_bump != 0){
+		//gl_FragColor.rgb = normalize(Normal_cameraspace);
+		gl_FragColor.rgb = bitangents;
+	}
 	
 	gl_FragColor.a = Tf;
 	

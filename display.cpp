@@ -26,15 +26,44 @@ void load_objects(){
 	int w, h;
 	glfwGetWindowSize(window, &w, &h);
 
-	for(int j=0; j<10; j++){
+	/*for(int j=0; j<10; j++){
 		for(int i=0; i<15; i++){
 			brick = new Rigidbody("objects/brick", 30, btVector3(-5+2.5*j + (i%2)*1.25, 0.75+1.35*i , 25 * 0.03 ), CUBE, 1, 0.68, 1);
-			brick->attach_loader(loader);
+			brick->attach_loader(loader);	
 			brick->set_scale(0.1);
 			brick->load_obj();
 			world->addObject(brick);
 		}
 	}
+
+	brick = new Rigidbody("objects/brick", 30, btVector3(80, 2, -100), CUBE, 1, 0.68, 1);
+	brick->attach_loader(loader);
+	brick->set_scale(1);
+	brick->load_obj();
+	world->addObject(brick);
+
+	brick = new Rigidbody("objects/brick", 30, btVector3(80, 2, -105), CUBE, 1, 0.68, 1);
+	brick->attach_loader(loader);
+	brick->set_scale(1);
+	brick->load_obj();
+	world->addObject(brick);
+	brick->rotate(btVector3(0, 1, 0), 90);
+
+	brick = new Rigidbody("objects/brick", 30, btVector3(80, 2, -110), CUBE, 1, 0.68, 1);
+	brick->attach_loader(loader);
+	brick->set_scale(1);
+	brick->load_obj();
+	world->addObject(brick);
+	brick->rotate(btVector3(0, 1, 0), 180);
+
+	brick = new Rigidbody("objects/brick", 30, btVector3(80, 2, -115), CUBE, 1, 0.68, 1);
+	brick->attach_loader(loader);
+	brick->set_scale(1);
+	brick->load_obj();
+	world->addObject(brick);
+	brick->rotate(btVector3(0, 1, 0), 270);
+	
+
 
 	box = new Rigidbody("objects/box", 0, btVector3(0, 2.0, 30), CONCAVE);
 	box->attach_loader(loader);
@@ -63,14 +92,7 @@ void load_objects(){
 	dei_collider->set_scale(0.1);
 	dei_collider->load_obj();
 	world->addCollider(dei_collider);
-
-	/*
-	Rigidbody* cylinder = new Rigidbody("objects/cylinder", 5, btVector3(30,0,0));
-	cylinder->attach_loader(loader);
-	cylinder->set_scale(10);
-	cylinder->load_obj();
-	world->addObject(cylinder);
-	*/
+	
 
 	btVector3 obs_pos = world->camera->get_obs_pos();
 	sphere_aim = new Object("objects/sphere");
@@ -81,6 +103,13 @@ void load_objects(){
 	sphere_aim->is_static = true;
 	world->addObject(sphere_aim);
 
+*/
+	
+	Rigidbody* cylinder = new Rigidbody("objects/cylinder", 5, btVector3(30,0,0));
+	cylinder->attach_loader(loader);
+	cylinder->set_scale(1);
+	cylinder->load_obj();
+	world->addObject(cylinder);
 
 }
 
@@ -143,5 +172,6 @@ void display(float elapsed){
 	glfwGetWindowSize(window, &w, &h);
 
 	request_throw();
+	//brick->rotate(btVector3(0, 1, 0), 1);
 	world->update(elapsed);	
 }

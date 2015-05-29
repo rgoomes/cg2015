@@ -40,8 +40,8 @@ Model* Loader::load_model(string path){
 	uvs.clear();
 	out_vertices.clear();
 	out_normals.clear();
-	out_tangents.clear();
-	out_bitangents.clear();
+	//out_tangents.clear();
+	//out_bitangents.clear();
 	out_uvs.clear();
 	faces.clear();
 	all_faces.clear();
@@ -146,8 +146,8 @@ Group Loader::load_group(string group_name){
 		out_vertices.push_back(vertices	[faces[i].v_index[2] - 1]);
 		out_normals.push_back(normals 	[faces[i].n_index[2] - 1]);
 		out_uvs.push_back(uvs 			[faces[i].t_index[2] - 1]);
-		calcTangentSpace(out_tangents, out_bitangents, out_vertices, out_uvs);
 	}
+	calcTangentSpace(out_tangents, out_bitangents, out_vertices, out_uvs);
 	
 	Group g;
 	g.program_id = get_shaders( "objects/textureVertexShader.glsl", "objects/textureFragmentShader.glsl" );
@@ -182,25 +182,33 @@ Group Loader::load_group(string group_name){
 	
 	glGenBuffers(1, &g.vertexbuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, g.vertexbuffer);
-	glBufferData(GL_ARRAY_BUFFER, out_vertices.size()*sizeof(Point), out_vertices.data(), GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, out_vertices.size()*sizeof(Point), out_vertices.data(), GL_STATIC_DRAW);
 	
 	glGenBuffers(1, &g.uvbuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, g.uvbuffer);
-	glBufferData(GL_ARRAY_BUFFER, out_uvs.size()*sizeof(Point2), out_uvs.data(), GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, out_uvs.size()*sizeof(Point2), out_uvs.data(), GL_STATIC_DRAW);
 
 	glGenBuffers(1, &g.normalbuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, g.normalbuffer);
-	glBufferData(GL_ARRAY_BUFFER, out_normals.size()*sizeof(Point), out_normals.data(), GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, out_normals.size()*sizeof(Point), out_normals.data(), GL_STATIC_DRAW);
 
-	if(g.material.bump != 0){
+	//if(g.material.bump != 0){
 		glGenBuffers(1, &g.tangentbuffer);
 		glBindBuffer(GL_ARRAY_BUFFER, g.tangentbuffer);
-		glBufferData(GL_ARRAY_BUFFER, out_tangents.size()*sizeof(Point), out_tangents.data(), GL_DYNAMIC_DRAW);
+		
+		printf("Start\n");
+		for(int i=0; i<out_tangents.size(); i++)
+			printf("a %f %f %f\n", out_tangents[i].x, out_tangents[i].y, out_tangents[i].z );
+		printf("End %d\n", out_tangents.size());
+
+		glBufferData(GL_ARRAY_BUFFER, out_tangents.size()*sizeof(Point), out_tangents.data(), GL_STATIC_DRAW);
+		printf("%d\n", out_tangents.size());
 
 		glGenBuffers(1, &g.bitangentbuffer);
 		glBindBuffer(GL_ARRAY_BUFFER, g.bitangentbuffer);
-		glBufferData(GL_ARRAY_BUFFER, out_bitangents.size()*sizeof(Point), out_bitangents.data(), GL_DYNAMIC_DRAW);		
-	}
+		glBufferData(GL_ARRAY_BUFFER, out_bitangents.size()*sizeof(Point), out_bitangents.data(), GL_STATIC_DRAW);
+	//}
+	
 	
 	all_faces.insert(all_faces.end(),faces.begin(),faces.end());
 
@@ -279,43 +287,51 @@ void Loader::calcTangentSpace(
 	std::vector<Point> & vertices,
 	std::vector<Point2> & uvs
 ){
-	int i = vertices.size() - 1;
+	for(int i=0; i<vertices.size(); i+=3){
+		// vertices
+		glm::vec3 v0 = glm::vec3(vertices[i].x, vertices[i].y, vertices[i].z);
+		glm::vec3 v1 = glm::vec3(vertices[i+1].x, vertices[i+1].y, vertices[i+1].z);
+		glm::vec3 v2 = glm::vec3(vertices[i+2].x, vertices[i+2].y, vertices[i+2].z);
 
-	// vertices
-	glm::vec3 v0 = glm::vec3(vertices[i-2].x, vertices[i-2].y, vertices[i-2].z);
-	glm::vec3 v1 = glm::vec3(vertices[i-1].x, vertices[i-1].y, vertices[i-1].z);
-	glm::vec3 v2 = glm::vec3(vertices[ i ].x, vertices[ i ].y, vertices[ i ].z);
+		// UVs
+		glm::vec2 uv0 = glm::vec2(uvs[i].x, uvs[i].y);
+		glm::vec2 uv1 = glm::vec2(uvs[i+1].x, uvs[i+1].y);
+		glm::vec2 uv2 = glm::vec2(uvs[i+2].x, uvs[i+2].y);
 
-	// UVs
-	glm::vec2 uv0 = glm::vec2(uvs[i-2].x, uvs[i-2].y);
-	glm::vec2 uv1 = glm::vec2(uvs[i-1].x, uvs[i-1].y);
-	glm::vec2 uv2 = glm::vec2(uvs[ i ].x, uvs[ i ].y);
-	//printf("%f\n", uv2.y);
+		// Edges of the triangle : position delta
+		glm::vec3 deltaPos1 = v1-v0;
+		glm::vec3 deltaPos2 = v2-v0;
+		
+		// UV delta
+		glm::vec2 deltaUV1 = uv1-uv0;
+		glm::vec2 deltaUV2 = uv2-uv0;
+		// TODO: inverted uv.y
+		deltaUV1.y *= 1;
+		deltaUV2.y *= 1;
 
-	// Edges of the triangle : position delta
-	glm::vec3 deltaPos1 = v1-v0;
-	glm::vec3 deltaPos2 = v2-v0;
+
+		float r = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV1.y * deltaUV2.x);
+		glm::vec3 tg  = (deltaPos1 - deltaPos2)*r;
+		glm::vec3 btg = (deltaPos2 - deltaPos1)*r;
+
+		Point tangent = {tg.x, tg.y, tg.z};
+		Point bitangent = {btg.x, btg.y, btg.z};
+		//printf("a %f %f %f\n", tangent.x, tangent.y, tangent.z);
+
+		tangents.push_back(tangent);
+		tangents.push_back(tangent);
+		tangents.push_back(tangent);
+		int l = tangents.size()-1;
+		//printf("b %f %f %f\n", tangents[l].x, tangents[l].y, tangents[l].z);
+
+		bitangents.push_back(bitangent);
+		bitangents.push_back(bitangent);
+		bitangents.push_back(bitangent);
+		//printf("%f %f %f\n", bitangent.x, bitangent.y, bitangent.z);
+
+	}
 	
-	// UV delta
-	glm::vec2 deltaUV1 = uv1-uv0;
-	glm::vec2 deltaUV2 = uv2-uv0;
 
-
-	float r = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV1.y * deltaUV2.x);
-	glm::vec3 tg = (deltaPos1    - deltaPos2 )*r;
-	glm::vec3 btg = (deltaPos2   - deltaPos1 )*r;
-
-	Point tangent = {tg.x, tg.y, tg.z};
-	Point bitangent = {btg.x, btg.y, btg.z};
-
-	tangents.push_back(tangent);
-	tangents.push_back(tangent);
-	tangents.push_back(tangent);
-	//printf("%f %f %f\n", tangent.x, tangent.y, tangent.z);
-
-	bitangents.push_back(bitangent);
-	bitangents.push_back(bitangent);
-	bitangents.push_back(bitangent);
 
 	// See "Going Further"
 	/*for (unsigned int i=0; i<vertices.size(); i+=1 )

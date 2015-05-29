@@ -16,6 +16,8 @@ varying vec3 LightDirection_tangentspace;
 varying vec3 Normal_cameraspace;
 varying vec3 EyeDirection_cameraspace;
 varying vec3 EyeDirection_tangentspace;
+varying vec3 tangents;
+varying vec3 bitangents;
 
 // Values that stay constant for the whole mesh.
 uniform mat4 MVP;
@@ -46,13 +48,16 @@ void main(){
 	vec3 vertexNormal_cameraspace = MV3 * vertexNormal_modelspace;
 	
 	mat3 TBN = transpose(mat3(
-		vertexTangent_cameraspace,
-		vertexBitangent_cameraspace,
+		vertexTangent_modelspace,
+		vertexBitangent_modelspace,
 		vertexNormal_cameraspace
 	)); // You can use dot products instead of building this matrix and transposing it. See References for details.
 
-	LightDirection_tangentspace = LightDirection_cameraspace;
-	EyeDirection_tangentspace = vec3(1,1,1);//TBN * EyeDirection_cameraspace;
+	tangents = vertexTangent_cameraspace;
+	bitangents = vertexBitangent_cameraspace;
+
+	LightDirection_tangentspace = TBN * LightDirection_cameraspace;
+	EyeDirection_tangentspace = TBN * EyeDirection_cameraspace;
 
 }
 
