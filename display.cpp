@@ -9,6 +9,7 @@ Rigidbody *dei_collider;
 Rigidbody *box;
 Object *sphere_aim;
 Rigidbody *brick;
+Rigidbody *ramp;
 
 float mvp[4][4], a=0;
 GLFWwindow* window;
@@ -45,13 +46,22 @@ void load_objects(){
 		}
 	}
 
+	ramp = new Rigidbody("objects/ramp", 0, btVector3(190, 2.3, -66), CONCAVE);
+	ramp->attach_loader(loader);
+	ramp->set_scale(0.1);
+	ramp->load_obj();
+	ramp->rotate(btVector3(0, 1, 0), -120);
+	ramp->rotate(btVector3(0, 0, 1), 4);
+	ramp->rotate(btVector3(1, 0, 0), -5);
+	world->addObject(ramp);
+
 	box = new Rigidbody("objects/box", 0, btVector3(0, 2.0, 30), CONCAVE);
 	box->attach_loader(loader);
 	box->set_scale(0.2);
 	box->load_obj();
 	world->addObject(box);
 
-	box = new Rigidbody("objects/box", 0, btVector3(203, 2.7, -56), CONCAVE);
+	box = new Rigidbody("objects/box2", 0, btVector3(203, 2.7, -56), CONCAVE);
 	box->attach_loader(loader);
 	box->set_scale(0.2);
 	box->load_obj();
