@@ -122,7 +122,7 @@ void throw_ball(){
 
 	btRigidBody* r = sphere->get_rigidbody();
 	r->setLinearVelocity(world->camera->get_direction() * 100);
-
+	ball_count++;
 }
 
 void get_mvp(float mvp[4][4]){
@@ -136,13 +136,11 @@ int last_throw_state = GLFW_RELEASE;
 bool throwing = false;
 
 void request_throw(){	
-	if(throwing){
-		printf("\033[A\033[2KBall count: %d\n", ++ball_count);
+	if(throwing)
 		throw_ball();
-	}
 	
 	int cur_state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1) | glfwGetKey(window, GLFW_KEY_T);
-	if(cur_state == GLFW_PRESS && cur_state != last_throw_state)
+	if(cur_state == GLFW_PRESS && cur_state != last_throw_state && world->camera->get_game_state() != POINT_TO_POINT)
 		throwing = true;
 	else
 		throwing = false;
@@ -237,10 +235,13 @@ void init_sizes(int w, int h){
 	btn_size_y = h * BUTTON_HEIGHT / IMAGE_HEIGHT / 2.0;
 }
 
-void timer_update(){
+void timer_update(int w, int h){
 	if(world->timer->ticking()){
 		// TODO: DISPLAY ELAPSED TIME
-		printf("\033[A\033[2KElapsed: %dsec\n", (int)world->timer->elapsed());
+
+		enable2d(w, h);
+		printf("\033[A\033[2KElapsed: %.2lfsec\n", world->timer->elapsed());
+		disable2d();
 	} else if(world->camera->get_game_state() == GAME_STATE1)
 		world->timer->start();
 }
@@ -249,13 +250,12 @@ void display(float elapsed){
 	int w, h;
 	glfwGetWindowSize(window, &w, &h);
 
-	timer_update();
-	
+	timer_update(w, h);
 	world->update(elapsed);
 
 	if(world->camera->get_game_state() != NO_GAME_STATE){
-		request_throw();
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+		request_throw();
 	} else {
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
