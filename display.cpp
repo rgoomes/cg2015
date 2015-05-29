@@ -48,11 +48,6 @@ void load_objects(){
 	printf("OK\n");
 	}
 
-	box = new Rigidbody("objects/box", 0, btVector3(0, 2.0, 30), CONCAVE);
-	box->attach_loader(loader);
-	box->set_scale(0.2);
-	box->load_obj();
-	world->addObject(box);
 
 	box = new Rigidbody("objects/box", 0, btVector3(203, 2.7, -56), CONCAVE);
 	box->attach_loader(loader);
@@ -63,6 +58,11 @@ void load_objects(){
 	//box->rotate(btVector3(0, 0, 1), 0);
 	world->addObject(box);
 
+	box = new Rigidbody("objects/box", 0, btVector3(0, 2.0, 30), CONCAVE);
+	box->attach_loader(loader);
+	box->set_scale(0.2);
+	box->load_obj();
+	world->addObject(box);
 
 	dei = new Object("objects/dei");
 	dei->attach_loader(loader);
@@ -112,6 +112,8 @@ void add_lights(){
 
 }
 
+vector<Rigidbody*> balls;
+
 void throw_ball(){
 	btVector3 obs_pos = world->camera->get_obs_pos();
 	btVector3 n = world->camera->get_direction();
@@ -122,6 +124,8 @@ void throw_ball(){
 	sphere->set_scale(0.05);
 	sphere->load_obj();
 	world->addObject(sphere);
+
+	balls.push_back(sphere);
 
 	btRigidBody* r = sphere->get_rigidbody();
 	r->setLinearVelocity(world->camera->get_direction() * 100);
@@ -248,7 +252,7 @@ void timer_update(int w, int h){
 	} else if(world->camera->get_game_state() == GAME_STATE1 || 
 			  world->camera->get_game_state() == GAME_STATE2)
 	
-		world->timer->start();
+	world->timer->start();
 }
 
 void display(float elapsed){
@@ -257,6 +261,13 @@ void display(float elapsed){
 
 	timer_update(w, h);
 	world->update(elapsed);
+
+	btVector3 pos = box->get_position();
+	for(int i=0; i<(int) balls.size(); i++){
+		pos = balls[i]->get_position();
+		if(box->contains(balls[i]))
+			printf("INSIDE %d\n", i);
+	}
 
 	if(world->camera->get_game_state() != NO_GAME_STATE){
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);

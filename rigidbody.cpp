@@ -20,6 +20,20 @@ Rigidbody::Rigidbody(string path, btScalar mass, btVector3 pos, ColliderType col
 	this->friction = friction;
 }
 
+bool Rigidbody::contains(Rigidbody* r){
+	btScalar radius = 3.0;
+	/*btVector3 pos;
+	shape->getBoundingSphere(pos, radius);*/
+	
+	btVector3 dif = (get_position() - r->get_position());
+	return dif.length() < radius;
+}
+
+btVector3 Rigidbody::get_position(){
+	rigidbody->getMotionState()->getWorldTransform(trans);
+	return trans.getOrigin();
+}
+
 btCollisionShape* Rigidbody::get_mesh_object(double w, double h, double d){
 	btCollisionShape* shape;
 
@@ -69,7 +83,7 @@ void Rigidbody::load_obj(){
 	has_texture = true;
 	Object::load_obj();
 
-	btCollisionShape* shape = get_mesh_object(w, h, d);
+	shape = get_mesh_object(w, h, d);
 	btQuaternion rot(0, 0, 0, 1);
 	//rot.setRotation(btVector3(0, 0, 1), 1.2);
 	btDefaultMotionState* motion_state = new btDefaultMotionState(btTransform(rot, btVector3(x, y, z)));

@@ -20,8 +20,11 @@ class Rigidbody : public Object{
 		void render_texture();
 		virtual string type(){return "rigidbody";}
 		void rotate(btVector3 up, float degree);
+		btVector3 get_position();
+		bool contains(Rigidbody* r);
 	private:
 		btRigidBody* rigidbody;
+		btCollisionShape* shape;
 		btCollisionShape* get_mesh_object(double w=0, double h=0, double d=0);
 		btTransform* get_transform();
 		btTransform trans;

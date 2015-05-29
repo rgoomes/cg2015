@@ -29,8 +29,8 @@ class World{
 		Timer* timer;
 
 	private:
-		btDynamicsWorld* physicsWorld;
 		vector<Object*> objects;
+		btDynamicsWorld* physicsWorld;
 		GLFWwindow* window;
 		int window_width, window_height;
 		GLuint renderedTexture;
