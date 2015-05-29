@@ -48,7 +48,7 @@ float random(vec3 seed, int i){
 void main(){
 
 	// Light emission properties
-	vec3 LightColor = vec3(1,1,1);
+	vec3 LightColor = vec3(1,1,0.8);
 	// Material properties
 	vec3 MaterialDiffuseColor;
 	if(has_texture != 0)
