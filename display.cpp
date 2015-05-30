@@ -63,6 +63,7 @@ void load_objects(){
 	box->attach_loader(loader);
 	box->set_scale(0.3);
 	box->load_obj();
+	box->rotate(btVector3(0, 1, 0), 90);
 	world->addObject(box);
 
 	box2 = new Rigidbody("objects/box2", 0, btVector3(204, 2.7, -58.5), CONCAVE);
