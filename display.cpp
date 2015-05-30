@@ -60,9 +60,9 @@ void load_objects(){
 	ramp->rotate(btVector3(1, 0, 0), -5);
 	world->addObject(ramp);
 
-	box = new Rigidbody("objects/box", 0, btVector3(0, 2.0, 30), CONCAVE);
+	box = new Rigidbody("objects/box", 0, btVector3(7.5, 3.0, 20), CONCAVE);
 	box->attach_loader(loader);
-	box->set_scale(0.2);
+	box->set_scale(0.3);
 	box->load_obj();
 	world->addObject(box);
 
@@ -124,6 +124,7 @@ void add_lights(){
 }
 
 vector<Rigidbody*> balls;
+vector<double> times;
 
 void throw_ball(){
 	btVector3 obs_pos = world->camera->get_obs_pos();
@@ -137,6 +138,7 @@ void throw_ball(){
 	world->addObject(sphere);
 
 	balls.push_back(sphere);
+	times.push_back(0);
 
 	btRigidBody* r = sphere->get_rigidbody();
 	r->setLinearVelocity(world->camera->get_direction() * 100);
@@ -266,22 +268,41 @@ void timer_update(int w, int h){
 		world->timer->start();
 }
 
+void inside_box(float elapsed){
+	// TODO: REMOVE BALLS FROM VECTORS THAT STOPED AND ARE 
+	// TOO FAR FROM BOXES
+
+	for(int i = 0; i < (int)balls.size(); i++){
+		if((world->camera->get_game_state() == GAME_STATE1 && box2->contains(balls[i])) || 
+		   (world->camera->get_game_state() == GAME_STATE2 &&  box->contains(balls[i]))){
+			
+			times[i] += elapsed;
+
+			if(times[i] > 2){ // INSIDE FOR 2 SECONDS
+				balls.erase(balls.begin() + i);
+				times.erase(times.begin() + i);
+
+				//printf("INSIDE %d\n", i);
+				if(world->camera->get_game_state() == GAME_STATE1)
+					world->camera->change_state(window, btVector3(0, 20.6, -100));
+				else if(world->camera->get_game_state() == GAME_STATE2){
+					world->camera->set_camera_state(FREE_CAMERA);
+					world->camera->change_state(window, btVector3(-13.7, 10.6, 140));
+				}
+			}
+		} else{
+			times[i] = 0;
+		}
+	}
+}
+
 void display(float elapsed){
 	int w, h;
 	glfwGetWindowSize(window, &w, &h);
 
 	timer_update(w, h);
 	world->update(elapsed);
-
-	//btVector3 pos = box->get_position();
-	for(int i=0; i<(int) balls.size(); i++){
-		//pos = balls[i]->get_position();
-		if(box->contains(balls[i]) || box2->contains(balls[i])){
-			printf("INSIDE %d\n", i);
-
-			break;
-		}
-	}
+	inside_box(elapsed);
 
 	if(world->camera->get_game_state() != NO_GAME_STATE){
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
