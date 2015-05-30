@@ -6,7 +6,7 @@ Rigidbody *sphere;
 Rigidbody *chair;
 Object *dei;
 Rigidbody *dei_collider;
-Rigidbody *box;
+Rigidbody *box, *box2;
 Object *sphere_aim;
 Rigidbody *brick;
 Rigidbody *ramp;
@@ -39,7 +39,7 @@ void load_objects(){
 	for(int depth =0; depth<3; depth++){
 		for(int j=0; j<10; j++){
 			for(int i=0; i<15; i++){
-				brick = new Rigidbody("objects/brick", 50, btVector3(-5+2.42*j + (i%2)*1.25, 0.64+1.32*i , 25 * 0.03 + depth * 1.15), CUBE, 1.212, 0.66, 0.5005, 0.7, 1);
+				brick = new Rigidbody("objects/brick", 50, btVector3(-5+2.42*j + (i%2)*1.25, 0.64+1.32*i , 25 * 0.03 + depth * 1.15), CUBE, 1.212, 0.66, 0.5005, 0.7, 0.9);
 				brick->attach_loader(loader);
 				brick->set_scale(0.1);
 				brick->load_obj();
@@ -48,6 +48,9 @@ void load_objects(){
 		}
 	}
 
+	
+	// 190, 2.3, -66
+	//ramp = new Rigidbody("objects/ramp", 0, btVector3(175, 4, -73.5), CONCAVE);
 	ramp = new Rigidbody("objects/ramp", 0, btVector3(190, 2.3, -66), CONCAVE);
 	ramp->attach_loader(loader);
 	ramp->set_scale(0.1);
@@ -63,20 +66,14 @@ void load_objects(){
 	box->load_obj();
 	world->addObject(box);
 
-	box = new Rigidbody("objects/box2", 0, btVector3(203, 2.7, -56), CONCAVE);
-	box->attach_loader(loader);
-	box->set_scale(0.2);
-	box->load_obj();
-	box->rotate(btVector3(0, 1, 0), 45);
-	box->rotate(btVector3(1, 0, 0), 5);
-	//box->rotate(btVector3(0, 0, 1), 0);
-	world->addObject(box);
-
-	box = new Rigidbody("objects/box", 0, btVector3(0, 2.0, 30), CONCAVE);
-	box->attach_loader(loader);
-	box->set_scale(0.2);
-	box->load_obj();
-	world->addObject(box);
+	box2 = new Rigidbody("objects/box2", 0, btVector3(204, 2.7, -58.5), CONCAVE);
+	box2->attach_loader(loader);
+	box2->set_scale(0.2);
+	box2->load_obj();
+	//box2->rotate(btVector3(0, 1, 0), 45);
+	//box2->rotate(btVector3(1, 0, 0), 5);
+	//box2->rotate(btVector3(0, 0, 1), 0);
+	world->addObject(box2);
 
 	dei = new Object("objects/dei");
 	dei->attach_loader(loader);
@@ -266,7 +263,7 @@ void timer_update(int w, int h){
 	} else if(world->camera->get_game_state() == GAME_STATE1 || 
 			  world->camera->get_game_state() == GAME_STATE2)
 	
-	world->timer->start();
+		world->timer->start();
 }
 
 void display(float elapsed){
@@ -276,11 +273,14 @@ void display(float elapsed){
 	timer_update(w, h);
 	world->update(elapsed);
 
-	btVector3 pos = box->get_position();
+	//btVector3 pos = box->get_position();
 	for(int i=0; i<(int) balls.size(); i++){
-		pos = balls[i]->get_position();
-		if(box->contains(balls[i]))
+		//pos = balls[i]->get_position();
+		if(box->contains(balls[i]) || box2->contains(balls[i])){
 			printf("INSIDE %d\n", i);
+
+			break;
+		}
 	}
 
 	if(world->camera->get_game_state() != NO_GAME_STATE){

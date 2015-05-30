@@ -40,7 +40,7 @@ class Object {
 		
 		float x, y, z, s;
 		void move(float _x, float _y, float _z);
-		void rotate(btVector3 up, float degree);
+		virtual void rotate(btVector3 up, float degree);
 		virtual string type(){return "object";}
 
 	private:
