@@ -43,6 +43,7 @@ class Object {
 		virtual void rotate(btVector3 up, float degree);
 		virtual string type(){return "object";}
 
+		Model* model;
 	private:
 
 		bool load_obj_texture();
@@ -53,7 +54,6 @@ class Object {
 		void get_matrix(float m[16]);
 		void set_material(Group& g, Material& m);
 	protected:
-		Model* model;
 
 		GLuint shadowmap;
 		float depthMVP[4][4];

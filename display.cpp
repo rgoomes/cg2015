@@ -97,7 +97,7 @@ void load_objects(){
 
 	btVector3 obs_pos = world->camera->get_obs_pos();
 	sphere_aim = new Object("objects/sphere");
-	sphere_aim->move(obs_pos.getX(), obs_pos.getY(), obs_pos.getZ());
+	sphere_aim->move(0,0,0);
 	sphere_aim->attach_loader(loader);
 	sphere_aim->set_scale(0.05);
 	sphere_aim->load_obj();
@@ -129,9 +129,12 @@ vector<double> times;
 void throw_ball(){
 	btVector3 obs_pos = world->camera->get_obs_pos();
 	btVector3 n = world->camera->get_direction();
+	btVector3 right = world->camera->get_right();
 
 	n.normalize();
-	sphere = new Rigidbody("objects/sphere", 5, btVector3(obs_pos.getX() + n.getX()*10 , obs_pos.getY() + n.getY()*10, obs_pos.getZ() + n.getZ()*10 ), CONVEX, 0,0,0, 0.80);
+	right.normalize();
+	btVector3 inc = n - right / 5;
+	sphere = new Rigidbody("objects/sphere", 5, btVector3(obs_pos.getX() + inc.getX()*10 , obs_pos.getY() + inc.getY()*10, obs_pos.getZ() + inc.getZ()*10 ), CONVEX, 0,0,0, 0.80);
 	sphere->attach_loader(loader);
 	sphere->set_scale(0.05);
 	sphere->load_obj();
@@ -141,7 +144,7 @@ void throw_ball(){
 	times.push_back(0);
 
 	btRigidBody* r = sphere->get_rigidbody();
-	r->setLinearVelocity(world->camera->get_direction() * 100);
+	r->setLinearVelocity( (n + right / 20) * 100);
 	ball_count++;
 }
 

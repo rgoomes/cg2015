@@ -139,6 +139,13 @@ void World::update(float elapsed){
 
 	for(i=0; i<(int)objects.size();  i++){
 		if(objects[i]->is_static){
+			continue;
+		}
+
+		objects[i]->render_texture();
+	}
+	for(i=0; i<(int)objects.size();  i++){
+		if(objects[i]->is_static){
 			btVector3 obs_pos = camera->get_obs_pos();
 			btVector3 n = camera->get_direction();
 			btVector3 r = camera->get_right();
@@ -147,12 +154,18 @@ void World::update(float elapsed){
 
 			n -= r / 5;
 			objects[i]->move(obs_pos.getX() + n.getX()*10 , obs_pos.getY() + n.getY()*10, obs_pos.getZ() + n.getZ()*10);
+			for(int j=0; j<(int)objects[i]->model->groups.size(); j++){
+				objects[i]->model->groups[j].material.Tf = 0.5;
+			}
 		}
 
-		objects[i]->render_texture();
-	}
-	for(i=0; i<(int)objects.size();  i++){
 		objects[i]->render_glass();
+
+		if(objects[i]->is_static){
+			for(int j=0; j < (int)objects[i]->model->groups.size(); j++){
+				objects[i]->model->groups[j].material.Tf = 1;
+			}
+		}
 	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
