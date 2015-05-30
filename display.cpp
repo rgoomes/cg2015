@@ -50,8 +50,7 @@ void load_objects(){
 
 	
 	// 190, 2.3, -66
-	//ramp = new Rigidbody("objects/ramp", 0, btVector3(175, 4, -73.5), CONCAVE);
-	ramp = new Rigidbody("objects/ramp", 0, btVector3(190, 2.3, -66), CONCAVE);
+	ramp = new Rigidbody("objects/ramp", 0, btVector3(175, 4, -73.5), CONCAVE);
 	ramp->attach_loader(loader);
 	ramp->set_scale(0.1);
 	ramp->load_obj();
