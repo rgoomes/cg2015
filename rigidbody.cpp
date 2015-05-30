@@ -123,5 +123,7 @@ btTransform* Rigidbody::get_transform(){
 
 void Rigidbody::rotate(btVector3 up, float degree){
 	Object::rotate(up, degree);
-	rigidbody->getMotionState()->setWorldTransform(trans);
+	btMotionState* ms = rigidbody->getMotionState();
+	ms->setWorldTransform(trans);
+	rigidbody->setMotionState(ms);
 }

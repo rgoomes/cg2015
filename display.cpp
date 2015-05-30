@@ -39,16 +39,15 @@ void load_objects(){
 	for(int depth =0; depth<3; depth++){
 		for(int j=0; j<10; j++){
 			for(int i=0; i<15; i++){
-				brick = new Rigidbody("objects/brick", 30, btVector3(-5+2.42*j + (i%2)*1.25, 0.64+1.32*i , 25 * 0.03 + depth * 1), CUBE, 1.212, 0.66, 0.5005, 0.7, 1);
+				brick = new Rigidbody("objects/brick", 50, btVector3(-5+2.42*j + (i%2)*1.25, 0.64+1.32*i , 25 * 0.03 + depth * 1.15), CUBE, 1.212, 0.66, 0.5005, 0.7, 1);
 				brick->attach_loader(loader);
 				brick->set_scale(0.1);
 				brick->load_obj();
 				world->addObject(brick);
 			}
 		}
-	printf("OK\n");
 	}
-	
+
 	ramp = new Rigidbody("objects/ramp", 0, btVector3(190, 2.3, -66), CONCAVE);
 	ramp->attach_loader(loader);
 	ramp->set_scale(0.1);
