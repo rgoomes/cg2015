@@ -36,10 +36,10 @@ void load_objects(){
 	int w, h;
 	glfwGetWindowSize(window, &w, &h);
 
-	for(int depth =0; depth<3; depth++){
+	for(int depth =0; depth<1; depth++){
 		for(int j=0; j<10; j++){
 			for(int i=0; i<15; i++){
-				brick = new Rigidbody("objects/brick", 50, btVector3(-5+2.42*j + (i%2)*1.25, 0.64+1.32*i , 25 * 0.03 + depth * 1.15), CUBE, 1.212, 0.66, 0.5005, 0.7, 0.9);
+				brick = new Rigidbody("objects/brick", 50, btVector3(-5+2.42*j + (i%2)*1.25, 0.64+1.32*i , 25 * 0.03 + depth * 1.1), CUBE, 1.212, 0.66, 0.5005, 0.7, 0.9);
 				brick->attach_loader(loader);
 				brick->set_scale(0.1);
 				brick->load_obj();

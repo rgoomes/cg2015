@@ -5,4 +5,5 @@ Ka 0.00 0.00 0.00
 Tf 1.00 1.00 1.00
 map_Kd brick.dds
 bump bricknormals.bmp
+Ns 5
 Ni 1.00
