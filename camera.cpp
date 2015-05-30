@@ -190,3 +190,7 @@ btVector3 Camera::get_obs_pos() {
 int Camera::get_game_state() {
 	return this->camera_state;
 }
+
+void Camera::set_camera_state(int new_state) {
+	this->camera_state = new_state;
+}

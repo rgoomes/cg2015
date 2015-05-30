@@ -60,6 +60,7 @@ class Camera{
 		btVector3 get_direction();
 		btVector3 get_right();
 		int get_game_state();
+		void set_camera_state(int new_state);
 
 };
 
