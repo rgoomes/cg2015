@@ -21,7 +21,7 @@ class Rigidbody : public Object{
 		virtual string type(){return "rigidbody";}
 		void rotate(btVector3 up, float degree);
 		btVector3 get_position();
-		bool contains(Rigidbody* r);
+		bool contains(Rigidbody* r, btScalar rd);
 	private:
 		btRigidBody* rigidbody;
 		btCollisionShape* shape;

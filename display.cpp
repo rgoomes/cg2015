@@ -36,7 +36,7 @@ void load_objects(){
 	int w, h;
 	glfwGetWindowSize(window, &w, &h);
 
-	for(int depth =0; depth<1; depth++){
+	for(int depth=0; depth<1; depth++){
 		for(int j=0; j<10; j++){
 			for(int i=0; i<15; i++){
 				brick = new Rigidbody("objects/brick", 50, btVector3(-5+2.42*j + (i%2)*1.25, 0.64+1.32*i , 25 * 0.03 + depth * 1.1), CUBE, 1.212, 0.66, 0.5005, 0.7, 0.9);
@@ -48,8 +48,6 @@ void load_objects(){
 		}
 	}
 
-	
-	// 190, 2.3, -66
 	ramp = new Rigidbody("objects/ramp", 0, btVector3(175, 4, -73.5), CONCAVE);
 	ramp->attach_loader(loader);
 	ramp->set_scale(0.1);
@@ -70,9 +68,9 @@ void load_objects(){
 	box2->attach_loader(loader);
 	box2->set_scale(0.2);
 	box2->load_obj();
-	//box2->rotate(btVector3(0, 1, 0), 45);
-	//box2->rotate(btVector3(1, 0, 0), 5);
-	//box2->rotate(btVector3(0, 0, 1), 0);
+	box2->rotate(btVector3(0, 1, 0), 45);
+	box2->rotate(btVector3(1, 0, 0), 5);
+	box2->rotate(btVector3(0, 0, 1), 0);
 	world->addObject(box2);
 
 	dei = new Object("objects/dei");
@@ -87,14 +85,6 @@ void load_objects(){
 	dei_collider->load_obj();
 	world->addCollider(dei_collider);
 
-	/*
-	Rigidbody* cylinder = new Rigidbody("objects/cylinder", 5, btVector3(30,0,0));
-	cylinder->attach_loader(loader);
-	cylinder->set_scale(10);
-	cylinder->load_obj();
-	world->addObject(cylinder);
-	*/
-
 	btVector3 obs_pos = world->camera->get_obs_pos();
 	sphere_aim = new Object("objects/sphere");
 	sphere_aim->move(0,0,0);
@@ -103,8 +93,6 @@ void load_objects(){
 	sphere_aim->load_obj();
 	sphere_aim->is_static = true;
 	world->addObject(sphere_aim);
-
-
 }
 
 void load_textures(){
@@ -120,7 +108,6 @@ void add_lights(){
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
 }
 
 vector<Rigidbody*> balls;
@@ -140,8 +127,10 @@ void throw_ball(){
 	sphere->load_obj();
 	world->addObject(sphere);
 
-	balls.push_back(sphere);
-	times.push_back(0);
+	//if(world->camera->get_game_state() != FREE_CAMERA){
+		balls.push_back(sphere);
+		times.push_back(0);
+	//}
 
 	btRigidBody* r = sphere->get_rigidbody();
 	r->setLinearVelocity( (n + right / 20) * 100);
@@ -272,12 +261,17 @@ void timer_update(int w, int h){
 }
 
 void inside_box(float elapsed){
-	// TODO: REMOVE BALLS FROM VECTORS THAT STOPED AND ARE 
-	// TOO FAR FROM BOXES
-
 	for(int i = 0; i < (int)balls.size(); i++){
-		if((world->camera->get_game_state() == GAME_STATE1 && box2->contains(balls[i])) || 
-		   (world->camera->get_game_state() == GAME_STATE2 &&  box->contains(balls[i]))){
+		bool in_box = box->contains(balls[i], 4.0);
+		bool in_box2 = box2->contains(balls[i], 3.0);
+
+		if((world->camera->get_game_state() == GAME_STATE1 && in_box) ||
+		   (world->camera->get_game_state() == GAME_STATE2 && in_box2)){
+
+			balls.erase(balls.begin() + i);
+			times.erase(times.begin() + i);
+		} else if((world->camera->get_game_state() == GAME_STATE1 && in_box2) || 
+		   		  (world->camera->get_game_state() == GAME_STATE2 && in_box)){
 			
 			times[i] += elapsed;
 

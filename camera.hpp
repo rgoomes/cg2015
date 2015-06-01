@@ -9,7 +9,7 @@
 #define speed 90.0f
 #define mouse_speed 0.002f
 
-#define ACC_DROP 0.03
+#define ACC_DROP 0.05
 #define ACC_DEFAULT 1
 
 #define POINT_TO_POINT -1

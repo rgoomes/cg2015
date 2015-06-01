@@ -84,7 +84,7 @@ void Camera::game_camera1(GLFWwindow* window, float elapsed){
 		if(acc > 0){
 			angle_game  += elapsed * last_state*acc*GAME_STATE1_ANGLE;
 			height_game -= elapsed * last_state*acc*GAME_STATE1_HEIGHT_DROP;
-			acc 		-= ACC_DROP;
+			acc 		-= elapsed;
 		} else {
 			trigged = false;
 			acc 	= ACC_DEFAULT;

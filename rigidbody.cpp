@@ -20,8 +20,8 @@ Rigidbody::Rigidbody(string path, btScalar mass, btVector3 pos, ColliderType col
 	this->friction = friction;
 }
 
-bool Rigidbody::contains(Rigidbody* r){
-	btScalar radius = 3.0;
+bool Rigidbody::contains(Rigidbody* r, btScalar rd){
+	btScalar radius = rd;
 	/*btVector3 pos;
 	shape->getBoundingSphere(pos, radius);*/
 	
