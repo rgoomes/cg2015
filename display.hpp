@@ -15,6 +15,9 @@
 #include "rigidbody.hpp"
 #include "loader.hpp"
 
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
 class World;
 class Object;
 class Rigidbody;
@@ -26,5 +29,6 @@ void set_environment(GLFWwindow* _window, World* _world, Loader* _loader);
 void display(float elapsed);
 void get_render_buffer();
 void init_sizes(int w, int h);
+void init_freetype();
 
 #endif

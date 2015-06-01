@@ -87,6 +87,7 @@ int main(int argc, char **argv){
 	load_textures();
 	add_lights();
 	init_sizes(SCREEN_WIDTH, SCREEN_HEIGHT);
+	init_freetype();
 
 	last_tick = glfwGetTime();
 	

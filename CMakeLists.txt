@@ -35,6 +35,9 @@ if(${BULLET_FOUND})
 	link_libraries(${BULLET_LIBRARIES})
 endif()
 
+find_package(Freetype REQUIRED)
+include_directories(${FREETYPE_INCLUDE_DIRS})
+
 #########################################################
 # Include Files
 #########################################################
@@ -54,4 +57,4 @@ add_executable(main ${src})
 
 file (GLOB_RECURSE PROJECT_SOURCES "*.cpp")
 
-target_link_libraries(main ${GLFW_LIBRARIES} ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} ${CMAKE_THREAD_LIBS_INIT} ${EXTRA_FLAGS} ${BULLET_LIBRARIES} )
+target_link_libraries(main ${GLFW_LIBRARIES} ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} ${CMAKE_THREAD_LIBS_INIT} ${EXTRA_FLAGS} ${BULLET_LIBRARIES} ${FREETYPE_LIBRARIES})
