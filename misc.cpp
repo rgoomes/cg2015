@@ -2,15 +2,6 @@
 #include "misc.hpp"
 
 #include <GL/glu.h>
-#include <GL/glut.h>
-#include <GL/freeglut.h>
-
-void display_text(char *string, GLfloat x, GLfloat y){
-	glRasterPos2f(x, y);
-
-	while(*string)
-		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, *string++);
-}
 
 void mult_matrix(float r[4][4], float a[4][4], float b[4][4]){
 	int i, j, k;

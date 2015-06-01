@@ -156,7 +156,6 @@ void request_throw(){
 			|| (world->camera->get_game_state() != GAME_STATE1))
 
 		throw_ball();
-	
 	}
 	
 	int cur_state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1) | glfwGetKey(window, GLFW_KEY_T);
@@ -287,7 +286,6 @@ void inside_box(float elapsed){
 				balls.erase(balls.begin() + i);
 				times.erase(times.begin() + i);
 
-				//printf("INSIDE %d\n", i);
 				if(world->camera->get_game_state() == GAME_STATE1)
 					world->camera->change_state(window, btVector3(0, 20.6, -100));
 				else if(world->camera->get_game_state() == GAME_STATE2){

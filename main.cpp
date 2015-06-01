@@ -2,7 +2,7 @@
 #include "main.hpp"
 #include "display.hpp"
 
-#define SCREEN_SIZE_CUT 1.5f
+#define SCREEN_SIZE_CUT 1.2f
 
 using namespace std;
 
@@ -27,7 +27,6 @@ void monitor_resolution(int *w, int *h){
 }
 
 void opengl_init(){
-
 	glfwInit();
 	monitor_resolution			(&SCREEN_WIDTH, &SCREEN_HEIGHT);
 	glfwWindowHint				(GLFW_SAMPLES, 4);
@@ -38,7 +37,6 @@ void opengl_init(){
  	glfwSetInputMode			(main_window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
  	
 	glfwMakeContextCurrent		(main_window);
-	//glfwSetInputMode			(main_window, GLFW_STICKY_KEYS, GL_TRUE);
 	glfwSetCursorPos			(main_window, SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
 
 	glEnable					(GL_DEPTH_TEST);
