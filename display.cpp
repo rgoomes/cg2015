@@ -127,10 +127,10 @@ void throw_ball(){
 	sphere->load_obj();
 	world->addObject(sphere);
 
-	//if(world->camera->get_game_state() != FREE_CAMERA){
+	if(world->camera->get_game_state() != FREE_CAMERA){
 		balls.push_back(sphere);
 		times.push_back(0);
-	//}
+	}
 
 	btRigidBody* r = sphere->get_rigidbody();
 	r->setLinearVelocity( (n + right / 20) * 100);
@@ -148,8 +148,16 @@ int last_throw_state = GLFW_RELEASE;
 bool throwing = false;
 
 void request_throw(){	
-	if(throwing)
+	if(throwing){
+		btVector3 box_pos(204, 2.7, -58.5);
+		double dist_to_box = (world->camera->obs_pos-box_pos).length();
+
+		if((world->camera->get_game_state() == GAME_STATE1 && dist_to_box > 100) 
+			|| (world->camera->get_game_state() != GAME_STATE1))
+
 		throw_ball();
+	
+	}
 	
 	int cur_state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1) | glfwGetKey(window, GLFW_KEY_T);
 	if(cur_state == GLFW_PRESS && cur_state != last_throw_state && world->camera->get_game_state() != POINT_TO_POINT)
