@@ -58,6 +58,8 @@ class Loader{
 		vector<Face> faces;
 		vector<Face> all_faces;
 		vector<Point> vertices;
+		vector<glm::vec3> v_id_tangent;
+		vector<glm::vec3> v_id_bitangent;
 		map<string, Material> materials;
 		string texture_path, path, obj_path, name, mtl_path;
 		string cur_material;
@@ -68,7 +70,7 @@ class Loader{
 		Model* load_model(string path);
 		Group load_group(string group_name);
 		void load_mtl(string path, string name);
-		void calcTangentSpace(std::vector<Point> & tangents, std::vector<Point> & bitangents, std::vector<Point> & vertices, std::vector<Point2> & uvs);
+		void calcTangentSpace(std::vector<Point> & tangents, std::vector<Point> & bitangents, std::vector<Point> & vertices, std::vector<Point2> & uvs, std::vector<int>& v_id);
 		void init_material(Material& m);
 		void set_material_ids(Group &g, Material& m);
 };

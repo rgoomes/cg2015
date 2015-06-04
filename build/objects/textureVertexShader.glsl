@@ -30,10 +30,11 @@ uniform int has_texture;
 void main(){
 	// Output position of the vertex, in clip space : MVP * position
 	
-	vertPos = normalize(V * M * vec4(vertexPosition_modelspace+vec3(0,0,0), 1.0)).xyz;
-
-	EyeDirection_cameraspace = vec3(0,0,0) - ( V * vec4(vertexPosition_modelspace,1)).xyz;
+	vec3 vertexPosition_cameraspace = ( V * M * vec4(vertexPosition_modelspace,1)).xyz;
+	EyeDirection_cameraspace = vec3(0,0,0) - vertexPosition_cameraspace;
+	
 	LightDirection_cameraspace = (V * vec4(-LightInvDirection_worldspace, 0)).xyz;
+	
 	Normal_cameraspace = (V * M * vec4(vertexNormal_modelspace, 0)).xyz;
 
 	gl_Position =  MVP * vec4(vertexPosition_modelspace,1);
@@ -47,9 +48,10 @@ void main(){
 	vec3 vertexBitangent_cameraspace = MV3 * vertexBitangent_modelspace;
 	vec3 vertexNormal_cameraspace = MV3 * vertexNormal_modelspace;
 	
+	vertexBitangent_cameraspace = -cross(vertexTangent_cameraspace, vertexNormal_cameraspace);
 	mat3 TBN = transpose(mat3(
-		vertexTangent_modelspace,
-		vertexBitangent_modelspace,
+		vertexTangent_cameraspace,
+		vertexBitangent_cameraspace,
 		vertexNormal_cameraspace
 	)); // You can use dot products instead of building this matrix and transposing it. See References for details.
 
@@ -58,6 +60,7 @@ void main(){
 
 	LightDirection_tangentspace = TBN * LightDirection_cameraspace;
 	EyeDirection_tangentspace = TBN * EyeDirection_cameraspace;
+
 
 }
 

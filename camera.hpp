@@ -6,7 +6,7 @@
 #include <btBulletDynamicsCommon.h>
 #include <utility>
 
-#define speed 30.0f
+#define speed 10.0f
 #define mouse_speed 0.002f
 
 #define ACC_DROP 0.03

@@ -26,7 +26,7 @@ void load_objects(){
 	int w, h;
 	glfwGetWindowSize(window, &w, &h);
 
-	/*for(int j=0; j<10; j++){
+	for(int j=0; j<10; j++){
 		for(int i=0; i<15; i++){
 			brick = new Rigidbody("objects/brick", 30, btVector3(-5+2.5*j + (i%2)*1.25, 0.75+1.35*i , 25 * 0.03 ), CUBE, 1, 0.68, 1);
 			brick->attach_loader(loader);	
@@ -103,7 +103,6 @@ void load_objects(){
 	sphere_aim->is_static = true;
 	world->addObject(sphere_aim);
 
-*/
 	
 	Rigidbody* cylinder = new Rigidbody("objects/cylinder", 5, btVector3(30,0,0));
 	cylinder->attach_loader(loader);

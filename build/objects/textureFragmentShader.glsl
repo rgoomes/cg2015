@@ -60,38 +60,34 @@ void main(){
 	vec3 MaterialAmbientColor = 0.4 * MaterialDiffuseColor;
 	vec3 MaterialSpecColor = vec3(0.7, 0.7, 0.7);
 
-	vec3 TextureNormal_tangentspace = mat3(V * M) * normalize(texture2D( bumpSampler, vec2(UV.x,UV.y) ).rgb*2.0 - 1.0);
-	TextureNormal_tangentspace = normalize(TextureNormal_tangentspace);
-	//vec3 n = normalize(Normal_cameraspace);
+	vec3 TextureNormal_tangentspace = normalize(texture2D( bumpSampler, vec2(UV.x,UV.y) ).rgb*2.0 - 1.0);
+	
 	vec3 n;
 	vec3 l;
 	vec3 E;
 	
 	if(has_bump != 0){
 		l = normalize(LightDirection_tangentspace);
-		n = normalize(TextureNormal_tangentspace);
-		E = normalize(EyeDirection_cameraspace);
-	}else{
-		l = normalize(LightDirection_cameraspace);
-		n = normalize(Normal_cameraspace);
 		E = normalize(EyeDirection_tangentspace);
+		n = normalize(TextureNormal_tangentspace);
+	}else{
+		n = normalize(Normal_cameraspace);
+		l = normalize(LightDirection_cameraspace);
+		E = normalize(EyeDirection_cameraspace);
 	}
-	vec3 n_c = normalize(Normal_cameraspace);
-
 	
 	float visibility=1.0;
 	float cosTheta = clamp( dot( n,-l ), 0,1 );
-	float cosTheta2 = clamp( dot( n_c,-l ), 0,1 );
-
+	
 	float specular = 0.0;
 	//if(dot(n, -l) > 0.0){
 		
-		specular = pow(max(0.0, dot(reflect(l, n), E)), 5); // NOT VIEWDIR, IT SHOULD BE EYE DIRECTION CAMERA SPACE
+		specular = pow(max(0.0, dot(reflect(l, n), E)), 5);
 	//}
 
 	//float bias = 0.005;
 	// ...variable bias
-	float bias = 0.005*tan(acos(cosTheta2)); bias = clamp(bias, 0,0.01);
+	float bias = 0.005*tan(acos(cosTheta)); bias = clamp(bias, 0,0.01);
 	
 	// Sample the shadow map 4 times
 	for (int i=0;i<4;i++){
@@ -107,24 +103,21 @@ void main(){
 	if(cosTheta < 0)
 		visibility = 0;
 	
-	//float cosAlpha = clamp( dot( E,R ), 0,1 );
-
 	gl_FragColor.rgb = 
 		// Ambient : simulates indirect lighting
 		MaterialAmbientColor +
 		// Diffuse : "color" of the object
-		visibility * MaterialDiffuseColor * LightColor * cosTheta + 
-		// Specular: causes intel bug
+		visibility * MaterialDiffuseColor * LightColor * cosTheta +
+		// Specular
 		visibility * specular * MaterialSpecColor;
 
 	
-	if(cosTheta < 0.0)
-		gl_FragColor.rgb = vec3(0, 0, 1);
-
 	if(has_bump != 0){
-		//gl_FragColor.rgb = normalize(Normal_cameraspace);
-		gl_FragColor.rgb = bitangents;
+		//gl_FragColor.rgb = E;
 	}
+	//if(cosTheta < 0.0)
+	//	gl_FragColor.rgb = vec3(0, 0, 1);
+
 	
 	gl_FragColor.a = Tf;
 	
