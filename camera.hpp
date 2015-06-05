@@ -37,8 +37,8 @@ class Camera{
 		btVector3 destination;
 		btVector3 no_game;
 		btVector3 game1_pos;
-		btVector3 game2_pos; // TODO
-		btVector3 game3_pos; // TODO
+		btVector3 game2_pos;
+		btVector3 game3_pos;
 		btVector3 obs_pos = no_game;
 		double horizontal_ang, vertical_ang;
 

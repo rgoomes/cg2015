@@ -22,8 +22,6 @@ Rigidbody::Rigidbody(string path, btScalar mass, btVector3 pos, ColliderType col
 
 bool Rigidbody::contains(Rigidbody* r, btScalar rd){
 	btScalar radius = rd;
-	/*btVector3 pos;
-	shape->getBoundingSphere(pos, radius);*/
 	
 	btVector3 dif = (get_position() - r->get_position());
 	return dif.length() < radius;
@@ -85,15 +83,12 @@ void Rigidbody::load_obj(){
 
 	shape = get_mesh_object(w, h, d);
 	btQuaternion rot(0, 0, 0, 1);
-	//rot.setRotation(btVector3(0, 0, 1), 1.2);
 	btDefaultMotionState* motion_state = new btDefaultMotionState(btTransform(rot, btVector3(x, y, z)));
 	btVector3 inertia(0, 0, 0);
 	shape->calculateLocalInertia(mass, inertia);
-	btRigidBody::btRigidBodyConstructionInfo rigidBodyCI(mass, motion_state, shape, inertia); // mass, motionState, shape, inertia
+	btRigidBody::btRigidBodyConstructionInfo rigidBodyCI(mass, motion_state, shape, inertia);
 	rigidBodyCI.m_restitution = this->restitution;
 	rigidBodyCI.m_friction = this->friction;
-	//rigidBodyCI.m_angularDamping = 0.9f;
-	//rigidBodyCI.m_linearDamping = 0.9f;
 
 	rigidbody = new btRigidBody(rigidBodyCI);
 }
@@ -111,15 +106,12 @@ void Rigidbody::move(float _x, float _y, float _z){
 	rigidbody->getMotionState()->getWorldTransform(trans);
 	trans.setOrigin(btVector3(x, y, z));
 	rigidbody->getMotionState()->setWorldTransform(trans);
-	
 }
-
 
 btTransform* Rigidbody::get_transform(){
 	rigidbody->getMotionState()->getWorldTransform(trans);
 	return &trans;
 }
-
 
 void Rigidbody::rotate(btVector3 up, float degree){
 	Object::rotate(up, degree);

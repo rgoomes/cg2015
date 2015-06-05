@@ -12,7 +12,7 @@
 #include "skybox.hpp"
 #include "timer.hpp"
 
-#define SHADOW_RES 2048
+#define SHADOW_RES 1024
 
 using namespace std;
 

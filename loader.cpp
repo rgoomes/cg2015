@@ -90,7 +90,6 @@ Model* Loader::load_model(string path){
 		}else if(!strcmp(line, "#")){
 			tmp_c = fgets(buffer, 1000, file);
 			if(tmp_c == NULL) return model;
-			//printf("Comment: %s\n", buffer);
 		}else if(!strcmp(line, "g")){
 			char group_name[30];
 			tmp = fscanf(file, "%s", group_name);
@@ -267,8 +266,8 @@ void Loader::load_mtl(string path, string name){
 			fgets(p, 64, file);
 		}
 	}
-	materials[mname] = m;
 
+	materials[mname] = m;
 }
 
 
@@ -334,5 +333,4 @@ void Loader::calcTangentSpace(
 		}
 
 	}*/
-
 }

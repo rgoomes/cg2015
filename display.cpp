@@ -324,7 +324,7 @@ void timer_update(int w, int h){
 		// TODO: DISPLAY ELAPSED TIME
 
 		enable2d(w, h);
-		//printf("\033[A\033[2KElapsed: %.2lfsec\n", world->timer->elapsed());
+		printf("\033[A\033[2KElapsed: %.2lfsec\n", world->timer->elapsed());
 		render_text("APRENDE A PROGRAMAR", 0, 0, 10, 10);
 		disable2d();
 	} else if(world->camera->get_game_state() == GAME_STATE1 || 
