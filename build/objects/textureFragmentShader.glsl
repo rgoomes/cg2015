@@ -18,6 +18,7 @@ uniform mat4 V;
 uniform mat4 M;
 uniform int has_texture;
 uniform int has_bump;
+uniform int bumpfix;
 uniform float Ns, Tf;
 
 vec2 poissonDisk[16] = vec2[]( 
@@ -45,6 +46,24 @@ float random(vec3 seed, int i){
 	return fract(sin(dot_product) * 43758.5453);
 }
 
+mat3 rotationMat(vec3 a, vec3 b){
+	vec3 v = cross(normalize(a), normalize(b));
+	float s = length(v);
+	float c = dot(a, b);
+	mat3 I = mat3(vec3(1, 0, 0),
+				  vec3(0, 1, 0),
+				  vec3(0, 0, 1));
+	mat3 R = I;
+	if(a != b){
+		mat3 vx = mat3(vec3(0, -v.z, v.y), 
+					   vec3(v.z, 0, -v.x),
+					   vec3(-v.y, v.x, 0));
+		R = I + vx + (vx * vx) * ((1 - c) / (s*s));	
+	}
+
+	return R;
+}
+
 void main(){
 
 	// Light emission properties
@@ -65,21 +84,27 @@ void main(){
 	vec3 l;
 	vec3 E;
 	
+	vec3 n_c = normalize(Normal_cameraspace);
 	if(has_bump != 0){
 		n = normalize(TextureNormal_tangentspace);
-		l = normalize(LightDirection_tangentspace);
+		//l = normalize(LightDirection_tangentspace);
+		//E = normalize(EyeDirection_tangentspace);
+		if(bumpfix != 0){
+			mat3 rot = rotationMat(n_c, vec3(1,0,0));
+			n = rot * n;
+			n = n_c + n*0.4;
+			n = normalize(n);
+		}
 	}else{
-		l = normalize(LightDirection_cameraspace);
 		n = normalize(Normal_cameraspace);
-	//E = normalize(EyeDirection_tangentspace);
+
 	}
-	vec3 n_c = normalize(Normal_cameraspace);
+	l = normalize(LightDirection_cameraspace);
 	E = normalize(EyeDirection_cameraspace);
 
 	
 	float visibility=1.0;
 	float cosTheta = clamp( dot( n,-l ), 0,1 );
-	float cosTheta2 = clamp( dot( n_c,-l ), 0,1 );
 
 	float specular = 0.0;
 	//if(dot(n, -l) > 0.0){
@@ -89,7 +114,7 @@ void main(){
 
 	//float bias = 0.005;
 	// ...variable bias
-	float bias = 0.005*tan(acos(cosTheta2)); bias = clamp(bias, 0,0.01);
+	float bias = 0.005*tan(acos(cosTheta)); bias = clamp(bias, 0,0.01);
 	
 	// Sample the shadow map 4 times
 	for (int i=0;i<4;i++){
@@ -102,10 +127,11 @@ void main(){
 	if(ShadowCoord.x < 0 || ShadowCoord.x > 1 || ShadowCoord.y < 0 || ShadowCoord.y > 1)
 		visibility = 1;
 
-	if(cosTheta < 0)
+	if(cosTheta < 0.0)
 		visibility = 0;
 	
-	//float cosAlpha = clamp( dot( E,R ), 0,1 );
+	if(dot( n_c,-l ) < 0.0)
+		visibility = visibility / 8;
 
 	gl_FragColor.rgb = 
 		// Ambient : simulates indirect lighting
@@ -116,10 +142,10 @@ void main(){
 		visibility * specular * MaterialSpecColor;
 
 	
-	if(cosTheta < 0.0)
-		gl_FragColor.rgb = vec3(0, 0, 1);
 
-	
+	if(has_bump != 0){
+		//gl_FragColor.rgb = n;
+	}
 	
 	gl_FragColor.a = Tf;
 	

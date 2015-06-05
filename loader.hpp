@@ -28,7 +28,7 @@ struct Group{
 			texture, texture_id, bump_id, shadowmap_id, depthbias_id, shadow_matrix_id,
 			vertexbuffer, uvbuffer, normalbuffer, tangentbuffer, bitangentbuffer, size,
 			viewmatrix_id, modelmatrix_id, lightdir_id, normal_id, tangent_id, bitangent_id,
-			has_texture_id, has_bump_id;
+			has_texture_id, has_bump_id, bumpfix_id;
 	Material material;
 	GLuint Ns_id, Tf_id;
 };

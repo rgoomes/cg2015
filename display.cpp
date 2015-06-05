@@ -47,6 +47,7 @@ void load_objects(){
 				brick->attach_loader(loader);
 				brick->set_scale(0.1);
 				brick->load_obj();
+				brick->bumpfix = true;
 				world->addObject(brick);
 			}
 		}

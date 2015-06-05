@@ -44,6 +44,7 @@ class Object {
 		virtual string type(){return "object";}
 
 		Model* model;
+		bool bumpfix = false;
 	private:
 
 		bool load_obj_texture();
