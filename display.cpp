@@ -195,6 +195,11 @@ void disable2d(){
 	glMatrixMode(GL_MODELVIEW);
 	glPopAttrib();
 	glPopMatrix();
+
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
+	glEnable(GL_BLEND);
+	glEnable(GL_LIGHTING);
 }
 
 void draw_button(int pos, int w, int h){
@@ -209,6 +214,65 @@ void draw_button(int pos, int w, int h){
 		glTexCoord2f(1, 0); glVertex2f(w, h);
 		glTexCoord2f(0, 0); glVertex2f(0, h);
 	glEnd();
+}
+
+void render_text(const char *text, float x, float y, float sx, float sy) {
+	const char *p;
+	FT_GlyphSlot g = face->glyph;
+
+	glUseProgram(0);
+	glPushMatrix();
+
+	glPushAttrib(GL_ENABLE_BIT);
+	glActiveTexture(GL_TEXTURE0);
+	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_BLEND);
+
+	GLuint tex;
+	glGenTextures(1, &tex);
+	glBindTexture(GL_TEXTURE_2D, tex);
+
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	for(p=text; *p; p++) {
+		if(FT_Load_Char(face, *p, FT_LOAD_RENDER))
+			continue;
+
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA8, g->bitmap.width, g->bitmap.rows, 0, GL_ALPHA, GL_UNSIGNED_BYTE, g->bitmap.buffer);
+	
+		float x2 = x + g->bitmap_left * sx;
+	    float y2 = -y - g->bitmap_top * sy;
+	    float w = g->bitmap.width * sx;
+	    float h = g->bitmap.rows * sy;
+	 
+	    GLfloat box[4][4] = {
+	        {x2,     -y2    , 0, 0},
+	        {x2,     -y2 - h, 0, 1},
+	        {x2 + w, -y2 - h, 1, 1},
+	        {x2 + w, -y2    , 1, 0},
+	    };
+			
+		glBegin(GL_QUADS);
+			glTexCoord2f(box[0][2], box[0][3]); glVertex2f(box[0][0], box[0][1]);
+			glTexCoord2f(box[1][2], box[1][3]); glVertex2f(box[1][0], box[1][1]);
+			glTexCoord2f(box[2][2], box[2][3]); glVertex2f(box[2][0], box[2][1]);
+			glTexCoord2f(box[3][2], box[3][3]); glVertex2f(box[3][0], box[3][1]);
+			glTexCoord2f(box[0][2], box[0][3]);
+		glEnd();
+		
+		x += (g->advance.x >> 6) * sx;
+		y += (g->advance.y >> 6) * sy;
+	}
+
+	glDeleteTextures(1, &tex);
+
+	glPopAttrib();
+	glPopMatrix();
 }
 
 void draw_menu(int w, int h){
@@ -250,6 +314,8 @@ void draw_menu(int w, int h){
 		draw_button(1, w,h);
 	glPopMatrix();
 
+	render_text("aprende a programar", 10, 50, 2, 2);
+
 	glPopAttrib();
 	glPopMatrix();
 }
@@ -257,60 +323,6 @@ void draw_menu(int w, int h){
 void init_sizes(int w, int h){
 	btn_size_x = w * BUTTON_WIDTH  / IMAGE_WIDTH  / 2.0;
 	btn_size_y = h * BUTTON_HEIGHT / IMAGE_HEIGHT / 2.0;
-}
-
-void render_text(const char *text, float x, float y, float sx, float sy) {
-	const char *p;
-	FT_GlyphSlot g = face->glyph;
-
-	glUseProgram(0);
-	glPushMatrix();
-
-	glPushAttrib(GL_ENABLE_BIT);
-	glActiveTexture(GL_TEXTURE0);
-	glEnable(GL_TEXTURE_2D);
-	glEnable(GL_BLEND);
-
-	GLuint tex;
-	glGenTextures(1, &tex);
-	glBindTexture(GL_TEXTURE_2D, tex);
-
-	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	for(p=text; *p; p++) {
-		if(FT_Load_Char(face, *p, FT_LOAD_RENDER))
-			continue;
-
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, g->bitmap.width, g->bitmap.rows, 0, GL_RED, GL_UNSIGNED_BYTE, g->bitmap.buffer);
-	
-		float x2 = x + g->bitmap_left * sx;
-		float y2 = -y - g->bitmap_top * sy;
-		float w = g->bitmap.width * sx;
-		float h = g->bitmap.rows * sy;
-	
-		GLfloat box[4][4] = {
-			{x2,     -y2    , 0, 0},
-			{x2 + w, -y2    , 1, 0},
-			{x2,     -y2 - h, 0, 1},
-			{x2 + w, -y2 - h, 1, 1},
-		};
-	
-		glBufferData(GL_ARRAY_BUFFER, sizeof box, box, GL_DYNAMIC_DRAW);
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-	
-		x += (g->advance.x >> 6) * sx;
-		y += (g->advance.y >> 6) * sy;
-	}
-
-	glDeleteTextures(1, &tex);
-
-	glPopAttrib();
-	glPopMatrix();
 }
 
 void init_freetype(){
@@ -323,10 +335,8 @@ void timer_update(int w, int h){
 	if(world->timer->ticking()){
 		// TODO: DISPLAY ELAPSED TIME
 
-		enable2d(w, h);
 		printf("\033[A\033[2KElapsed: %.2lfsec\n", world->timer->elapsed());
-		render_text("APRENDE A PROGRAMAR", 0, 0, 10, 10);
-		disable2d();
+		
 	} else if(world->camera->get_game_state() == GAME_STATE1 || 
 			  world->camera->get_game_state() == GAME_STATE2)
 	
