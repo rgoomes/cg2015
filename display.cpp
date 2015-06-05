@@ -314,8 +314,6 @@ void draw_menu(int w, int h){
 		draw_button(1, w,h);
 	glPopMatrix();
 
-	render_text("aprende a programar", 10, 50, 2, 2);
-
 	glPopAttrib();
 	glPopMatrix();
 }
@@ -331,16 +329,37 @@ void init_freetype(){
 	FT_Set_Pixel_Sizes(face, 0, 48);
 }
 
+int clock_size = 0;
+double old_clock;
+
+void print_elapsed(int w, int h, bool print_old){
+	enable2d(w, h);
+
+	glColor4f(0,0,0,1);
+	char str[8], str_tmp[8];
+	sprintf(str, "%.2lf", print_old ? old_clock : world->timer->elapsed());
+	sprintf(str_tmp, "%.2lf", old_clock);
+
+	if(strlen(str) > strlen(str_tmp))
+		clock_size += 27;
+	if(!print_old)
+		old_clock = world->timer->elapsed();
+
+	render_text(str, w-100-clock_size, h-50, 1, 1);
+	glColor4f(1,1,1,1);
+	disable2d();
+}
+
 void timer_update(int w, int h){
 	if(world->timer->ticking()){
-		// TODO: DISPLAY ELAPSED TIME
+		print_elapsed(w, h, false);
 
-		printf("\033[A\033[2KElapsed: %.2lfsec\n", world->timer->elapsed());
-		
 	} else if(world->camera->get_game_state() == GAME_STATE1 || 
-			  world->camera->get_game_state() == GAME_STATE2)
+			  world->camera->get_game_state() == GAME_STATE2){
 	
 		world->timer->start();
+		print_elapsed(w, h, true);
+	}
 }
 
 void inside_box(float elapsed){
@@ -379,8 +398,8 @@ void display(float elapsed){
 	int w, h;
 	glfwGetWindowSize(window, &w, &h);
 
-	timer_update(w, h);
 	world->update(elapsed);
+	timer_update(w, h);
 	inside_box(elapsed);
 
 	if(world->camera->get_game_state() != NO_GAME_STATE){
