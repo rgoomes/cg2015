@@ -2,7 +2,7 @@
 #include "main.hpp"
 #include "display.hpp"
 
-#define SCREEN_SIZE_CUT 1.2f
+#define SCREEN_SIZE_CUT 1.5f
 
 using namespace std;
 

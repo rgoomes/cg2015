@@ -36,31 +36,6 @@ void Object::render(){
 		render_texture();
 }
 
-/*void Object::render_ntexture(){
-	glUseProgram(0);
-
-	for(int i = 0; i < (int)all_faces.size(); i++){
-		int v, n;
-		glBegin(GL_TRIANGLES);
-			v = all_faces[i].v_index[0]-1;
-			n = all_faces[i].n_index[0]-1;
-			glNormal3f(normals[n].x, normals[n].y, normals[n].z);
-			glVertex3f(vertices[v].x, vertices[v].y, vertices[v].z);
-
-			v = all_faces[i].v_index[1]-1;
-			n = all_faces[i].n_index[1]-1;
-			glNormal3f(normals[n].x, normals[n].y, normals[n].z);
-			glVertex3f(vertices[v].x, vertices[v].y, vertices[v].z);
-
-			v = all_faces[i].v_index[2]-1;
-			n = all_faces[i].n_index[2]-1;
-			glNormal3f(normals[n].x, normals[n].y, normals[n].z);
-			glVertex3f(vertices[v].x, vertices[v].y, vertices[v].z);
-			
-		glEnd();
-	}
-}*/
-
 void Object::move(float _x, float _y, float _z){
 	x = _x;
 	y = _y;
@@ -77,13 +52,11 @@ void Object::rotate(btVector3 up, float degree){
 }
 
 void Object::get_depthbiasmvp(float dbmvp[4][4]){
-	
 	float bias[4][4] = {{0.5, 0.0, 0.0, 0.0}, 
 						{0.0, 0.5, 0.0, 0.0},
 						{0.0, 0.0, 0.5, 0.0},
 						{0.5, 0.5, 0.5, 1.0}};
 	mult_matrix(dbmvp, depthMVP, bias);
-	
 }
 
 void Object::set_material(Group& g, Material& m){
@@ -109,7 +82,6 @@ void Object::set_material(Group& g, Material& m){
 		glUniform1i(g.has_bump_id, 0);
 	else
 		glUniform1i(g.has_bump_id, 1);
-
 }
 
 void Object::render_texture(){
@@ -142,75 +114,68 @@ void Object::render_texture(){
 		set_material(g, g.material);
 
 
-		// 1rst attribute buffer : vertices
 		glEnableVertexAttribArray(g.vertexposition_modelspace_id);
 		glBindBuffer(GL_ARRAY_BUFFER, g.vertexbuffer);
 		glVertexAttribPointer(
-			g.vertexposition_modelspace_id,  // The attribute we want to configure
-			3,                            // size
-			GL_FLOAT,                     // type
-			GL_FALSE,                     // normalized?
-			0,                            // stride
-			(void*)0                      // array buffer offset
+			g.vertexposition_modelspace_id,
+			3,
+			GL_FLOAT,
+			GL_FALSE,
+			0,
+			(void*)0
 		);
 		
-		// 2nd attribute buffer : UVs
 		glEnableVertexAttribArray(g.vertexUV_id);
 		glBindBuffer(GL_ARRAY_BUFFER, g.uvbuffer);
 		glVertexAttribPointer(
-			g.vertexUV_id,                // The attribute we want to configure
-			2,                            // size : U+V => 2
-			GL_FLOAT,                     // type
-			GL_FALSE,                     // normalized?
-			0,                            // stride
-			(void*)0                      // array buffer offset
+			g.vertexUV_id,
+			2,
+			GL_FLOAT,
+			GL_FALSE,
+			0,
+			(void*)0
 		);
 
-		// 3rd attribute buffer : normals
 		glEnableVertexAttribArray(g.normal_id);
 		glBindBuffer(GL_ARRAY_BUFFER, g.normalbuffer);
 		glVertexAttribPointer(
-			g.normal_id,				  // The attribute we want to configure
-			3,                            // size
-			GL_FLOAT,                     // type
-			GL_FALSE,                     // normalized?
-			0,                            // stride
-			(void*)0                      // array buffer offset
+			g.normal_id,
+			3,
+			GL_FLOAT,
+			GL_FALSE,
+			0,
+			(void*)0
 		);
-		// 4th attribute buffer : tangents
+
 		glEnableVertexAttribArray(g.tangent_id);
 		glBindBuffer(GL_ARRAY_BUFFER, g.tangentbuffer);
 		glVertexAttribPointer(
-			g.tangent_id,				  // The attribute we want to configure
-			3,                            // size
-			GL_FLOAT,                     // type
-			GL_FALSE,                     // normalized?
-			0,                            // stride
-			(void*)0                      // array buffer offset
+			g.tangent_id,
+			3,
+			GL_FLOAT,
+			GL_FALSE,
+			0,
+			(void*)0
 		);
 
-		// 5th attribute buffer : bitangents
 		glEnableVertexAttribArray(g.bitangent_id);
 		glBindBuffer(GL_ARRAY_BUFFER, g.bitangentbuffer);
 		glVertexAttribPointer(
-			g.bitangent_id,				  // The attribute we want to configure
-			3,                            // size
-			GL_FLOAT,                     // type
-			GL_FALSE,                     // normalized?
-			0,                            // stride
-			(void*)0                      // array buffer offset
+			g.bitangent_id,
+			3,
+			GL_FLOAT,
+			GL_FALSE,
+			0,
+			(void*)0
 		);
 
-		// Draw the triangles !
-		glDrawArrays(GL_TRIANGLES, 0, g.size*3); // 12*3 indices starting at 0 -> 12 triangles
+		glDrawArrays(GL_TRIANGLES, 0, g.size*3);
 
 		glDisableVertexAttribArray(g.vertexposition_modelspace_id);
 		glDisableVertexAttribArray(g.vertexUV_id);
 		
 		glDisable(GL_TEXTURE_2D);
 	}
-
-
 }
 
 void Object::render_glass(){
@@ -254,52 +219,46 @@ void Object::render_glass(){
 
 		set_material(g, g.material);
 
-		// 1rst attribute buffer : vertices
 		glEnableVertexAttribArray(g.vertexposition_modelspace_id);
 		glBindBuffer(GL_ARRAY_BUFFER, g.vertexbuffer);
 		glVertexAttribPointer(
-			g.vertexposition_modelspace_id,  // The attribute we want to configure
-			3,                            // size
-			GL_FLOAT,                     // type
-			GL_FALSE,                     // normalized?
-			0,                            // stride
-			(void*)0                      // array buffer offset
+			g.vertexposition_modelspace_id,
+			3,
+			GL_FLOAT,
+			GL_FALSE,
+			0,
+			(void*)0
 		);
 		
-		// 2nd attribute buffer : UVs
 		glEnableVertexAttribArray(g.vertexUV_id);
 		glBindBuffer(GL_ARRAY_BUFFER, g.uvbuffer);
 		glVertexAttribPointer(
-			g.vertexUV_id,                // The attribute we want to configure
-			2,                            // size : U+V => 2
-			GL_FLOAT,                     // type
-			GL_FALSE,                     // normalized?
-			0,                            // stride
-			(void*)0                      // array buffer offset
+			g.vertexUV_id,
+			2,
+			GL_FLOAT,
+			GL_FALSE,
+			0,
+			(void*)0
 		);
 
-		// 3rd attribute buffer : normals
 		glEnableVertexAttribArray(g.normal_id);
 		glBindBuffer(GL_ARRAY_BUFFER, g.normalbuffer);
 		glVertexAttribPointer(
-			g.normal_id,				  // The attribute we want to configure
-			3,                            // size
-			GL_FLOAT,                     // type
-			GL_FALSE,                     // normalized?
-			0,                            // stride
-			(void*)0                      // array buffer offset
+			g.normal_id,
+			3,
+			GL_FLOAT,
+			GL_FALSE,
+			0,
+			(void*)0
 		);
 
-		// Draw the triangles !
-		glDrawArrays(GL_TRIANGLES, 0, g.size*3); // 12*3 indices starting at 0 -> 12 triangles
+		glDrawArrays(GL_TRIANGLES, 0, g.size*3);
 
 		glDisableVertexAttribArray(g.vertexposition_modelspace_id);
 		glDisableVertexAttribArray(g.vertexUV_id);
 		
 		glDisable(GL_TEXTURE_2D);
 	}
-
-
 }
 
 
@@ -317,20 +276,18 @@ void Object::render_shadow(){
 		glUseProgram(g.shadow_program_id);
 		glUniformMatrix4fv(g.shadow_matrix_id, 1, GL_FALSE, &depthMVP[0][0]);
 
-		// 1rst attribute buffer : vertices
 		glEnableVertexAttribArray(g.vertexposition_modelspace_id);
 		glBindBuffer(GL_ARRAY_BUFFER, g.vertexbuffer);
 		glVertexAttribPointer(
-			g.vertexposition_modelspace_id,  // The attribute we want to configure
-			3,                            // size
-			GL_FLOAT,                     // type
-			GL_FALSE,                     // normalized?
-			0,                            // stride
-			(void*)0                      // array buffer offset
+			g.vertexposition_modelspace_id,
+			3,
+			GL_FLOAT,
+			GL_FALSE,
+			0,
+			(void*)0
 		);
 
-		// Draw the triangles !
-		glDrawArrays(GL_TRIANGLES, 0, g.size*3); // 12*3 indices starting at 0 -> 12 triangles
+		glDrawArrays(GL_TRIANGLES, 0, g.size*3);
 
 		glDisableVertexAttribArray(g.vertexposition_modelspace_id);
 		glDisableVertexAttribArray(g.vertexUV_id);
@@ -375,4 +332,3 @@ btTransform* Object::get_transform(){
 	trans = btTransform(rot, btVector3(x, y, z));
 	return &trans;
 }
-

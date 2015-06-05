@@ -132,11 +132,6 @@ void World::update(float elapsed){
 	camera->update(window, elapsed);
 	draw_skybox(1000);
 
-	/*GLfloat light_position[] = { 1.0, 15.0, -30.0, 1.0 };
-
-	glEnable(GL_LIGHT0);
-	glLightfv(GL_LIGHT0, GL_POSITION, light_position);*/
-
 	for(i=0; i<(int)objects.size();  i++){
 		if(objects[i]->is_static){
 			continue;
