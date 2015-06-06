@@ -12,8 +12,6 @@
 #include "skybox.hpp"
 #include "timer.hpp"
 
-#define SHADOW_RES 1024
-
 using namespace std;
 
 class Object;
@@ -29,7 +27,7 @@ class World{
 		Timer* timer;
 
 	private:
-		vector<Object*> objects;
+		vector<Object*> objects, alpha_objects;
 		btDynamicsWorld* physicsWorld;
 		GLFWwindow* window;
 		int window_width, window_height;
@@ -40,6 +38,7 @@ class World{
 		GLuint get_render_buffer();
 		void tick(float elapsed);
 		void init();
+
 };
 
 #endif

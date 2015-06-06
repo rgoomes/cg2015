@@ -13,6 +13,7 @@
 #include "misc.hpp"
 #include "world.hpp"
 #include "rigidbody.hpp"
+#include "grass.hpp"
 #include "loader.hpp"
 
 #include <ft2build.h>

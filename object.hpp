@@ -33,22 +33,28 @@ class Object {
 		void render();
 		void set_shadowmap(GLuint dt);
 		void render_shadow();
-		void render_texture();
-		void render_glass();
+		virtual void render_texture();
+		virtual void render_glass();
 		void attach_loader(Loader* loader);
 		void attach_world(World* world);
+		World* get_world();
 		
 		float x, y, z, s;
 		void move(float _x, float _y, float _z);
 		virtual void rotate(btVector3 up, float degree);
 		virtual string type(){return "object";}
+		virtual void set_transparent(bool is_t);
+		bool is_transparent();
+		btVector3 get_position();
 
 		Model* model;
 		bool bumpfix = false;
+
 	private:
 
 		bool load_obj_texture();
 		bool debug=false;
+		bool has_transparency=false;
 		Group load_group(string group_name);
 		Loader* loader = NULL;
 		World* world = NULL;

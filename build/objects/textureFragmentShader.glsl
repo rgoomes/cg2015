@@ -107,14 +107,14 @@ void main(){
 	float cosTheta = clamp( dot( n,-l ), 0,1 );
 
 	float specular = 0.0;
-	//if(dot(n, -l) > 0.0){
+	if(dot(n, -l) > 0.0){
 		
-		specular = pow(max(0.0, dot(reflect(l, n), E)), Ns); // NOT VIEWDIR, IT SHOULD BE EYE DIRECTION CAMERA SPACE
-	//}
+		specular = pow(max(0.0, dot(reflect(l, n), E)), 1); // NOT VIEWDIR, IT SHOULD BE EYE DIRECTION CAMERA SPACE
+	}
 
 	//float bias = 0.005;
 	// ...variable bias
-	float bias = 0.005*tan(acos(cosTheta)); bias = clamp(bias, 0,0.01);
+	float bias = 0.002*tan(acos(cosTheta)); bias = clamp(bias, 0,0.01);
 	
 	// Sample the shadow map 4 times
 	for (int i=0;i<4;i++){
@@ -130,8 +130,8 @@ void main(){
 	if(cosTheta < 0.0)
 		visibility = 0;
 	
-	if(dot( n_c,-l ) < 0.0)
-		visibility = visibility / 8;
+	//if(dot( n_c,-l ) < 0.0)
+	//	visibility = visibility / 8;
 
 	gl_FragColor.rgb = 
 		// Ambient : simulates indirect lighting
@@ -147,7 +147,7 @@ void main(){
 		//gl_FragColor.rgb = n;
 	}
 	
-	gl_FragColor.a = Tf;
+	gl_FragColor.a = texture2D( myTextureSampler, vec2(UV.x, 1-UV.y ) ).a;
 	
 	
 }

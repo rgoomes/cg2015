@@ -3,6 +3,10 @@
 #include "object.hpp"
 #include "rigidbody.hpp"
 
+#include <algorithm>
+
+#define SHADOW_RES 4096
+
 btDynamicsWorld* World::getDynamicWorld(){
 	btBroadphaseInterface* broadphase = new btDbvtBroadphase();
 	btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();
@@ -39,7 +43,10 @@ void World::addCollider(Object* obj){
 
 void World::addObject(Object* obj){
 	obj->set_shadowmap(renderedTexture);
-	objects.push_back(obj);
+	if(!obj->is_transparent())
+		objects.push_back(obj);
+	else
+		alpha_objects.push_back(obj);
 	obj->attach_world(this);
 	if(obj->type() == "rigidbody")
 		physicsWorld->addRigidBody(((Rigidbody*)obj)->get_rigidbody());
@@ -82,6 +89,11 @@ GLuint World::get_render_buffer(){
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	return depthTexture;
+}
+
+static bool compare_object(Object *a, Object *b){
+	btVector3 obs = a->get_world()->camera->get_obs_pos();
+	return (a->get_position() - obs).length() > (b->get_position() - obs).length();
 }
 
 void World::update(float elapsed){
@@ -153,14 +165,19 @@ void World::update(float elapsed){
 				objects[i]->model->groups[j].material.Tf = 0.5;
 			}
 		}
-
+		
 		objects[i]->render_glass();
-
+		
 		if(objects[i]->is_static){
 			for(int j=0; j < (int)objects[i]->model->groups.size(); j++){
 				objects[i]->model->groups[j].material.Tf = 1;
 			}
 		}
+	}
+
+	sort(alpha_objects.begin(), alpha_objects.end(), compare_object);
+	for(i=0; i<(int)alpha_objects.size();  i++){
+		alpha_objects[i]->render_glass();
 	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);

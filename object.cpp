@@ -42,6 +42,10 @@ void Object::move(float _x, float _y, float _z){
 	z = _z;
 }
 
+btVector3 Object::get_position(){
+	return get_transform()->getOrigin();
+}
+
 void Object::rotate(btVector3 up, float degree){
 	btTransform *trans = get_transform();
 	btQuaternion q2 = trans->getRotation(), q;
@@ -90,6 +94,18 @@ void Object::set_material(Group& g, Material& m){
 
 }
 
+void Object::set_transparent(bool transp){
+	has_transparency = transp;
+}
+
+bool Object::is_transparent(){
+	return has_transparency;
+}
+
+World* Object::get_world(){
+	return world;
+}
+
 void Object::render_texture(){
 	float m[4][4];
 	float depthbias_mvp[4][4];
@@ -102,12 +118,11 @@ void Object::render_texture(){
 	glPushMatrix();
 		glMultMatrixf(model);
 		get_mvp(m);
-		
 	glPopMatrix();
 
 	for(int i=0; i<(int)this->model->groups.size(); i++){
 		Group& g = this->model->groups[i];
-		if(g.material.Tf < 1)
+		if(g.material.Tf < 1 || has_transparency)
 			continue;
 
 		glUseProgram(g.program_id);
@@ -201,7 +216,7 @@ void Object::render_glass(){
 
 	for(int i=0; i<(int)this->model->groups.size(); i++){
 		Group& g = this->model->groups[i];
-		if(g.material.Tf == 1)
+		if(g.material.Tf == 1 && !has_transparency)
 			continue;
 
 		glUseProgram(g.program_id);

@@ -1,0 +1,24 @@
+# Blender MTL File: 'grass.blend'
+# Material Count: 3
+newmtl None
+Ka 0.000000 0.000000 0.000000
+Kd 0.8 0.8 0.8
+Ks 0.8 0.8 0.8
+d 1
+illum 2
+map_Kd grass_alpha.dds
+newmtl None_grass_alpha.dds.002
+Ka 0.000000 0.000000 0.000000
+Kd 0.8 0.8 0.8
+Ks 0.8 0.8 0.8
+d 1
+illum 2
+map_Kd grass_alpha.dds
+newmtl None_grass_alpha.dds.003
+Ns 0
+Ka 0.000000 0.000000 0.000000
+Kd 0.8 0.8 0.8
+Ks 0.8 0.8 0.8
+d 1
+illum 2
+map_Kd grass_alpha.dds

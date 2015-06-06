@@ -17,11 +17,11 @@ class Rigidbody : public Object{
 		Rigidbody(string path, btScalar mass, btVector3 pos, ColliderType collider=CONVEX, double w=0, double h=0, double d=0, double restitution=0.50f, double friction=0.95f);
 		void move(float _x, float _y, float _z);
 		void get_matrix(float m[16]);
-		void render_texture();
 		virtual string type(){return "rigidbody";}
 		void rotate(btVector3 up, float degree);
 		btVector3 get_position();
 		bool contains(Rigidbody* r, btScalar rd);
+		void render_texture(){Object::render_texture();};
 	private:
 		btRigidBody* rigidbody;
 		btCollisionShape* shape;
