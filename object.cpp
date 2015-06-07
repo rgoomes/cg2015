@@ -282,6 +282,13 @@ void Object::render_glass(){
 	}
 }
 
+void Object::sort_groups(){
+	;
+}
+
+void Object::unsort_groups(){
+	;
+}
 
 void Object::render_shadow(){
 	float mt[16];

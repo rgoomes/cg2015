@@ -50,17 +50,19 @@ class Object {
 		Model* model;
 		bool bumpfix = false;
 
+		virtual void sort_groups();
+		virtual void unsort_groups();
 	private:
 
-		bool load_obj_texture();
 		bool debug=false;
 		bool has_transparency=false;
-		Group load_group(string group_name);
-		Loader* loader = NULL;
-		World* world = NULL;
-		void get_matrix(float m[16]);
 		void set_material(Group& g, Material& m);
 	protected:
+		bool load_obj_texture();
+		Group load_group(string group_name);
+		void get_matrix(float m[16]);
+		Loader* loader = NULL;
+		World* world = NULL;
 
 		GLuint shadowmap;
 		float depthMVP[4][4];

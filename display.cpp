@@ -53,7 +53,7 @@ void load_objects(){
 		}
 	}
 
-	/*ramp = new Rigidbody("objects/ramp", 0, btVector3(175, 4, -73.5), CONCAVE);
+	ramp = new Rigidbody("objects/ramp", 0, btVector3(175, 4, -73.5), CONCAVE);
 	ramp->attach_loader(loader);
 	ramp->set_scale(0.1);
 	ramp->load_obj();
@@ -88,17 +88,17 @@ void load_objects(){
 	dei_collider->attach_loader(loader);
 	dei_collider->set_scale(0.1);
 	dei_collider->load_obj();
-	world->addCollider(dei_collider);*/
+	world->addCollider(dei_collider);
 
-	float s=20;
-	for(int i=0; i< 10; i++){
-		for(int j=0; j< 10; j++){
+	float s=15;
+	for(int i=0; i< 5; i++){
+		for(int j=0; j< 13; j++){
 			Grass* grass = new Grass("objects/grass");
 			grass->attach_loader(loader);
-			grass->set_scale(10);
+			grass->set_scale(5);
 			grass->load_obj();
 			grass->set_transparent(true);
-			grass->move(i*s, 0, j*s + (i%2)*(s/2));
+			grass->move(28 + i*s, 0,-90 + j*s);
 			world->addObject(grass);
 		}
 	}

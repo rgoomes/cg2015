@@ -176,8 +176,10 @@ void World::update(float elapsed){
 	}
 
 	sort(alpha_objects.begin(), alpha_objects.end(), compare_object);
-	for(i=0; i<(int)alpha_objects.size();  i++){
+	for(i=0; i<(int)alpha_objects.size(); i++){
+		alpha_objects[i]->sort_groups();
 		alpha_objects[i]->render_glass();
+		alpha_objects[i]->unsort_groups();
 	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);

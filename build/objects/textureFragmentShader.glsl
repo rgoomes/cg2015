@@ -147,7 +147,11 @@ void main(){
 		//gl_FragColor.rgb = n;
 	}
 	
-	gl_FragColor.a = texture2D( myTextureSampler, vec2(UV.x, 1-UV.y ) ).a;
+	float a = texture2D( myTextureSampler, vec2(UV.x, 1-UV.y ) ).a;
+	if(a < 1)
+		gl_FragColor.a = a;
+	else
+		gl_FragColor.a = Tf;
 	
 	
 }
