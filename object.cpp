@@ -199,7 +199,7 @@ void Object::render_texture(){
 	}
 }
 
-void Object::render_glass(){
+void Object::render_glass(int* order){
 	float m[4][4];
 	float depthbias_mvp[4][4];
 	get_depthbiasmvp(depthbias_mvp);
@@ -215,7 +215,9 @@ void Object::render_glass(){
 	glPopMatrix();
 
 	for(int i=0; i<(int)this->model->groups.size(); i++){
-		Group& g = this->model->groups[i];
+
+		Group& g = (order == NULL) ? this->model->groups[i] : this->model->groups[order[i]];
+
 		if(g.material.Tf == 1 && !has_transparency)
 			continue;
 
@@ -283,10 +285,6 @@ void Object::render_glass(){
 }
 
 void Object::sort_groups(){
-	;
-}
-
-void Object::unsort_groups(){
 	;
 }
 

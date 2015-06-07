@@ -34,7 +34,7 @@ class Object {
 		void set_shadowmap(GLuint dt);
 		void render_shadow();
 		virtual void render_texture();
-		virtual void render_glass();
+		virtual void render_glass(int* order);
 		void attach_loader(Loader* loader);
 		void attach_world(World* world);
 		World* get_world();
@@ -51,7 +51,6 @@ class Object {
 		bool bumpfix = false;
 
 		virtual void sort_groups();
-		virtual void unsort_groups();
 	private:
 
 		bool debug=false;

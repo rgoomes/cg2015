@@ -166,7 +166,7 @@ void World::update(float elapsed){
 			}
 		}
 		
-		objects[i]->render_glass();
+		objects[i]->render_glass(NULL);
 		
 		if(objects[i]->is_static){
 			for(int j=0; j < (int)objects[i]->model->groups.size(); j++){
@@ -178,8 +178,7 @@ void World::update(float elapsed){
 	sort(alpha_objects.begin(), alpha_objects.end(), compare_object);
 	for(i=0; i<(int)alpha_objects.size(); i++){
 		alpha_objects[i]->sort_groups();
-		alpha_objects[i]->render_glass();
-		alpha_objects[i]->unsort_groups();
+		alpha_objects[i]->render_glass(NULL);
 	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);

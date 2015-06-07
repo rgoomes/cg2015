@@ -22,7 +22,7 @@ void Grass::render_texture(){
 
 void Grass::render_glass(){
 	glDisable(GL_CULL_FACE);
-	Object::render_glass();
+	Object::render_glass(order);
 	glEnable(GL_CULL_FACE);
 }
 
@@ -36,17 +36,11 @@ void Grass::sort_groups(){
 
 	int f_pos[] = { (left-2 + 6)%6, (right+2)%6, (left-1 +6 )%6, (right+1)%6, left, right };
 
-	vector<Group> n_groups;
-	n_groups.resize(7);
+	order[0] = 0;
 	for(int i=0; i<6; i++){
 		if(f_pos[i] == 0)
 			f_pos[i] = 6;
-		n_groups[i+1] = model->groups[f_pos[i]];
+		//n_groups[i+1] = model->groups[f_pos[i]];
+		order[i+1] = f_pos[i];
 	}
-	temp = model->groups;
-	model->groups = n_groups;
-}
-
-void Grass::unsort_groups(){
-	model->groups = temp;
 }
