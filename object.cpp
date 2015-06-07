@@ -217,7 +217,7 @@ void Object::render_glass(int* order){
 	for(int i=0; i<(int)this->model->groups.size(); i++){
 
 		Group& g = (order == NULL) ? this->model->groups[i] : this->model->groups[order[i]];
-
+		
 		if(g.material.Tf == 1 && !has_transparency)
 			continue;
 

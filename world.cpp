@@ -60,11 +60,11 @@ GLuint World::get_render_buffer(){
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 
-	// The framebuffer, which regroups 0, 1, or more textures, and 0 or 1 depth buffer.
+	// Framebuffer to render the shadow
 	glGenFramebuffers(1, &FramebufferName);
 	glBindFramebuffer(GL_FRAMEBUFFER, FramebufferName);
 
-	// Depth texture. Slower than a depth buffer, but you can sample it later in your shader
+	// Depth texture
 	GLuint depthTexture;
 	glGenTextures(1, &depthTexture);
 	glBindTexture(GL_TEXTURE_2D, depthTexture);
@@ -78,11 +78,11 @@ GLuint World::get_render_buffer(){
 
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTexture, 0);
 
-	// No color output in the bound framebuffer, only depth.
+	// No color output, only depth.
 	glDrawBuffer(GL_NONE);
 	glReadBuffer(GL_NONE);
 
-	// Always check that our framebuffer is ok
+	// Check framebuffer
 	if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		printf("Error creating depth render buffer.\n");
 
@@ -151,6 +151,14 @@ void World::update(float elapsed){
 
 		objects[i]->render_texture();
 	}
+	
+	sort(alpha_objects.begin(), alpha_objects.end(), compare_object);
+	for(i=0; i<(int)alpha_objects.size(); i++){
+		alpha_objects[i]->sort_groups();
+		alpha_objects[i]->render_glass(NULL);
+	}
+	
+
 	for(i=0; i<(int)objects.size();  i++){
 		if(objects[i]->is_static){
 			btVector3 obs_pos = camera->get_obs_pos();
@@ -175,11 +183,6 @@ void World::update(float elapsed){
 		}
 	}
 
-	sort(alpha_objects.begin(), alpha_objects.end(), compare_object);
-	for(i=0; i<(int)alpha_objects.size(); i++){
-		alpha_objects[i]->sort_groups();
-		alpha_objects[i]->render_glass(NULL);
-	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 

@@ -20,9 +20,9 @@ void Grass::render_texture(){
 	Object::render_texture();
 }
 
-void Grass::render_glass(){
+void Grass::render_glass(int* order){
 	glDisable(GL_CULL_FACE);
-	Object::render_glass(order);
+	Object::render_glass(this->order);
 	glEnable(GL_CULL_FACE);
 }
 
@@ -30,7 +30,6 @@ void Grass::sort_groups(){
 	btVector3 v = world->camera->get_obs_pos() - get_position();
 	v.normalize();
 	btScalar angle = atan2(v.getX(), v.getZ()) / (1.0467) + 3;
-	//printf("%f %f\n", v.getX(), v.getZ());
 	int left = (int)(6 - (int)angle) % 6, right;
 	right = (left + 1) % 6;
 
@@ -40,7 +39,6 @@ void Grass::sort_groups(){
 	for(int i=0; i<6; i++){
 		if(f_pos[i] == 0)
 			f_pos[i] = 6;
-		//n_groups[i+1] = model->groups[f_pos[i]];
 		order[i+1] = f_pos[i];
 	}
 }

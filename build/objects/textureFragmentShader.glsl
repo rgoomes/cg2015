@@ -111,6 +111,8 @@ void main(){
 		
 		specular = pow(max(0.0, dot(reflect(l, n), E)), 1); // NOT VIEWDIR, IT SHOULD BE EYE DIRECTION CAMERA SPACE
 	}
+	if(Ns == 0)
+		specular = 0;
 
 	//float bias = 0.005;
 	// ...variable bias
@@ -142,10 +144,6 @@ void main(){
 		visibility * specular * MaterialSpecColor;
 
 	
-
-	if(has_bump != 0){
-		//gl_FragColor.rgb = n;
-	}
 	
 	float a = texture2D( myTextureSampler, vec2(UV.x, 1-UV.y ) ).a;
 	if(a < 1)
