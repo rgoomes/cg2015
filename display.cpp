@@ -1,5 +1,6 @@
 
 #include "display.hpp"
+#include <time.h>
 
 Object *colorCube;
 Rigidbody *sphere;
@@ -90,15 +91,16 @@ void load_objects(){
 	dei_collider->load_obj();
 	world->addCollider(dei_collider);
 
-	float s=15;
-	for(int i=0; i< 5; i++){
-		for(int j=0; j< 13; j++){
+	srand(time(NULL));
+	float s=3.5;
+	for(int i=-5; i< 100; i+=s){
+		for(int j=-2; j< 180; j+=s){
 			Grass* grass = new Grass("objects/grass");
 			grass->attach_loader(loader);
-			grass->set_scale(5);
+			grass->set_scale(0.02);
 			grass->load_obj();
 			grass->set_transparent(true);
-			grass->move(28 + i*s, 0,-90 + j*s);
+			grass->move(28 + i + s * ((rand() % 100) / 100.0), 0,-90 + j + s * ((rand() % 100) / 100.0) );
 			world->addObject(grass);
 		}
 	}

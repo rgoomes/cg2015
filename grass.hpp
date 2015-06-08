@@ -16,7 +16,7 @@ public:
 	void sort_groups();
 	void unsort_groups();
 
-	int order[7];
+	int order[7] = {0, 1, 2, 3, 4, 5, 6};
 private:
 	string path;
 	Loader* loader;
