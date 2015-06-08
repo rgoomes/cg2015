@@ -75,7 +75,7 @@ void main(){
 	else
 		MaterialDiffuseColor = vec3(0.6, 0.6, 0.6);
 	vec3 MaterialAmbientColor = 0.4 * MaterialDiffuseColor;
-	vec3 MaterialSpecColor = vec3(0.7, 0.7, 0.7);
+	vec3 MaterialSpecColor = vec3(0.3, 0.3, 0.3);
 
 	vec3 TextureNormal_tangentspace = mat3(V * M) * normalize(texture2D( bumpSampler, vec2(UV.x,UV.y) ).rgb*2.0 - 1.0);
 	TextureNormal_tangentspace = normalize(TextureNormal_tangentspace);
@@ -131,7 +131,7 @@ void main(){
 
 	if(cosTheta < 0.0)
 		visibility = 0;
-	
+
 	//if(dot( n_c,-l ) < 0.0)
 	//	visibility = visibility / 8;
 
@@ -141,7 +141,7 @@ void main(){
 		// Diffuse : "color" of the object
 		visibility * MaterialDiffuseColor * LightColor * cosTheta + 
 		// Specular: causes intel bug
-		visibility * specular * MaterialSpecColor;
+		visibility * MaterialSpecColor * specular;
 
 	
 	

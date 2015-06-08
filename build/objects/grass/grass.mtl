@@ -1,56 +1,50 @@
-# Blender MTL File: 'grass.blend'
-# Material Count: 6
-
-newmtl None
-Ns 0
-Ka 0.000000 0.000000 0.000000
-Kd 0.8 0.8 0.8
-Ks 0.8 0.8 0.8
-d 1
-illum 2
+newmtl lambert
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
 map_Kd grass_alpha.dds
-
-newmtl None_grass_alpha.dds.002
-Ns 0
-Ka 0.000000 0.000000 0.000000
-Kd 0.8 0.8 0.8
-Ks 0.8 0.8 0.8
-d 1
-illum 2
-map_Kd grass_alpha.dds
-
-newmtl None_grass_alpha.dds.003
-Ns 0
-Ka 0.000000 0.000000 0.000000
-Kd 0.8 0.8 0.8
-Ks 0.8 0.8 0.8
-d 1
-illum 2
-map_Kd grass_alpha.dds
-
-newmtl None_grass_alpha.dds.004
-Ns 0
-Ka 0.000000 0.000000 0.000000
-Kd 0.8 0.8 0.8
-Ks 0.8 0.8 0.8
-d 1
-illum 2
-map_Kd grass_alpha.dds
-
-newmtl None_grass_alpha.dds.005
-Ns 0
-Ka 0.000000 0.000000 0.000000
-Kd 0.8 0.8 0.8
-Ks 0.8 0.8 0.8
-d 1
-illum 2
-map_Kd grass_alpha.dds
-
-newmtl None_grass_alpha.dds.006
-Ns 0
-Ka 0.000000 0.000000 0.000000
-Kd 0.8 0.8 0.8
-Ks 0.8 0.8 0.8
-d 1
-illum 2
-map_Kd grass_alpha.dds
+Ni 1.00
+Ns 0.0
+newmtl lambert1
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd 1.dds
+Ni 1.00
+newmtl lambert2
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd 2.dds
+Ni 1.00
+newmtl lambert3
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd 3.dds
+Ni 1.00
+newmtl lambert4
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd 4.dds
+Ni 1.00
+newmtl lambert5
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd 5.dds
+Ni 1.00
+newmtl lambert6
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd 6.dds
+Ni 1.00
