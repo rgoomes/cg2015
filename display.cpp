@@ -92,8 +92,8 @@ void load_objects(){
 	world->addCollider(dei_collider);
 
 	srand(time(NULL));
-	float s=3.5;
-	for(int i=-5; i< 100; i+=s){
+	float s=3;
+	for(int i=-5; i< 33; i+=s){
 		for(int j=-2; j< 180; j+=s){
 			Grass* grass = new Grass("objects/grass");
 			grass->attach_loader(loader);
