@@ -172,7 +172,7 @@ void request_throw(){
 		btVector3 box_pos(204, 2.7, -58.5);
 		double dist_to_box = (world->camera->obs_pos-box_pos).length();
 
-		if((world->camera->get_game_state() == GAME_STATE1 && dist_to_box > 100) 
+		if((world->camera->get_game_state() == GAME_STATE1 && dist_to_box > 120)
 			|| (world->camera->get_game_state() != GAME_STATE1))
 
 		throw_ball();
