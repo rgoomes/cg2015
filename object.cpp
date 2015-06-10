@@ -236,6 +236,8 @@ void Object::render_glass(int* order){
 		else
 			glUniform1i(g.has_texture_id, 1);
 
+		glUniform1i(g.shadows_id, receives_shadows);
+
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, shadowmap);
 		glUniform1i(g.shadowmap_id, 1);

@@ -8,12 +8,14 @@ Grass::Grass(string path, Loader* loader, btVector3 pos, double r)
 	this->path = path;
 	this->loader = loader;
 	this->r = r;
+	receives_shadows = 0;
 }
 
 Grass::Grass(string path)
 : Object(path){
 	this->path = path;
 	this->r = 1;
+	receives_shadows = 0;
 }
 
 void Grass::render_texture(){

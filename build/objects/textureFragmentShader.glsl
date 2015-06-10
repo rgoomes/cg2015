@@ -19,6 +19,7 @@ uniform mat4 M;
 uniform int has_texture;
 uniform int has_bump;
 uniform int bumpfix;
+uniform int shadows;
 uniform float Ns, Tf;
 
 vec2 poissonDisk[16] = vec2[]( 
@@ -119,12 +120,14 @@ void main(){
 	float bias = 0.002*tan(acos(cosTheta)); bias = clamp(bias, 0,0.01);
 	
 	// Sample the shadow map 4 times
-	for (int i=0;i<4;i++){
-		
-		//int index = int(mod(int(16.0*random(Normal_cameraspace.yzx, i)), 16));
-		//if(mod(index, 2) == 0)
-		int	index = i;
-		visibility -= 0.2*(1.0-shadow2D( shadowMap, vec3(ShadowCoord.xy + poissonDisk[index]/2000.0,  (ShadowCoord.z-bias)/ShadowCoord.w )).r);
+	if(shadows != 0){
+		for (int i=0;i<4;i++){
+			
+			//int index = int(mod(int(16.0*random(Normal_cameraspace.yzx, i)), 16));
+			//if(mod(index, 2) == 0)
+			int	index = i;
+			visibility -= 0.2*(1.0-shadow2D( shadowMap, vec3(ShadowCoord.xy + poissonDisk[index]/2000.0,  (ShadowCoord.z-bias)/ShadowCoord.w )).r);
+		}
 	}
 	if(ShadowCoord.x < 0 || ShadowCoord.x > 1 || ShadowCoord.y < 0 || ShadowCoord.y > 1)
 		visibility = 1;

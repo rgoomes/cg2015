@@ -92,15 +92,15 @@ void load_objects(){
 	world->addCollider(dei_collider);
 
 	srand(time(NULL));
-	float s=3.5;
+	float s=7;
 	for(int i=-5; i< 100; i+=s){
 		for(int j=-2; j< 180; j+=s){
 			Grass* grass = new Grass("objects/grass");
 			grass->attach_loader(loader);
-			grass->set_scale(0.02);
+			grass->set_scale(0.04);
 			grass->load_obj();
 			grass->set_transparent(true);
-			grass->move(28 + i + s * ((rand() % 100) / 100.0), 0,-90 + j + s * ((rand() % 100) / 100.0) );
+			grass->move(28 + i + (s/2) * ((rand() % 100) / 100.0), 0,-90 + j + (s/2) * ((rand() % 100) / 100.0) );
 			world->addObject(grass);
 		}
 	}

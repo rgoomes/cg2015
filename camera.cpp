@@ -28,8 +28,15 @@ void Camera::move(GLFWwindow* window, float elapsed, btVector3 dest){
 		this->camera_state = last_camera_state+1;
 	else{
 		btVector3 dif = (dest - obs_pos).normalize();
-		float t = (dest - obs_pos).norm() / 10.0 + 5;
-		obs_pos += dif * elapsed * t*t;
+		
+		float dist = (dest - obs_pos).norm();
+		float t = dist / 5.0;
+		if(t < 10)
+			t = 10;
+		btVector3 cur = obs_pos;
+		obs_pos += dif * elapsed * pow(t, 1.4);
+		if( dif.dot(dest - obs_pos) < 0 )
+			obs_pos = dest;
 	}
 
 	this->lookat(p.first, p.second);

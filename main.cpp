@@ -29,7 +29,7 @@ void monitor_resolution(int *w, int *h){
 void opengl_init(){
 	glfwInit();
 	monitor_resolution			(&SCREEN_WIDTH, &SCREEN_HEIGHT);
-	glfwWindowHint				(GLFW_SAMPLES, 4);
+	glfwWindowHint				(GLFW_SAMPLES, 2);
 	glfwWindowHint				(GLFW_CONTEXT_VERSION_MAJOR, 2);
 	glfwWindowHint				(GLFW_CONTEXT_VERSION_MINOR, 1);
 	glfwSwapInterval			(0);

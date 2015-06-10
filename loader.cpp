@@ -160,6 +160,7 @@ Group Loader::load_group(string group_name){
 	g.has_texture_id = glGetUniformLocation(g.program_id, "has_texture");
 	g.has_bump_id = glGetUniformLocation(g.program_id, "has_bump");
 	g.bumpfix_id = glGetUniformLocation(g.program_id, "bumpfix");
+	g.shadows_id = glGetUniformLocation(g.program_id, "shadows");
 
 	g.vertexposition_modelspace_id = glGetAttribLocation(g.program_id, "vertexPosition_modelspace");
 	g.vertexUV_id = glGetAttribLocation(g.program_id, "vertexUV");

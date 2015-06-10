@@ -68,6 +68,7 @@ class Object {
 		void get_depthbiasmvp(float dbmvp[4][4]);
 		string path;
 		bool has_texture;
+		int receives_shadows = 1;
 		void get_mvp(float mvp[4][4]);
 		virtual btTransform* get_transform();
 		btTransform trans;
