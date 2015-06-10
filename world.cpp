@@ -96,6 +96,18 @@ static bool compare_object(Object *a, Object *b){
 	return (a->get_position() - obs).length() > (b->get_position() - obs).length();
 }
 
+bool render_grass = true;
+int last_grass_state = GLFW_RELEASE;
+
+bool grass_enabled(GLFWwindow* window){
+	int cur_state = glfwGetKey(window, GLFW_KEY_R);
+	if(cur_state == GLFW_PRESS && cur_state != last_grass_state)
+		render_grass = !render_grass;
+	last_grass_state = cur_state;
+
+	return render_grass;
+}
+
 void World::update(float elapsed){
 	int i;
 
@@ -152,12 +164,13 @@ void World::update(float elapsed){
 		objects[i]->render_texture();
 	}
 	
-	sort(alpha_objects.begin(), alpha_objects.end(), compare_object);
-	for(i=0; i<(int)alpha_objects.size(); i++){
-		alpha_objects[i]->sort_groups();
-		alpha_objects[i]->render_glass(NULL);
+	if(grass_enabled(window)){
+		sort(alpha_objects.begin(), alpha_objects.end(), compare_object);
+		for(i=0; i<(int)alpha_objects.size(); i++){
+			alpha_objects[i]->sort_groups();
+			alpha_objects[i]->render_glass(NULL);
+		}
 	}
-	
 
 	for(i=0; i<(int)objects.size();  i++){
 		if(objects[i]->is_static){

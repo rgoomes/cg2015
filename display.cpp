@@ -85,13 +85,14 @@ void load_objects(){
 	dei->load_obj();
 	world->addObject(dei);
 
-	dei_collider = new Rigidbody("objects/dei_collider", 0, btVector3(0, 0, 0), CONCAVE, 0, 0, 0, 0.4, 0.1);
+	dei_collider = new Rigidbody("objects/dei_collider", 0, btVector3(0, 0, 0), CONCAVE, 0, 0, 0, 0.4, 0.4);
 	dei_collider->attach_loader(loader);
 	dei_collider->set_scale(0.1);
 	dei_collider->load_obj();
 	world->addCollider(dei_collider);
 
 	srand(time(NULL));
+	
 	float s=7;
 	for(int i=-5; i< 100; i+=s){
 		for(int j=-2; j< 180; j+=s){
@@ -172,7 +173,7 @@ void request_throw(){
 		btVector3 box_pos(204, 2.7, -58.5);
 		double dist_to_box = (world->camera->obs_pos-box_pos).length();
 
-		if((world->camera->get_game_state() == GAME_STATE1 && dist_to_box > 100) 
+		if((world->camera->get_game_state() == GAME_STATE1 && dist_to_box > 120)
 			|| (world->camera->get_game_state() != GAME_STATE1))
 
 		throw_ball();
