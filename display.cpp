@@ -85,7 +85,7 @@ void load_objects(){
 	dei->load_obj();
 	world->addObject(dei);
 
-	dei_collider = new Rigidbody("objects/dei_collider", 0, btVector3(0, 0, 0), CONCAVE, 0, 0, 0, 0.4, 0.1);
+	dei_collider = new Rigidbody("objects/dei_collider", 0, btVector3(0, 0, 0), CONCAVE, 0, 0, 0, 0.4, 0.4);
 	dei_collider->attach_loader(loader);
 	dei_collider->set_scale(0.1);
 	dei_collider->load_obj();
