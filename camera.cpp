@@ -34,7 +34,7 @@ void Camera::move(GLFWwindow* window, float elapsed, btVector3 dest){
 		if(t < 10)
 			t = 10;
 		btVector3 cur = obs_pos;
-		obs_pos += dif * elapsed * pow(t, 1.6);
+		obs_pos += dif * elapsed * pow(t, 1.8);
 		if( dif.dot(dest - obs_pos) < 0 )
 			obs_pos = dest;
 	}

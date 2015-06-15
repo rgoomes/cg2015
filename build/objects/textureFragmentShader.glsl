@@ -110,7 +110,7 @@ void main(){
 	float specular = 0.0;
 	if(dot(n, -l) > 0.0){
 		
-		specular = pow(max(0.0, dot(reflect(l, n), E)), 1); // NOT VIEWDIR, IT SHOULD BE EYE DIRECTION CAMERA SPACE
+		specular = pow(max(0.0, dot(reflect(l, n), E)), Ns); // NOT VIEWDIR, IT SHOULD BE EYE DIRECTION CAMERA SPACE
 	}
 	if(Ns == 0)
 		specular = 0;
