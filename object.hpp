@@ -57,6 +57,7 @@ class Object {
 		bool has_transparency=false;
 		void set_material(Group& g, Material& m);
 	protected:
+		virtual void render_group(Group& g, float m[][4], float view[][4], float depthbias_mvp[][4]);
 		bool load_obj_texture();
 		Group load_group(string group_name);
 		void get_matrix(float m[16]);

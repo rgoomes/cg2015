@@ -183,7 +183,8 @@ Group Loader::load_group(string group_name){
 	
 	glGenBuffers(1, &g.vertexbuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, g.vertexbuffer);
-	glBufferData(GL_ARRAY_BUFFER, out_vertices.size()*sizeof(Point), out_vertices.data(), GL_DYNAMIC_DRAW);
+	g.vertices = out_vertices;
+	glBufferData(GL_ARRAY_BUFFER, g.vertices.size()*sizeof(Point), g.vertices.data(), GL_DYNAMIC_DRAW);
 	
 	glGenBuffers(1, &g.uvbuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, g.uvbuffer);

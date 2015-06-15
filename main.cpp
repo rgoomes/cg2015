@@ -78,6 +78,7 @@ float frame_rate(){
 
 int main(int argc, char **argv){
 	opengl_init();
+	srand(time(NULL));
 	
 	main_world = new World(main_window);
 	main_loader = new Loader();
