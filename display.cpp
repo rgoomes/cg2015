@@ -93,28 +93,27 @@ void load_objects(){
 
 	srand(time(NULL));
 	
-	float s=10;
-	int i = -5, j=-2;
+	float s=7;
 	for(int i=-5; i< 100; i+=s){
 		for(int j=-2; j< 180; j+=s){
 			Grass* grass = new Grass("objects/grass");
 			grass->attach_loader(loader);
-			grass->set_scale(0.06);
+			grass->set_scale(0.04);
 			grass->load_obj();
 			grass->set_transparent(true);
-			grass->move(28 + i, 0,-90 + j );
+			grass->move(28 + i + (s/2) * ((rand() % 100) / 100.0), 0,-90 + j + (s/2) * ((rand() % 100) / 100.0) );
 			world->addObject(grass);
 		}
 	}
 
-	/*btVector3 obs_pos = world->camera->get_obs_pos();
+	btVector3 obs_pos = world->camera->get_obs_pos();
 	sphere_aim = new Object("objects/sphere");
 	sphere_aim->move(0,0,0);
 	sphere_aim->attach_loader(loader);
 	sphere_aim->set_scale(0.05);
 	sphere_aim->load_obj();
 	sphere_aim->is_static = true;
-	world->addObject(sphere_aim);*/
+	world->addObject(sphere_aim);
 }
 
 void load_textures(){

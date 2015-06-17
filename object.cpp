@@ -125,8 +125,77 @@ void Object::render_texture(){
 		if(g.material.Tf < 1 || has_transparency)
 			continue;
 
-		render_group(g, m, view, depthbias_mvp);
+		glUseProgram(g.program_id);
+		glUniformMatrix4fv(g.matrix_id, 1, GL_FALSE, &m[0][0]);
+		glUniformMatrix4fv(g.depthbias_id, 1, GL_FALSE, &depthbias_mvp[0][0]);
+		glUniformMatrix4fv(g.viewmatrix_id, 1, GL_FALSE, &view[0][0]);
+		glUniformMatrix4fv(g.modelmatrix_id, 1, GL_FALSE, model);
+		glUniform3f(g.lightdir_id, -0.5, 0.8, 0.5);
+		
+		set_material(g, g.material);
 
+
+		glEnableVertexAttribArray(g.vertexposition_modelspace_id);
+		glBindBuffer(GL_ARRAY_BUFFER, g.vertexbuffer);
+		glVertexAttribPointer(
+			g.vertexposition_modelspace_id,
+			3,
+			GL_FLOAT,
+			GL_FALSE,
+			0,
+			(void*)0
+		);
+		
+		glEnableVertexAttribArray(g.vertexUV_id);
+		glBindBuffer(GL_ARRAY_BUFFER, g.uvbuffer);
+		glVertexAttribPointer(
+			g.vertexUV_id,
+			2,
+			GL_FLOAT,
+			GL_FALSE,
+			0,
+			(void*)0
+		);
+
+		glEnableVertexAttribArray(g.normal_id);
+		glBindBuffer(GL_ARRAY_BUFFER, g.normalbuffer);
+		glVertexAttribPointer(
+			g.normal_id,
+			3,
+			GL_FLOAT,
+			GL_FALSE,
+			0,
+			(void*)0
+		);
+
+		glEnableVertexAttribArray(g.tangent_id);
+		glBindBuffer(GL_ARRAY_BUFFER, g.tangentbuffer);
+		glVertexAttribPointer(
+			g.tangent_id,
+			3,
+			GL_FLOAT,
+			GL_FALSE,
+			0,
+			(void*)0
+		);
+
+		glEnableVertexAttribArray(g.bitangent_id);
+		glBindBuffer(GL_ARRAY_BUFFER, g.bitangentbuffer);
+		glVertexAttribPointer(
+			g.bitangent_id,
+			3,
+			GL_FLOAT,
+			GL_FALSE,
+			0,
+			(void*)0
+		);
+
+		glDrawArrays(GL_TRIANGLES, 0, g.size*3);
+
+		glDisableVertexAttribArray(g.vertexposition_modelspace_id);
+		glDisableVertexAttribArray(g.vertexUV_id);
+		
+		glDisable(GL_TEXTURE_2D);
 	}
 }
 
@@ -152,77 +221,69 @@ void Object::render_glass(int* order){
 		if(g.material.Tf == 1 && !has_transparency)
 			continue;
 
-		render_group(g, m, view, depthbias_mvp);
+		glUseProgram(g.program_id);
+		glUniformMatrix4fv(g.matrix_id, 1, GL_FALSE, &m[0][0]);
+		glUniformMatrix4fv(g.depthbias_id, 1, GL_FALSE, &depthbias_mvp[0][0]);
+		glUniformMatrix4fv(g.viewmatrix_id, 1, GL_FALSE, &view[0][0]);
+		glUniformMatrix4fv(g.modelmatrix_id, 1, GL_FALSE, model);
+		glUniform3f(g.lightdir_id, -0.5, 0.8, 0.5);
+		
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, g.texture);
+		glUniform1i(g.texture_id, 0);
+		if(!g.material.map_Kd)
+			glUniform1i(g.has_texture_id, 0);
+		else
+			glUniform1i(g.has_texture_id, 1);
 
+		glUniform1i(g.shadows_id, receives_shadows);
+
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, shadowmap);
+		glUniform1i(g.shadowmap_id, 1);
+
+		set_material(g, g.material);
+
+		glEnableVertexAttribArray(g.vertexposition_modelspace_id);
+		glBindBuffer(GL_ARRAY_BUFFER, g.vertexbuffer);
+		glVertexAttribPointer(
+			g.vertexposition_modelspace_id,
+			3,
+			GL_FLOAT,
+			GL_FALSE,
+			0,
+			(void*)0
+		);
+		
+		glEnableVertexAttribArray(g.vertexUV_id);
+		glBindBuffer(GL_ARRAY_BUFFER, g.uvbuffer);
+		glVertexAttribPointer(
+			g.vertexUV_id,
+			2,
+			GL_FLOAT,
+			GL_FALSE,
+			0,
+			(void*)0
+		);
+
+		glEnableVertexAttribArray(g.normal_id);
+		glBindBuffer(GL_ARRAY_BUFFER, g.normalbuffer);
+		glVertexAttribPointer(
+			g.normal_id,
+			3,
+			GL_FLOAT,
+			GL_FALSE,
+			0,
+			(void*)0
+		);
+
+		glDrawArrays(GL_TRIANGLES, 0, g.size*3);
+
+		glDisableVertexAttribArray(g.vertexposition_modelspace_id);
+		glDisableVertexAttribArray(g.vertexUV_id);
+		
+		glDisable(GL_TEXTURE_2D);
 	}
-}
-
-void Object::render_group(Group& g, float m[][4], float view[][4], float depthbias_mvp[][4]){
-	glUseProgram(g.program_id);
-	glUniformMatrix4fv(g.matrix_id, 1, GL_FALSE, &m[0][0]);
-	glUniformMatrix4fv(g.depthbias_id, 1, GL_FALSE, &depthbias_mvp[0][0]);
-	glUniformMatrix4fv(g.viewmatrix_id, 1, GL_FALSE, &view[0][0]);
-
-	float model[16];
-	get_matrix(model);
-	glUniformMatrix4fv(g.modelmatrix_id, 1, GL_FALSE, model);
-	glUniform3f(g.lightdir_id, -0.5, 0.8, 0.5);
-	
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, g.texture);
-	glUniform1i(g.texture_id, 0);
-	if(!g.material.map_Kd)
-		glUniform1i(g.has_texture_id, 0);
-	else
-		glUniform1i(g.has_texture_id, 1);
-
-	glUniform1i(g.shadows_id, receives_shadows);
-
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, shadowmap);
-	glUniform1i(g.shadowmap_id, 1);
-
-	set_material(g, g.material);
-
-	glEnableVertexAttribArray(g.vertexposition_modelspace_id);
-	glBindBuffer(GL_ARRAY_BUFFER, g.vertexbuffer);
-	glVertexAttribPointer(
-		g.vertexposition_modelspace_id,
-		3,
-		GL_FLOAT,
-		GL_FALSE,
-		0,
-		(void*)0
-	);
-	
-	glEnableVertexAttribArray(g.vertexUV_id);
-	glBindBuffer(GL_ARRAY_BUFFER, g.uvbuffer);
-	glVertexAttribPointer(
-		g.vertexUV_id,
-		2,
-		GL_FLOAT,
-		GL_FALSE,
-		0,
-		(void*)0
-	);
-
-	glEnableVertexAttribArray(g.normal_id);
-	glBindBuffer(GL_ARRAY_BUFFER, g.normalbuffer);
-	glVertexAttribPointer(
-		g.normal_id,
-		3,
-		GL_FLOAT,
-		GL_FALSE,
-		0,
-		(void*)0
-	);
-
-	glDrawArrays(GL_TRIANGLES, 0, g.size*3);
-
-	glDisableVertexAttribArray(g.vertexposition_modelspace_id);
-	glDisableVertexAttribArray(g.vertexUV_id);
-	
-	glDisable(GL_TEXTURE_2D);
 }
 
 void Object::sort_groups(){

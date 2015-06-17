@@ -31,7 +31,6 @@ struct Group{
 			has_texture_id, has_bump_id, bumpfix_id, shadows_id;
 	Material material;
 	GLuint Ns_id, Tf_id;
-	vector<Point> vertices;
 };
 
 struct Model{
