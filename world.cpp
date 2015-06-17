@@ -5,7 +5,7 @@
 
 #include <algorithm>
 
-#define SHADOW_RES 1024
+#define SHADOW_RES 2048
 
 btDynamicsWorld* World::getDynamicWorld(){
 	btBroadphaseInterface* broadphase = new btDbvtBroadphase();
