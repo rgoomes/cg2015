@@ -94,8 +94,8 @@ void load_objects(){
 	srand(time(NULL));
 	
 	float s=7;
-	for(int i=-5; i< 100; i+=s){
-		for(int j=-2; j< 180; j+=s){
+	for(int i=-3; i< 100; i+=s){
+		for(int j=-1; j< 180; j+=s){
 			Grass* grass = new Grass("objects/grass");
 			grass->attach_loader(loader);
 			grass->set_scale(0.04);
