@@ -135,9 +135,6 @@ void main(){
 	if(cosTheta < 0.0)
 		visibility = 0;
 
-	if(dot( n_c,-l ) < 0.0)
-		visibility = visibility / 8;
-
 	gl_FragColor.rgb = 
 		// Ambient : simulates indirect lighting
 		MaterialAmbientColor +
